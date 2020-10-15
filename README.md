@@ -43,4 +43,4 @@ docker and others
 
 ## License
 
-Information provided in the [LICENSE] file.
+Information provided in the [LICENSE](LICENSE) file.
