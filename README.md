@@ -56,7 +56,7 @@ APP_ROOT=/3DScanner
 VOL_DIR=/dev/3DScanner
 ```
 
-**Create** docker image. Please see [Dockerfiles/Dockerfile.3dsdev]() for details.
+**Create** docker image. Please see [Dockerfiles/Dockerfile.3dsdev](https://github.com/cdeck3r/3DScanner/blob/master/Dockerfiles/Dockerfile.3dsdev) for details.
 ```bash
 docker-compose build 3dsdev 
 ```
