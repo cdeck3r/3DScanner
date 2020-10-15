@@ -1,0 +1,51 @@
+version: '3'
+
+services:
+  3dsdev:
+    build: 
+      context: ./Dockerfiles
+      dockerfile: Dockerfile.3dsdev
+    container_name: 3dsdev
+    image: 3dsdev:latest
+    volumes:
+      - repo:/3DScannerRepo
+      - log:${APP_ROOT}/log
+      - src:${APP_ROOT}/src
+      - scripts:${APP_ROOT}/scripts
+      - docs:${APP_ROOT}/docs
+    stdin_open: true
+    tty: true
+#
+# Volume definition
+# 
+volumes:
+  repo:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOL_DIR}/
+      o: bind
+  log:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOL_DIR}/log
+      o: bind
+  src:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOL_DIR}/src
+      o: bind
+  scripts:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOL_DIR}/scripts
+      o: bind
+  docs:
+    driver: local
+    driver_opts:
+      type: none
+      device: ${VOL_DIR}/docs
+      o: bind

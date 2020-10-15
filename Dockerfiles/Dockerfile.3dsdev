@@ -1,0 +1,11 @@
+#
+# Dev image for Raspberry Pi development on Desktop PC
+#
+
+FROM debian:buster-slim
+
+LABEL description="Dev system for Raspberry Pi based 3D Scanner"
+LABEL url="https://github.com/cdeck3r/3DScanner"
+LABEL maintainer="cdeck3r"
+
+CMD ["/bin/bash"]

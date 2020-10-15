@@ -37,9 +37,35 @@ In all cases, we want to keep the end-use in mind and at the center of our devel
 
 ## Dev System
 
-We setup a docker image to support the development on a desktop computer. It helps us to reproduce script operations on the Raspberry Pi.
+We setup a docker image to support the development on a desktop computer. It helps us to reproduce script operations on the Raspberry Pi. The dev system bases on the Debian Buster distro. The motivation is that [Raspberry Pi OS](https://en.wikipedia.org/wiki/Raspberry_Pi_OS) bases on the same one. At the current date the version is:
+```bash
+$ uname -a
+Linux ec72378ae28c 4.19.76-linuxkit #1 SMP Tue May 26 11:42:35 UTC 2020 x86_64 GNU/Linux
+```
 
-docker and others
+**Setup:** Start in project's root dir and create a `.env` file with the content shown below.
+```
+# .env file
+
+# In the container, this is the directory where the code is found
+# Example:
+APP_ROOT=/3DScanner
+
+# the HOST directory containing directories to be mounted into containers
+# Example:
+VOL_DIR=/dev/3DScanner
+```
+
+**Create** docker image. Please see [Dockerfiles/Dockerfile.3dsdev]() for details.
+```bash
+docker-compose build 3dsdev 
+```
+
+**Spin up** the container and get a shell from the container
+```bash
+docker-compose up -d 3dsdev
+docker exec -it 3dsdev /bin/bash
+```
 
 ## License
 

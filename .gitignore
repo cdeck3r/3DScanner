@@ -2,6 +2,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/python,java,web
 # Edit at https://www.toptal.com/developers/gitignore?templates=python,java,web
 
+### project-specific files ###
+.env
+
 ### Java ###
 # Compiled class file
 *.class
