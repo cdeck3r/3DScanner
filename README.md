@@ -17,23 +17,27 @@ Ressources:
 
 The project builds on the instructions from a [previous project](https://www.instructables.com/Multiple-Raspberry-PI-3D-Scanner/). There are several similar DIY projects of this type available on the Internet. Commercial products exist as well. 
 
-The DIY project uses COTS available Raspberry Pis embedded computers to implement a distributed camera system. The available documentation is limited and the setup and software operation of the camera hardware require substantial software skills.
+The DIY project uses COTS available Raspberry Pis embedded computers to implement a distributed camera system. The available documentation is limited and the setup as well as the software operation of the camera hardware require substantial software skills.
 
-However, researchers in this project are not software experts. The goals of this project are therefore
+However, researchers in this project are not software experts. The project goals are therefore
 
 * enable non-software experts to reproduce the software setup of the scanner 
-* understanding of the scanner's software operation state for a successful application use
+* transparentizing the scanner's software operation state for a successful application use
 
 ## Technical Approach
 
-From a computer science perspective the project proposes a couple distributed system challenges. Since all software runs distributed on approx. 50 Raspberry Pi computers, a primary activity focuses on infrastructure support. Each software change applies to 50 Raspberry Pis. Automation of deployment is crucial. Some fundamental functions to support are 
+From a computer science perspective the project proposes a couple of distributed system challenges. Since all software runs distributed on approx. 50 Raspberry Pi computers, a primary activity focuses on infrastructure support. Each software change applies to 50 Raspberry Pis. Automation of deployment is crucial. Some fundamental functions to support are 
 
 * Automate deployment of software directly from github
 * Common, but secure access to Raspberry Pis
 * Distributed control 
 * Debugging and maintenance support
 
-In all cases, we want to keep the end-use in mind and at the center of our development efforts.
+In all cases, we want to keep the end-user in mind and at the center of our development efforts.
+
+During system operation the camera Raspberry Pis connect to a central node via MQTT publish/subscribe message queues. The central node collects all images and logging information. The user accesses the images files and reviews the status information on a dashboard in a web browser. The following UML diagram depicts the system design. 
+
+![System design](http://www.plantuml.com/plantuml/png/3SV13S8m30NGLM21-D0RPpPW01H-h3QYSIhxMy3szFJqhjsmPzFq_RAHHzn4l7xAshdbAqCTqwZ6WZa4JV5UN9Rx0zLCNKODdhI941pF-9qTJQElLlZb7m00)
 
 ## Dev System
 
