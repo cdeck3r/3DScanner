@@ -1,0 +1,23 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+actor "User" as user
+interface "topics" as topics
+interface "Camera" as cam
+interface "http" as http
+
+node "CentralNode" {
+ file "Image files" as img
+ [MQTT Broker] - topics 
+ [Node-RED dashboard] <.. http : access
+ img ..> http : download
+}
+
+user - http
+
+node "CamNode" {
+ [MQTT Client] --> topics : publish
+ [Take picture] - cam : use
+}
+@enduml
