@@ -39,6 +39,10 @@ During system operation the camera Raspberry Pis connect to a central node via M
 
 ![System design](http://www.plantuml.com/plantuml/png/3SV13S8m30NGLM21-D0RPpPW01H-h3QYSIhxMy3szFJqhjsmPzFq_RAHHzn4l7xAshdbAqCTqwZ6WZa4JV5UN9Rx0zLCNKODdhI941pF-9qTJQElLlZb7m00)
 
+## Documentation
+
+Please see [`docs`](docs) folder for full documentation 
+
 ## Dev System
 
 We setup a docker image to support the development on a desktop computer. It helps us to reproduce script operations on the Raspberry Pi. The dev system bases on the Debian Buster distro. The motivation is that [Raspberry Pi OS](https://en.wikipedia.org/wiki/Raspberry_Pi_OS) bases on the same one. At the current date the version is:

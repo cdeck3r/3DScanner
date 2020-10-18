@@ -13,6 +13,7 @@ services:
       - src:${APP_ROOT}/src
       - scripts:${APP_ROOT}/scripts
       - docs:${APP_ROOT}/docs
+    privileged: ${DEVSYS_PRIV:-false}
     stdin_open: true
     tty: true
 #
