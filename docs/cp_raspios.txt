@@ -1,0 +1,27 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+interface "/boot" as boot
+file setup as "Node-specific
+AutoSetup Scripts" 
+
+actor "Raspi Community" as devraspi
+actor "Developer" as dev
+actor "End-user" as user
+
+artifact "RaspiOS Stack" {
+ [Default RaspiOS] -[hidden]up- [Customized RaspiOS ]
+ [Customized RaspiOS ] -[hidden]up- [Scanner RaspiOS]
+
+ [Scanner RaspiOS] -left- user : creates
+ [Customized RaspiOS ] - dev : creates
+ [Scanner RaspiOS] - boot
+ [Customized RaspiOS ] .. boot : enables
+ [Default RaspiOS] - devraspi : creates
+}
+
+boot ..> setup
+user .. boot : "add node-\n specific files"
+dev -left-> setup : creates
+@enduml
