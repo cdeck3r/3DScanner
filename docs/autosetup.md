@@ -13,6 +13,7 @@ The automatic setup is an archive `autosetup.zip` containing all data and script
 ```bash
 src/autosetup/create_autosetup.sh
 ```
+
     It generates the ssh keys and let the user define a NODETYPE. The latter serves to control the actions of the autosetup install scripts.
 1. Deploy the created `autosetup.zip` on the SD card's root directory.
 

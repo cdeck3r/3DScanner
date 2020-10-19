@@ -14,8 +14,8 @@
 **Target group: developers**
 
 * [Customize image](custom_image.md)
-* [Build node-specific autosetup scripts](autosetup.md)
 * [Install image on SD Card](install_raspi.md)
+* [Build node-specific autosetup scripts](autosetup.md)
 
 ## Operation 
 
