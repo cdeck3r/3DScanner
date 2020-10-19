@@ -1,0 +1,63 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+'
+' customize image
+'
+| <&person>Developer |
+start
+:raspios_customize.sh;
+| Raspberry Pi |
+:install booter.service;
+:booter.sh|
+stop
+
+'
+' Create autosetup scripts
+'
+| <&person>Developer |
+start
+:run create_autosetup.sh;
+:create ssh keys and
+define NODETYPE;
+| <&person>User |
+:autosetup.zip|
+stop
+
+'
+' Deploy autosetup scripts
+'
+| <&person>User |
+start
+:copy autosetup.zip;
+| Raspberry Pi |
+:autosetup.zip|
+| <&person>User |
+:flash SD card;
+stop
+
+'
+' autosetup
+'
+| Raspberry Pi |
+start
+:booter.sh|
+:unzip /boot/autosetup.sh;
+:run autosetup.sh;
+:install ssh keys;
+:download install scripts;
+| Repository |
+:<&folder>/raspi-autosetup|
+| Raspberry Pi |
+:install_commons.sh;
+if (NODETYPE) then (CamNode)
+:install_camnode.sh;
+else (CentralNode)
+:install_centralnode.sh;
+endif
+
+
+
+stop
+@enduml
