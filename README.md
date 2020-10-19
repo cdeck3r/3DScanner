@@ -24,6 +24,8 @@ However, researchers in this project are not software experts. The project goals
 * enable non-software experts to reproduce the software setup of the scanner 
 * transparentizing the scanner's software operation state for a successful application use
 
+As an example of the goal implementation have look at the [flow chart to setup Raspberry Pi](https://github.com/cdeck3r/3DScanner/blob/master/docs/raspi_setup_process.md). Note the user's low effort as shown by the minimum interaction with the Raspberry Pi for the setup of the scanner software. 
+
 ## Technical Approach
 
 From a computer science perspective the project proposes a couple of distributed system challenges. Since all software runs distributed on approx. 50 Raspberry Pi computers, a primary activity focuses on infrastructure support. Each software change applies to 50 Raspberry Pis. Automation of deployment is crucial. Some fundamental functions to support are 
