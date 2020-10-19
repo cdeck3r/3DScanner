@@ -26,8 +26,6 @@ SCRIPT_NAME=$0
 # ... for download
 RASPIOS_DIR="/3DScannerRepo/raspios"
 RASPIOS_IMAGE_URL='https://downloads.raspberrypi.org/raspios_lite_armhf/images/raspios_lite_armhf-2020-08-24/2020-08-20-raspios-buster-armhf-lite.zip'
-# 
-MOUNT_POINT=/mnt
 
 #####################################################
 # Include Helper functions
@@ -41,7 +39,7 @@ MOUNT_POINT=/mnt
 
 # check for installed program
 # Source: https://stackoverflow.com/a/677212
-#command -v "wget" >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Abort."; exit 1; }
+command -v "wget" >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Abort."; exit 1; }
 
 # ensure RASPIOS_DIR exists
 mkdir -p "${RASPIOS_DIR}" 
