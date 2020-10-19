@@ -4,10 +4,16 @@
 
 **Target group: end-users**
 
-1. Get the customized image and node-specific `.zip` file 
-1. Flash the image and unzip the node-specific `.zip` file into the SD card's root directory
+1. Get the customized image and node-specific `autosetup.zip` file 
+1. Flash the image and copy the `autosetup.zip` file into the SD card's root directory
 1. Bootup the Raspberry with the just created SD card
-1. Point your browser to ... and check the for the new node to be online
+1. Point your browser to *tbd* and check the for the new node to be online
+
+## Operation 
+
+An extended documentation for end-users.
+
+*tbd*
 
 ## Setup and Install Raspberry Pis
 
@@ -21,8 +27,3 @@ Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
-## Operation 
-
-An extended documentation for end-users.
-
-*tbd*
