@@ -1,12 +1,12 @@
-# Customize RasPiOS Image
+# Customize RaspiOS Image
 
-We need to customize the RasPiOS image in order to enable our own toolchain. The objective is to have an tailored image which can be easily replicated to all Raspberry Pis. This image will enable automatation and infrastructure support for all software functions.
+We need to customize the RaspiOS image in order to enable our own toolchain. The objective is to have an tailored image which can be easily replicated to all Raspberry Pis. This image will enable automatation and infrastructure support for all software functions.
 
 ## Design Concept
 
 While the image creation process is left to the developer, the end-user shall setup the Raspberry Pis for a concrete scanner and the customization to its operation environment. The end-user shall conduct all manual steps to setup the Raspberry Pis without the need of a developer to be present. 
 
-The design concept of the image follows a layered approach. We take a base RasPiOS image and enable it to update itself using the easily accessible `/boot` partition. The end-user adds the node-specific autosetup scripts into this partition effectively creating the Scanner RaspiOS image. The following diagram depicts the layered RasPiOS design.
+The design concept of the image follows a layered approach. We take a base RaspiOS image and enable it to update itself using the easily accessible `/boot` partition. The end-user adds the node-specific autosetup scripts into this partition effectively creating the Scanner RaspiOS image. The following diagram depicts the layered RaspiOS design.
 
 ![RaspiOS Stack](http://www.plantuml.com/plantuml/png/3SMn3G8n30NGLM21kBYEcWqO08KVYukuE97zBHYVUysxTiEHJTEFoqwkk8bu_PPtvvwl37LCeneBvX0qnMTpsUuFL3Dr6JLurYP2i9vUO_KPXJ_-0G00)
 
@@ -22,15 +22,15 @@ docker exec -it 3dsdev /bin/bash
 
 **Note:** In the priviledge mode, the container has root access to the host system. Unset the variable once you have created the image.
 
-## Retrieve Default RasPiOS Image
+## Default RaspiOS
 
-Download the default RasPiOS image. Please use the download script for reproducibility.
+Download the default RaspiOS image. Please use the download script for reproducibility.
 
 ```bash
-$ scripts/raspios_download.sh
+$ src/raspisetup/raspios_download.sh
 ```
 
-The script downloads `2020-08-20-raspios-buster-armhf-lite.zip` und unzips it in the `raspios` folder. Change into this folder and create device maps from the the image's partition tables. 
+The script downloads `2020-08-20-raspios-buster-armhf-lite.zip` und unzips it in the `raspios` directory in the project root. Change into this directory and create device maps from the the image's partition tables. 
 
 ```bash
 $ kpartx -v -a 2020-08-20-raspios-buster-armhf-lite.img
@@ -50,13 +50,18 @@ The listing displays the root filesystem at the second position mapped to `/dev/
 $ mount /dev/mapper/loop0p2  /mnt
 ```
 
-It mounts the RasPiOS root filesystem in rw mode. Now, you can customize the filesystem. All changes will persist. 
+It mounts the RaspiOS root filesystem in rw mode. Now, you can customize the filesystem. All changes will persist. 
 
 
-## Enable Toolchain
+## Customize RaspiOS
 
-Once the image runs on the Raspberry Pi, we still want to update software and relevant information to customize the behavior. 
-*tbd*
+Once the image runs on the Raspberry Pi, we still want to update software and relevant information to customize the behavior. The systemd process shall run our `booter.sh` script. **Note:** The term [*booter*](https://en.wikipedia.org/wiki/Booter) refers to process where software loaded without the help of other actors.
+
+The following script installs `booter.sh` and creates the service in the RaspiOS filesystem on `/mnt` by default.
+
+```bash
+src/raspios_setup/raspios_customize.sh
+```
 
 ## Finalize Image
 
@@ -67,4 +72,4 @@ $ unmount /mnt
 $ kpartx -d /dev/loop0
 ```
 
-The file `2020-08-20-raspios-buster-armhf-lite.img` is now the project specific RasPiOS image. 
+The file `2020-08-20-raspios-buster-armhf-lite.img` is now the project specific RaspiOS image. 

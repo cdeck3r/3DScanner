@@ -22,7 +22,7 @@ Tools
 
 1. Format SD card using SD formatter
 1. Flash the image using Etcher
-1. Unzip the node-specific `.zip` file into SD card's root directory
+1. Copy the node-specific `autosetup.zip` file onto the SD card's root directory
 
 ### Boot and Verify Login
 
