@@ -17,6 +17,10 @@
 * [Install image on SD Card](install_raspi.md)
 * [Build node-specific autosetup scripts](autosetup.md)
 
+Complete flow chart of the setup and installation process:
+
+* [Setup process](raspi_setup_process.md)
+
 ## Operation 
 
 An extended documentation for end-users.
