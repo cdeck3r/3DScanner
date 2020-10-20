@@ -43,7 +43,7 @@ for d in "${DIRS[@]}"
 do
     if [ ! -d "${RASPIOS_MNT}"$d ]; then
         echo "Could not find directory in image: $d"
-        echo "Probably not suitable a RaspiOS image: ${RASPIOS_MNT}"
+        echo "Probably not a suitable RaspiOS image: ${RASPIOS_MNT}"
         exit 1
     fi
 done
