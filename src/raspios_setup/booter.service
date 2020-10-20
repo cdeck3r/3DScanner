@@ -1,0 +1,14 @@
+[Unit]
+Description=Booter
+After=network.target
+Before=rc-local.service
+ConditionFileNotEmpty=/boot/booter.sh
+
+[Service]
+ExecStart=/boot/booter.sh
+ExecStartPost=/bin/touch /boot/booter.done
+Type=oneshot
+RemainAfterExit=no
+
+[Install]
+WantedBy=multi-user.target

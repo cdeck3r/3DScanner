@@ -37,17 +37,38 @@ RASPIOS_MNT="/mnt"
 # Main program
 #####################################################
 
-# check 
-if [ ! -d "${RASPIOS_MNT}"/home/pi ]; then
-    echo "Probably not a RaspiOS image: ${RASPIOS_MNT}"
-    exit 1
-fi
+# check required dirs in image's filesystem
+DIRS=('/home/pi' '/lib/systemd/system' '/etc/systemd/system/multi-user.target.wants')
+for d in "${DIRS[@]}"
+do
+    if [ ! -d "${RASPIOS_MNT}"$d ]; then
+        echo "Could not find directory in image: $d"
+        echo "Probably not suitable a RaspiOS image: ${RASPIOS_MNT}"
+        exit 1
+    fi
+done
 
-# save current dir on stack
-pushd "${RASPIOS_MNT}" >/dev/null
-cd "${RASPIOS_MNT}" || { exit 1; } 
+# check for required tools in image's filesystem
+TOOLS=('wget' 'unzip' 'md5sum')
+for t in "${TOOLS[@]}"
+do
+    TOOL=$(find "${RASPIOS_MNT}" -name $t)
+    if [ -z "$TOOL" ]; then
+        echo "Tool not found in image: $t"
+        exit 2
+    fi
+done
 
+# check my own ressources
+if [ ! -f "${SCRIPT_DIR}"/booter.service ]; then
+    echo "booter.service not found"
+    exit 2
+fi    
+
+# install booter.service and script
 echo "INFO: script not implemented yet"
+exit 0
 
-# return to current dir from stack
-popd >/dev/null
+cp "${SCRIPT_DIR}"/booter.service "${RASPIOS_MNT}"/lib/systemd/system/ || { echo "Error copying booter.service"; exit 2; }
+ln -s "${RASPIOS_MNT}"/lib/systemd/system/booter.service "${RASPIOS_MNT}"/etc/systemd/system/multi-user.target.wants/booter.service || { echo "Error installing booter.service"; exit 2; }
+
