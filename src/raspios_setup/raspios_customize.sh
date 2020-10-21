@@ -37,6 +37,15 @@ RASPIOS_MNT="/mnt"
 # Main program
 #####################################################
 
+# check for kernel image 
+KERNEL="${RASPIOS_MNT}"/boot/kernel.img
+if [ ! -f "${KERNEL}" ]; then
+    echo "Could not find ${KERNEL}."
+    echo "Please mount /boot partition."
+    exit 1
+fi
+    
+
 # check required dirs in image's filesystem
 DIRS=('/home/pi' '/lib/systemd/system' '/etc/systemd/system/multi-user.target.wants')
 for d in "${DIRS[@]}"
@@ -49,7 +58,7 @@ do
 done
 
 # check for required tools in image's filesystem
-TOOLS=('wget' 'unzip' 'md5sum')
+TOOLS=('wget' 'unzip' 'md5sum' 'sed')
 for t in "${TOOLS[@]}"
 do
     TOOL=$(find "${RASPIOS_MNT}" -name $t)
@@ -60,15 +69,25 @@ do
 done
 
 # check my own ressources
-if [ ! -f "${SCRIPT_DIR}"/booter.service ]; then
-    echo "booter.service not found"
-    exit 2
-fi    
+RESS=('booter.service' 'booter.sh')
+for r in "${RESS[@]}"
+do
+    if [ ! -f "${SCRIPT_DIR}"/$r ]; then
+        echo "$r not found"
+        exit 2
+    fi    
+done
 
-# install booter.service and script
-echo "INFO: script not implemented yet"
-exit 0
+# install booter script and service
+#echo "INFO: script not implemented yet"
+#exit 0
 
+cp "${SCRIPT_DIR}"/booter.sh "${RASPIOS_MNT}"/boot
+chmod 755 "${RASPIOS_MNT}"/boot/booter.sh
 cp "${SCRIPT_DIR}"/booter.service "${RASPIOS_MNT}"/lib/systemd/system/ || { echo "Error copying booter.service"; exit 2; }
-ln -s "${RASPIOS_MNT}"/lib/systemd/system/booter.service "${RASPIOS_MNT}"/etc/systemd/system/multi-user.target.wants/booter.service || { echo "Error installing booter.service"; exit 2; }
+chmod 644 "${RASPIOS_MNT}"/lib/systemd/system/booter.service
+cd "${RASPIOS_MNT}"/etc/systemd/system/multi-user.target.wants && ln -s /lib/systemd/system/booter.service . || { echo "Error installing booter.service"; exit 2; }
+
+# change back to script dir
+cd "${SCRIPT_DIR}"
 

@@ -48,9 +48,10 @@ The listing displays the root filesystem at the second position mapped to `/dev/
 
 ```bash
 $ mount /dev/mapper/loop0p2  /mnt
+$ mount /dev/mapper/loop0p1  /mnt/boot
 ```
 
-It mounts the RaspiOS root filesystem in rw mode. Now, you can customize the filesystem. All changes will persist. 
+It mounts the RaspiOS root filesystem as well as the FAT boot partition in rw mode. Now, you can customize the filesystem. All changes will persist. 
 
 
 ## Customize RaspiOS
@@ -68,6 +69,7 @@ src/raspios_setup/raspios_customize.sh
 Finally, unmount and remove the filesystem.
 
 ```bash
+$ unmount /mnt/boot
 $ unmount /mnt
 $ kpartx -d /dev/loop0
 ```
