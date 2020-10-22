@@ -6,7 +6,7 @@
 
 1. Get the customized image and node-specific `autosetup.zip` file 
 1. Flash the image and copy the `autosetup.zip` file into the SD card's root directory
-1. Bootup the Raspberry with the just created SD card
+1. Insert the SD card into the Raspberry and power it on for booting
 1. Point your browser to *tbd* and check the for the new node to be online
 
 ## Operation 
