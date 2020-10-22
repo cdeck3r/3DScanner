@@ -25,8 +25,9 @@ SCRIPT_NAME=$0
 
 # variables
 DONE=/boot/booter.done
-AUTOSETUP=/boot/autosetup.zip
+AUTOSETUP_ZIP=/boot/autosetup.zip
 AUTOSETUP_DIR=/boot/autosetup
+AUTOSETUP="${AUTOSETUP_DIR}"/autosetup.sh
 
 #####################################################
 # Include Helper functions
@@ -78,7 +79,7 @@ set_timezone
 set_node_name 
 
 # unzip autosetup.zip
-if [ -f "${AUTOSETUP}" ]; then 
+if [ -f "${AUTOSETUP_ZIP}" ]; then 
 
     # check for required tools in image's filesystem
     TOOLS=('wget' 'unzip' 'md5sum' 'sed')
@@ -93,11 +94,14 @@ if [ -f "${AUTOSETUP}" ]; then
         fi
     done
 
-    echo "Install ${AUTOSETUP}"
-    unzip "${AUTOSETUP}" -d "${AUTOSETUP_DIR}"
-    # install ssh keys
-    # download scripts from repo
-    # start install scripts
+    echo "Install ${AUTOSETUP_ZIP}"
+    unzip "${AUTOSETUP_ZIP}" -d "${AUTOSETUP_DIR}"
+    if [ -f "${AUTOSETUP}" ]; then
+        chmod 744 "${AUTOSETUP}"
+        "${AUTOSETUP}"
+    else
+        echo "File not found: ${AUTOSETUP}"
+    fi
 else
     #nothing to do    
     echo "autosetup.zip not found. Nothing to do."
