@@ -7,8 +7,11 @@ skinparam componentStyle uml2
 '
 | <&person>Developer |
 start
+:raspios_download.sh;
+:mount root and boot
+partition at /mnt;
 :raspios_customize.sh;
-| Raspberry Pi |
+|#AntiqueWhite|  RaspiOS Image |
 :install booter.service;
 :booter.sh|
 stop
@@ -18,9 +21,9 @@ stop
 '
 | <&person>Developer |
 start
-:run create_autosetup.sh;
-:create ssh keys and
-define NODETYPE;
+:create_autosetup.sh;
+:ssh keys and
+NODETYPE definition|
 | <&person>User |
 :autosetup.zip|
 stop
@@ -30,34 +33,33 @@ stop
 '
 | <&person>User |
 start
+:flash image 
+onto SD card;
 :copy autosetup.zip;
-| Raspberry Pi |
+|  RaspiOS Image |
 :autosetup.zip|
-| <&person>User |
-:flash SD card;
 stop
 
 '
 ' autosetup
 '
-| Raspberry Pi |
-start
-:booter.sh|
-:unzip /boot/autosetup.sh;
-:run autosetup.sh;
-:install ssh keys;
-:download install scripts;
-| Repository |
-:<&folder>/raspi-autosetup|
-| Raspberry Pi |
-:install_commons.sh;
-if (NODETYPE) then (CamNode)
-:install_camnode.sh;
-else (CentralNode)
-:install_centralnode.sh;
-endif
-
-
-
-stop
+|  RaspiOS Image |
+partition "Booting Raspberry Pi" {
+    start
+    :booter.sh;
+    :unzip autosetup.zip;
+    :autosetup.sh;
+    :install ssh keys;
+    :download install scripts;
+    | Repository |
+    :<&folder>/raspi-autosetup|
+    |  RaspiOS Image |
+    :install_commons.sh;
+    if (NODETYPE) then (CamNode)
+    :install_camnode.sh;
+    else (CentralNode)
+    :install_centralnode.sh;
+    endif
+    stop
+}
 @enduml
