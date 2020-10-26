@@ -27,3 +27,10 @@ Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
+## Software Update Process
+
+**Target group: developers**
+
+* Re-run autosetup
+* Install software manually via ssh
+
