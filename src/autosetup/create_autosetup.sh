@@ -2,7 +2,7 @@
 set -e
 
 #
-# Create the autosetup.zip file
+# Create the autosetup_NODEYPE.zip file
 # The archive contains
 # - ssh keys
 # - NODETYPE definition
@@ -11,7 +11,7 @@ set -e
 # Author: cdeck3r
 #
 
-# Params: nodetype 
+# Params: none
 
 # Exit codes
 # 1: if pre-requisites are not fulfilled
@@ -27,56 +27,63 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
-NODETYPE=$1
 AUTOSETUP="${SCRIPT_DIR}"/autosetup.sh
-
+KEYFILE=camnode
 
 #####################################################
 # Include Helper functions
 #####################################################
 
-usage () {
-    echo "Usage: $SCRIPT_NAME <nodetype>"
-    echo "with nodetype = [ CAMNODE | CENTRALNODE ]"
-}
+# no helper functions
 
 #####################################################
 # Main program
 #####################################################
 
-# check params
-if [ -z $NODETYPE ]; then
-    echo "Too few arguments"
-    usage
-    exit 0
-fi
-NODETYPE=$(echo "${NODETYPE}" | tr [:lower:] [:upper:])
-if ! [[ "${NODETYPE}" =~ ^(CAMNODE|CENTRALNODE)$ ]]; then 
-    echo "Given <nodetype> not supported: ${NODETYPE}"
-    echo ""
-    usage
-    exit 0
-fi
 
 # check for installed program
 # Source: https://stackoverflow.com/a/677212
 command -v "ssh-keygen" >/dev/null 2>&1 || { echo >&2 "I require ssh-keygen but it's not installed.  Abort."; exit 1; }
 command -v "zip" >/dev/null 2>&1 || { echo >&2 "I require zip but it's not installed.  Abort."; exit 1; }
 
-# we need the basic autosetup.sh
-if [ ! -d "${AUTOSETUP}" ]; then
+# we need the basic autosetup.sh script
+if [ ! -f "${AUTOSETUP}" ]; then
     echo "File not found: ${AUTOSETUP}"
     exit 1
 fi
 
-# remove
-exit 0
-
 # generate ssh keys
-# todo
+ssh-keygen -q -t rsa -f "${SCRIPT_DIR}"/"${KEYFILE}" -N "" -C "CamNode ssh key"
 
-# NODETYPE definition
-echo "$NODETYPE" > ./NODETYPE
-chmod 644 ./NODETYPE
+# package
+for NODETYPE in "CAMNODE" "CENTRALNODE"
+do
+    # NODETYPE definition
+    echo "$NODETYPE" > "${SCRIPT_DIR}"/NODETYPE
+    chmod 644 "${SCRIPT_DIR}"/NODETYPE
+
+    #zip autosetup_NODEYPE.zip
+    # autosetup.sh
+    # NODETYPE
+    # keyfile
+    
+    if [ "${NODETYPE}" = "CAMNODE" ]; then
+        SSH_KEYFILE=${KEYFILE}.pub
+    fi
+
+    if [ "${NODETYPE}" = "CENTRALNODE" ]; then
+        SSH_KEYFILE=${KEYFILE}
+    fi
+
+    # zip "SSH_KEYFILE" NODETYPE "${AUTOSETUP}"
+    AUTOSETUP_ZIP=$(echo autosetup_${NODETYPE}.zip | tr '[:upper:]' '[:lower:]')
+    rm -rf "${SCRIPT_DIR}"/"${AUTOSETUP_ZIP}"
+    echo "Create $AUTOSETUP_ZIP..."
+    zip -j "${AUTOSETUP_ZIP}" "$SSH_KEYFILE" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}" 
+done
+
+# cleanup
+rm -rf "${SCRIPT_DIR}"/NODETYPE
+rm -rf "${SCRIPT_DIR}"/"${KEYFILE}"*
 
 exit 0
