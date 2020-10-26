@@ -14,7 +14,7 @@ The automatic setup is an archive `autosetup.zip` containing all data and script
 src/autosetup/create_autosetup.sh
 ```
 It generates the public and private ssh keys for the login on the camnodes. For each nodetype (either CAMNODE or CENTRALNODE) it creates a `autosetup_NODETYPE.zip`.
-1. Deploy the created `autosetup_NODETYPE.zip` on the SD card's root directory.
+2. Deploy the created `autosetup_NODETYPE.zip` on the SD card's root directory.
 
 The `autosetup_NODETYPE.zip` contains:
 
