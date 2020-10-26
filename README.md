@@ -31,8 +31,8 @@ As an example of the goal implementation have look at the [flow chart to setup R
 From a computer science perspective the project proposes a couple of distributed system challenges. Since all software runs distributed on approx. 50 Raspberry Pi computers, a primary activity focuses on infrastructure support. Each software change applies to 50 Raspberry Pis. Automation of deployment is crucial. Some fundamental functions to support are 
 
 * Automate deployment of software directly from github
-* Common, but secure access to Raspberry Pis
-* Distributed control 
+* Secure access to Raspberry Pis
+* Distributed management and control via web browser 
 * Debugging and maintenance support
 
 In all cases, we want to keep the end-user in mind and at the center of our development efforts.
