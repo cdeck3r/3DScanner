@@ -1,0 +1,18 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+start
+:select autosetup_NODETYPE.zip;
+
+if (NODETYPE) then (CAMNODE)
+    :unzip autosetup_camnode.zip;
+elseif (NODETYPE) then (CENTRALNODE)
+    :unzip autosetup_centralnode.zip;
+else (unknown)
+    stop
+endif
+    :autosetup.sh;
+stop
+
+@enduml
