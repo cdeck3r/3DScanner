@@ -24,6 +24,9 @@ SCRIPT_NAME=$0
 
 # variables
 NODETYPE="node" # default
+REPO="https://github.com/cdeck3r/3DScanner.git"
+USER=pi
+USER_HOME="/home/${USER}"
 
 #####################################################
 # Include Helper functions
@@ -40,7 +43,8 @@ set_node_name () {
     else
         MAC="000000000000"
     fi
-    
+
+    NEW_NAME=$(echo ${NEW_NAME} | tr '[:upper:]' '[:lower:]')
     NEW_NAME=${NEW_NAME}-${MAC}
     CURR_HOSTNAME=$(hostname)
     
@@ -50,6 +54,31 @@ set_node_name () {
         hostname "${NEW_NAME}"
         # restart avahi
         systemctl restart avahi-daemon.service
+    fi
+}
+
+# Depending on NODETYPE, the this function installs 
+# the ssh keys in the respective directories and 
+# changes the permissions accordingly.
+install_sshkeys () {
+    local NODETYPE=$1
+    
+    mkdir -p ${USER_HOME}/.ssh
+    chown ${USER}:${USER} ${USER_HOME}/.ssh
+    chmod 700 ${USER_HOME}/.ssh
+    
+    if [ $NODETYPE = "CAMNODE" ]; then 
+        SSH_KEYFILE=$(echo ${NODETYPE}.pub | tr '[:upper:]' '[:lower:]')
+        cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/authorized_keys
+        chmod 644 ${USER_HOME}/.ssh/authorized_keys
+        chown ${USER}:${USER} ${USER_HOME}/.ssh/authorized_keys
+    fi
+    
+    if [ $NODETYPE = "CENTRALNODE" ]; then 
+        SSH_KEYFILE=$(echo ${NODETYPE} | tr '[:upper:]' '[:lower:]')
+        cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/id_rsa # default, see man ssh -i option
+        chmod 600 ${USER_HOME}/.ssh/id_rsa
+        chown ${USER}:${USER} ${USER_HOME}/.ssh/id_rsa
     fi
 }
 
@@ -64,7 +93,7 @@ install_sys_sw () {
 # we can hard code the repo URL, because this script 
 # is in the same repo: so this script and the repo are strongly connected 
 clone_repo () {
-    # git clone https://github.com/cdeck3r/3DScanner.git
+    git clone ${REPO}
 }
 
 
@@ -75,6 +104,7 @@ clone_repo () {
 # check for NODETYPE file
 if [ -f "${SCRIPT_DIR}"/NODETYPE ]; then
     NODETYPE=$(head -1 "{SCRIPT_DIR}"/NODETYPE)
+    NODETYPE=$(echo ${NODETYPE} | tr '[:lower:]' '[:upper:]')
 fi
 
 # check NODETYPE var
@@ -87,11 +117,16 @@ fi
 # basic config
 set_node_name "${NODETYPE}"
 
+# setup ssh 
+install_sshkeys "${NODETYPE}"
+
 # install system sw
 install_sys_sw
 
 # download autosetup scripts
 clone_repo
+
+
 # run install_*.sh
 # ...
 
