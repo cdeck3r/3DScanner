@@ -31,6 +31,7 @@ Complete flow chart of the setup and installation process:
 
 **Target group: developers**
 
+* [Initial AutoSetup](autosetup.md) 
 * Re-run autosetup
 * Install software manually via ssh
 
