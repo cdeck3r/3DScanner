@@ -1,0 +1,32 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+start
+if (<&file>/boot/booter.done) then (exists)
+  :enable ssh;
+  stop
+else (not exists)
+  :tool check;
+  if (tool check) then (all found)
+    :setup hostname;
+    :setup timezone;
+    :select autosetup_NODETYPE.zip;
+    if (autosetup.zip) then (found)
+      :unzip autosetup.zip;
+      :autosetup.sh;
+    else (not found)
+    endif
+  else (at least one tool missed)      
+     :enable ssh;
+     :log error;
+     end
+  endif
+
+endif
+
+:enable ssh;
+:create <&file>/boot/booter.done;
+stop
+
+@enduml
