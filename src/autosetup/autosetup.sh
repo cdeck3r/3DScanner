@@ -103,7 +103,7 @@ clone_repo () {
 
 # check for NODETYPE file
 if [ -f "${SCRIPT_DIR}"/NODETYPE ]; then
-    NODETYPE=$(head -1 "{SCRIPT_DIR}"/NODETYPE)
+    NODETYPE=$(head -1 "${SCRIPT_DIR}"/NODETYPE)
     NODETYPE=$(echo ${NODETYPE} | tr '[:lower:]' '[:upper:]')
 fi
 
