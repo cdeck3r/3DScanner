@@ -35,9 +35,3 @@ This project utilizes a ssh login using key-based authentication. At the same ti
 
 The scripts to run on a Raspberry Pi during the software installation are part of the repository to enable versioning. The `autosetup.sh` script clones the 3DScanner repo and runs the scripts from `raspi-autosetup` directory according to the NODETYPE configured.
 
-## Start from `booter.sh`
-
-The `booter.sh` script looks for the `autosetup_NODETYPE.zip`. It will prefer the `autosetup_camnode.zip` over the `autosetup_centralnode.zip`, if it exists. Unzip extracts the files into `autosetup` directory. Afterwards it runs the `autosetup.sh`. The following activity diagram depicts the control flow.
-
-![start autosetup from booter.sh](http://www.plantuml.com/plantuml/png/3ST13i9020NGg-W5XaLthhs11sWeGsnZ2nFuH8_lh5xU_J0vgsl5UTk1aG-Yu6zx7zXhgzGGDwYXYLyaNUMp12tFbx2P1bsSc7IN99PrSvzTkU2fgD7mmny0)
-
