@@ -1,0 +1,25 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+start
+:read NODETYPE from 
+<&file>/boot/autosetup/NODETYPE;
+
+:set hostname;
+:install ssh keys;
+:install system software;
+:clone scanner repository;
+
+:install scripts in
+<&folder>/repo/raspi-autosetup|
+
+:install_commons.sh;
+if (NODETYPE) then (CAMNODE)
+ :install_camnode.sh;
+else (CENTRALNODE)
+ :install_centralnode.sh;
+endif
+
+stop
+@enduml
