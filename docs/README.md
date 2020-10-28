@@ -21,7 +21,7 @@ An extended documentation for end-users.
 
 * [Customize image](custom_image.md)
 * [Install image on SD Card](install_raspi.md)
-* [Build node-specific autosetup scripts](autosetup.md)
+* [Build node-specific autosetup scripts](autosetup_scripts.md)
 
 Complete flow chart of the setup and installation process:
 

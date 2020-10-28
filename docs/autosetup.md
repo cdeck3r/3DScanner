@@ -1,43 +1,42 @@
-# Node-specific AutoSetup Scripts for the Raspberry Pi
+# Automatic Node Setup
 
-These instruction describe the the automatic setup scripts of Raspberry Pis for the scanner. There are two main tasks the scripts implement
+The autosetup consists of
 
-1. Securing the login to the Raspberry Pi
-1. Install the scanner software
+1. an initial node setup through the `booter.sh` script run by systemd `booter.service`
+1. a node-specific software setup through `autosetup_NODETYPE.zip`
 
-The automatic setup is an archive `autosetup.zip` containing all data and scripts. The end-user deploys the archive onto the SD card's root directory flashed with the [customized image](custom_image.md).
+## `booter.sh`
 
-## Create AutoSetup Archive
+The script performs a very basic Raspberry Pi setup.
 
-1. Start the process 
-```bash
-src/autosetup/create_autosetup.sh
-```
-It generates the public and private ssh keys for the login on the camnodes. For each nodetype (either CAMNODE or CENTRALNODE) it creates a `autosetup_NODETYPE.zip`.
+* set hostname to `node-<hwaddr>`
+* set timezone to Europe/Berlin
+* enable ssh 
 
-2. Deploy the created `autosetup_NODETYPE.zip` on the SD card's root directory.
+`booter.sh` performs the initial setup only once. The actions depend on the existence of `/boot/booter.done`. The activity diagram depicts the control flow. 
 
-The `autosetup_NODETYPE.zip` contains:
+![booter.sh control flow](http://www.plantuml.com/plantuml/png/3Sqn3i8m34RXlQU02yH3DwOEt803eDInQ4LY8_ktuFXaUdhJjmMg8qTVhgTopoRf_N80dxWHUVsMruaZzmnnDeKe2jiWRiBlrMczFxYgYjEeWPbc75JvkPlDBVXXsKJR5Fu0)
 
-* ssh keys, that is 
-    * `camnode` file in `autosetup_centralnode.zip` or 
-    * `camnode.pub` file in `autosetup_camnode.zip`
-* NODETYPE definition
-* autosetup.sh
+If successfully run, the service creates `booter.done` to indicate the initial run. This will prohibit a repeated run of `booter.sh`.
 
-## Securing the Raspberry Pi
+## autosetup
 
-The Raspberry Pi community provides an [extensive documentation](https://www.raspberrypi.org/documentation/configuration/security.md) on the various ways to secure the Raspberry Pi. 
+The `autosetup.sh` script is part of the node-specific `autosetup.zip` archive. After `booter.sh` unzips the archive it hands over the control to the `autosetup.sh` script which performs the node-specific software setup tasks. These tasks consist of
 
-This project utilizes a ssh login using key-based authentication. At the same time it disables password logins. As a result, the system still provides a shell to run scripts from remote, while having a secured access policy. 
+* (re-)set hostname to either ´camnode-<hwaddr>´ or `centralnode-<hwaddr>`   
+* secure Raspberry Pi by ssh keys
+* install additional system software, e.g. git
+* clone the scanner repository
 
-## Software Install Scripts
+The scripts to run on a Raspberry Pi during the software installation are part of the repository to enable versioning. The `autosetup.sh` script clones the 3DScanner repo and runs the scripts from `raspi-autosetup` directory according to the configured NODETYPE.
 
-The scripts to run on a Raspberry Pi during the software installation are part of the repository to enable versioning. The `autosetup.sh` script clones the 3DScanner repo and runs the scripts from `raspi-autosetup` directory according to the NODETYPE configured.
+The activity diagram depicts the control flow. 
 
-## Start from `booter.sh`
+![autosetup.sh control flow](http://www.plantuml.com/plantuml/png/3Ssn4S8m30NGFbF00bQHZYe56p009sGToM7BEUdhO7nSlV9j0NPaRylrC6bPDRrTTk2C6v7pjxmFxFdAK9TXK4EHqKcgocTrMkyFOJDrwXoOr251B4zEZ53aMV33igdLcVm1)
 
-The `booter.sh` script looks for the `autosetup_NODETYPE.zip`. It will prefer the `autosetup_camnode.zip` over the `autosetup_centralnode.zip`, if it exists. Unzip extracts the files into `autosetup` directory. Afterwards it runs the `autosetup.sh`. The following activity diagram depicts the control flow.
+## Start autosetup from `booter.sh`
+
+The `booter.sh` script looks for the `autosetup_NODETYPE.zip`. It will prefer the `autosetup_camnode.zip` over the `autosetup_centralnode.zip`, if it exists. It extracts the files into `autosetup` directory. Afterwards it runs the `autosetup.sh`. The following activity diagram depicts the control flow.
 
 ![start autosetup from booter.sh](http://www.plantuml.com/plantuml/png/3ST13i9020NGg-W5XaLthhs11sWeGsnZ2nFuH8_lh5xU_J0vgsl5UTk1aG-Yu6zx7zXhgzGGDwYXYLyaNUMp12tFbx2P1bsSc7IN99PrSvzTkU2fgD7mmny0)
 
