@@ -75,7 +75,8 @@ install_sshkeys () {
     fi
     
     if [ $NODETYPE = "CENTRALNODE" ]; then 
-        SSH_KEYFILE=$(echo ${NODETYPE} | tr '[:upper:]' '[:lower:]')
+        # FIXME: do not NODETYPE in SSH_KEYFILE 
+        SSH_KEYFILE=$(echo "CAMNODE" | tr '[:upper:]' '[:lower:]')
         cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/id_rsa # default, see man ssh -i option
         chmod 600 ${USER_HOME}/.ssh/id_rsa
         chown ${USER}:${USER} ${USER_HOME}/.ssh/id_rsa
