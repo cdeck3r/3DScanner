@@ -2,15 +2,21 @@
 skinparam monochrome true
 skinparam componentStyle uml2
 
+legend top left
+== Symbols ==
+<&terminal> Run script in terminal
+<&wrench> Do manually
+end legend
+
 '
 ' customize image
 '
 | <&person>Developer |
 start
-:raspios_download.sh;
-:mount root and boot
+:<&terminal>raspios_download.sh;
+:<&wrench>mount root and boot
 partition at /mnt;
-:raspios_customize.sh;
+:<&terminal>raspios_customize.sh;
 |#AntiqueWhite|  RaspiOS Image |
 :install booter.service;
 :booter.sh|
@@ -21,9 +27,11 @@ stop
 '
 | <&person>Developer |
 start
-:create_autosetup.sh;
-:ssh keys and
-NODETYPE definition|
+:<&terminal>create_autosetup.sh;
+note right
+    generate ssh keys and
+    NODETYPE definition
+end note
 | <&person>User |
 :autosetup.zip|
 stop
@@ -33,9 +41,9 @@ stop
 '
 | <&person>User |
 start
-:flash image 
+:<&wrench>flash image 
 onto SD card;
-:copy autosetup.zip;
+:<&wrench>copy autosetup.zip;
 |  RaspiOS Image |
 :autosetup.zip|
 stop
