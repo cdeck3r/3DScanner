@@ -69,8 +69,8 @@ src/raspios_setup/raspios_customize.sh
 Finally, unmount and remove the filesystem.
 
 ```bash
-$ unmount /mnt/boot
-$ unmount /mnt
+$ umount /mnt/boot
+$ umount /mnt
 $ kpartx -d /dev/loop0
 ```
 
