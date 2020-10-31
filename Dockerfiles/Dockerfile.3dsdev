@@ -34,7 +34,13 @@ RUN apt-get update && apt-get install -y \
         zip \
         unzip \
         kpartx \
+        iputils-ping \
+        sshpass \
     && apt-get clean && rm -rf /var/lib/apt/lists/* 
-
+#
+# Install other tools
+#
+RUN cd /usr/local/bin \
+    && bash <(curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh)
 
 CMD ["/bin/bash"]

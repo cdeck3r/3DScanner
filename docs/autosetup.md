@@ -40,3 +40,17 @@ The `booter.sh` script looks for the `autosetup_NODETYPE.zip`. It will prefer th
 
 ![start autosetup from booter.sh](http://www.plantuml.com/plantuml/png/3ST13i9020NGg-W5XaLthhs11sWeGsnZ2nFuH8_lh5xU_J0vgsl5UTk1aG-Yu6zx7zXhgzGGDwYXYLyaNUMp12tFbx2P1bsSc7IN99PrSvzTkU2fgD7mmny0)
 
+## Unit Testing
+
+We use [bash_unit](https://github.com/pgrange/bash_unit) for unit testing the autosetup. It checks the ssh login and the successful software installation. There are no dedicated tests for `booter.sh`, because autosetup changes booter-specific parts. Run tests by issuing the following command from within the dockerized dev system:
+
+```
+cd src/autosetup/tests
+bash_unit *.sh
+```
+
+There are the different checks available:
+
+* `test_basic_camnode.sh`: ping camnode
+* `test_ssh_into_camnode.sh`: performs various ssh logins using ssh keys
+* `test_autosetup_camnode.sh`: checks various results from autosetup run
