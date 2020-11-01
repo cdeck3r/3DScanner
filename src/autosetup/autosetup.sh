@@ -66,17 +66,16 @@ install_sshkeys () {
     mkdir -p ${USER_HOME}/.ssh
     chown ${USER}:${USER} ${USER_HOME}/.ssh
     chmod 700 ${USER_HOME}/.ssh
-    
-    if [ $NODETYPE = "CAMNODE" ]; then 
-        SSH_KEYFILE=$(echo ${NODETYPE}.pub | tr '[:upper:]' '[:lower:]')
-        cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/authorized_keys
-        chmod 644 ${USER_HOME}/.ssh/authorized_keys
-        chown ${USER}:${USER} ${USER_HOME}/.ssh/authorized_keys
-    fi
+
+    # install public key
+    SSH_KEYFILE=$(echo ${NODETYPE}.pub | tr '[:upper:]' '[:lower:]')
+    cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/authorized_keys
+    chmod 644 ${USER_HOME}/.ssh/authorized_keys
+    chown ${USER}:${USER} ${USER_HOME}/.ssh/authorized_keys
     
     if [ $NODETYPE = "CENTRALNODE" ]; then 
-        # FIXME: do not NODETYPE in SSH_KEYFILE 
-        SSH_KEYFILE=$(echo "CAMNODE" | tr '[:upper:]' '[:lower:]')
+        # install the private (identity) key from the autosetup archive
+        SSH_KEYFILE=$(find "${SCRIPT_DIR}" -type f -name "*.priv")
         cp ${SSH_KEYFILE} ${USER_HOME}/.ssh/id_rsa # default, see man ssh -i option
         chmod 600 ${USER_HOME}/.ssh/id_rsa
         chown ${USER}:${USER} ${USER_HOME}/.ssh/id_rsa

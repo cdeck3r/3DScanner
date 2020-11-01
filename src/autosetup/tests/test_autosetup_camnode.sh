@@ -20,7 +20,7 @@ source ${SCRIPT_DIR}/test.cfg
 AUTOSETUP_DIR=/tmp/autosetup
 AUTOSETUP_ZIP="${SCRIPT_DIR}"/../autosetup_centralnode.zip
 USER=root
-KEYFILE=${AUTOSETUP_DIR}/camnode
+KEYFILE=${AUTOSETUP_DIR}/camnode.priv
 
 #####################################################
 # Fixture

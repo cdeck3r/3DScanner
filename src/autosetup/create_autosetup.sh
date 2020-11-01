@@ -28,7 +28,7 @@ SCRIPT_NAME=$0
 
 # variables
 AUTOSETUP="${SCRIPT_DIR}"/autosetup.sh
-KEYFILE=camnode
+ALLKEYS_ZIP="${SCRIPT_DIR}"/allkeys.zip
 
 #####################################################
 # Include Helper functions
@@ -53,7 +53,11 @@ if [ ! -f "${AUTOSETUP}" ]; then
 fi
 
 # generate ssh keys
-ssh-keygen -q -t rsa -f "${SCRIPT_DIR}"/"${KEYFILE}" -N "" -C "CamNode ssh key"
+for KEYFILE in "camnode" "centralnode"
+do
+    ssh-keygen -q -t rsa -f "${SCRIPT_DIR}"/"${KEYFILE}" -N "" -C "${KEYFILE} ssh key"
+    mv "${SCRIPT_DIR}"/"${KEYFILE}" "${SCRIPT_DIR}"/"${KEYFILE}".priv
+done
 
 # package
 for NODETYPE in "CAMNODE" "CENTRALNODE"
@@ -67,23 +71,35 @@ do
     # NODETYPE
     # keyfile
     
-    if [ "${NODETYPE}" = "CAMNODE" ]; then
-        SSH_KEYFILE=${KEYFILE}.pub
-    fi
-
+    KEYFILE=$(echo ${NODETYPE} | tr '[:upper:]' '[:lower:]')
+    SSH_KEYFILE_PUB=${KEYFILE}.pub
+    SSH_KEYFILE_PRIV=""
+    
     if [ "${NODETYPE}" = "CENTRALNODE" ]; then
-        SSH_KEYFILE=${KEYFILE}
+        SSH_KEYFILE_PRIV=camnode.priv # add camnode's private key for centralnode
     fi
 
     # zip "SSH_KEYFILE" NODETYPE "${AUTOSETUP}"
     AUTOSETUP_ZIP=$(echo autosetup_${NODETYPE}.zip | tr '[:upper:]' '[:lower:]')
     rm -rf "${SCRIPT_DIR}"/"${AUTOSETUP_ZIP}"
     echo "Create $AUTOSETUP_ZIP..."
-    zip -j "${AUTOSETUP_ZIP}" "$SSH_KEYFILE" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}" 
+    zip -j "${AUTOSETUP_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}" 
+done
+
+# package all keys in a separate zip
+rm -rf "${ALLKEYS_ZIP}"
+echo "Create ${AUTOSETUP_ZIP}..."
+for KEYFILE in "camnode" "centralnode"
+do
+    SSH_KEYFILE_PUB=${KEYFILE}.pub
+    SSH_KEYFILE_PRIV=${KEYFILE}.priv
+    zip -j "${ALLKEYS_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}"
 done
 
 # cleanup
 rm -rf "${SCRIPT_DIR}"/NODETYPE
-rm -rf "${SCRIPT_DIR}"/"${KEYFILE}"*
-
+for KEYFILE in "camnode" "centralnode"
+do
+    rm -rf "${SCRIPT_DIR}"/"${KEYFILE}"*
+done
 exit 0
