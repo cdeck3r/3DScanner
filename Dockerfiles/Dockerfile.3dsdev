@@ -41,6 +41,6 @@ RUN apt-get update && apt-get install -y \
 # Install other tools
 #
 RUN cd /usr/local/bin \
-    && bash <(curl -s https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh)
+    && curl -L https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | /bin/bash
 
 CMD ["/bin/bash"]
