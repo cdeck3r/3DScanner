@@ -13,11 +13,13 @@ SCRIPT_DIR="$( pwd -P )"
 # shellcheck disable=SC2034
 SCRIPT_NAME=$0
 
+# include config file
+source ${SCRIPT_DIR}/test.cfg
+
 # variables
 AUTOSETUP_DIR=/tmp/autosetup
 AUTOSETUP_ZIP="${SCRIPT_DIR}"/../autosetup_centralnode.zip
 USER=root
-CAMNODE="camnode-dca632b40802"
 KEYFILE=${AUTOSETUP_DIR}/camnode
 
 #####################################################

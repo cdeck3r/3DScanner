@@ -18,9 +18,11 @@ SCRIPT_DIR="$( pwd -P )"
 # shellcheck disable=SC2034
 SCRIPT_NAME=$0
 
-# variables
-CAMNODE="camnode-dca632b40802"
+# include config file
+source ${SCRIPT_DIR}/test.cfg
 
+# variables
+# none
 
 #####################################################
 # Include Helper functions
