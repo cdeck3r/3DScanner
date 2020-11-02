@@ -27,6 +27,10 @@ Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
+Secure access using ssh
+
+* [sshkey distribution](sshkeys.md)
+
 ## Software Update Process
 
 **Target group: developers**
