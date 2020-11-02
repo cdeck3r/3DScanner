@@ -1,0 +1,43 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+' top to bottom direction 
+
+node "Dev System (3dsdev)" as dev {
+    file "autosetup_camnode.zip" {
+      file "camnode.pub" as canpub
+    } 
+
+    file "autosetup_centralnode.zip" as "acn" {
+      file "camnode.priv" as canpriv
+      file "centralnode.pub" as cenpub
+    }
+
+    file "centralnode.priv" as cenpriv
+}
+
+node "camnode" as can {
+    file "camnode.pub" as canpubkey
+}
+
+node "centralnode" as cen {
+    file "camnode.priv" as canprivkey
+    file "centralnode.pub" as cenpubkey
+}
+
+canpub .. canpubkey
+canpriv .. canprivkey
+cenpub .. cenpubkey
+
+interface "ssh" as censsh
+interface "ssh" as canssh
+interface "ssh" as devssh
+
+
+dev -down- devssh 
+cen -left- censsh
+can -up- canssh 
+devssh ..> censsh : login
+censsh ..> canssh : login
+
+@enduml
