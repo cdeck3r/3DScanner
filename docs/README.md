@@ -22,14 +22,12 @@ An extended documentation for end-users.
 * [Customize image](custom_image.md)
 * [Install image on SD Card](install_raspi.md)
 * [Build node-specific autosetup scripts](autosetup_scripts.md)
+* [sshkey distribution](sshkeys.md)
 
 Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
-Secure access using ssh
-
-* [sshkey distribution](sshkeys.md)
 
 ## Software Update Process
 

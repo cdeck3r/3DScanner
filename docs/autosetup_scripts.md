@@ -19,17 +19,17 @@ It generates the public and private ssh keys for the login on the camnodes. For 
 
 The `autosetup_NODETYPE.zip` contains:
 
-* ssh keys, that is 
-    * `camnode` file in `autosetup_centralnode.zip` or 
-    * `camnode.pub` file in `autosetup_camnode.zip`
+* ssh keys
 * NODETYPE definition file (contains the nodetype as string) 
-* autosetup.sh
+* autosetup.sh - the install starter script
 
 ## Securing the Raspberry Pi
 
 The Raspberry Pi community provides an [extensive documentation](https://www.raspberrypi.org/documentation/configuration/security.md) on the various ways to secure the Raspberry Pi. 
 
 This project utilizes a ssh login using key-based authentication. At the same time it disables password logins. As a result, the system still provides a shell to run scripts from remote, while having a secured access policy. 
+
+Section [*SSHkey Distribution to Secure Access to the Nodes*](sshkeys.md) contains detailed information on ssh key distribution across the nodes. 
 
 ## Software Install Scripts
 
