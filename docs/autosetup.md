@@ -60,4 +60,4 @@ There are the different testcases available:
 
 * `test_basic_[cam|central]node.py`: ping node
 * `test_ssh_[cam|central]node.py`: performs various ssh logins using ssh keys
-* `test_autosetup_[cam|central]node.sh`: checks various results from autosetup run
+* `test_autosetup_[cam|central]node.py`: checks various results from autosetup run
