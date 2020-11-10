@@ -42,15 +42,22 @@ The `booter.sh` script looks for the `autosetup_NODETYPE.zip`. It will prefer th
 
 ## Unit Testing
 
-We use [bash_unit](https://github.com/pgrange/bash_unit) for unit testing the autosetup. It checks the ssh login and the successful software installation. There are no dedicated tests for `booter.sh`, because autosetup changes booter-specific parts. Run tests by issuing the following command from within the dockerized dev system:
+We use [pytest-testinfra](https://github.com/pytest-dev/pytest-testinfra) for unit testing the autosetup. It is the python pendant of [ServerSprec](https://serverspec.org/) for checking server configurations. It tests for ssh logins and the successful software installation. There are no dedicated tests for `booter.sh`, because autosetup changes booter-specific parts. 
+
+Configure tests in `src/autosetup/tests`
+
+1. open `pytest.ini`
+1. set names for camnode and centralnode
+
+Run tests by issuing the following command from within the dockerized dev system:
 
 ```
 cd src/autosetup/tests
-bash_unit *.sh
+pytest
 ```
 
-There are the different checks available:
+There are the different testcases available:
 
-* `test_basic_camnode.sh`: ping camnode
-* `test_ssh_into_camnode.sh`: performs various ssh logins using ssh keys
-* `test_autosetup_camnode.sh`: checks various results from autosetup run
+* `test_basic_[cam|central]node.py`: ping node
+* `test_ssh_[cam|central]node.py`: performs various ssh logins using ssh keys
+* `test_autosetup_[cam|central]node.sh`: checks various results from autosetup run
