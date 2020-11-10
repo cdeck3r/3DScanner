@@ -28,3 +28,11 @@ class TestSSHCentralnode:
         process
         assert process.returncode == 0, "Should not login into centralnode using user/pass"
 
+    # using centralnode as jump server
+    # 3dsdev -ssh-> centralnode -remote_ssh_cmd-> camnode
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_ssh_from_centralnode_into_camnode(self, host, nodetype):    
+        camnode = pytestconfig.getini(nodetype.lower())
+        remote_ssh_cmd = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -t pi@' + camnode + ' hostname'
+        assert host.run(remote_ssh_cmd).succeeded
+
