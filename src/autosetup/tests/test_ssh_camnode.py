@@ -28,3 +28,12 @@ class TestSSHCamnode:
         process
         assert process.returncode == 0, "Should not login into camnode using user/pass"
 
+    # sshkeys need to have specific permissions 
+    def test_sshkeys(self, host):
+        # camnode's public key
+        assert host.file('~/.ssh/authorized_keys').exists
+        assert host.file('~/.ssh/authorized_keys').mode == 0o644
+        assert host.file('~/.ssh/authorized_keys').user == 'pi'
+        assert host.file('~/.ssh/authorized_keys').group == 'pi'
+        assert host.file('~/.ssh').mode == 0o700
+        assert host.file('~/.ssh').user == 'pi'
