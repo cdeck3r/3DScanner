@@ -1,5 +1,5 @@
 #
-# Test infra test
+# Testinfra testcases for basic ssh connects
 #
 # Author: cdeck3r
 #
@@ -12,11 +12,13 @@ class TestSSHCamnode:
 
     def test_ssh_into_camnode_using_keys(self, host):
         assert host.run("hostname").succeeded
-        
+    
+    # login using user/pass shall not work
     @pytest.mark.xfail
-    def test_ssh_into_camnode_using_userpass(self, pytestconfig):
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_ssh_into_camnode_using_userpass(self, pytestconfig, nodetype):
         TEST_DIR = pytestconfig.rootpath
-        host = pytestconfig.getini('camnode')
+        host = pytestconfig.getini(nodetype.lower())
     
         # src: https://janakiev.com/blog/python-shell-commands/
         process = subprocess.run([str(TEST_DIR) + '/' + 'test_ssh_into_node_using_userpass.sh', host],

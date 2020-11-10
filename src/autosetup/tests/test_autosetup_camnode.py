@@ -1,5 +1,5 @@
 #
-# Test infra test
+# Testinfra testcases to validate the autosetup run.
 #
 # Author: cdeck3r
 #
@@ -14,18 +14,19 @@ import pytest
 @pytest.mark.usefixtures("camnode_ssh_config")
 class TestAutosetupCamnode:
 
-    def test_hostname(self, pytestconfig, host):
-        hostname = pytestconfig.getini('camnode')
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_hostname(self, pytestconfig, host, nodetype):
+        hostname = pytestconfig.getini(nodetype.lower())
         assert host.run("hostname").stdout.rstrip() == hostname
         
 
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
 
-
-    def test_autosetup_nodetype(self, host):
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_autosetup_nodetype(self, host, nodetype):
         assert host.file('/boot/autosetup/NODETYPE').exists
-        assert host.file('/boot/autosetup/NODETYPE').contains("CAMNODE")
+        assert host.file('/boot/autosetup/NODETYPE').contains(nodetype.upper())
 
 
     def test_autosetup_repo_exists(self, host): 
