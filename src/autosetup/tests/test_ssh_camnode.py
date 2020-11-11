@@ -29,11 +29,12 @@ class TestSSHCamnode:
         assert process.returncode == 0, "Should not login into camnode using user/pass"
 
     # sshkeys need to have specific permissions 
-    def test_sshkeys(self, host):
+    @pytest.mark.parametrize('userhome', ['/home/pi'])
+    def test_sshkeys(self, host, userhome):
         # camnode's public key
-        assert host.file('~/.ssh/authorized_keys').exists
-        assert host.file('~/.ssh/authorized_keys').mode == 0o644
-        assert host.file('~/.ssh/authorized_keys').user == 'pi'
-        assert host.file('~/.ssh/authorized_keys').group == 'pi'
-        assert host.file('~/.ssh').mode == 0o700
-        assert host.file('~/.ssh').user == 'pi'
+        assert host.file(userhome+'/.ssh/authorized_keys').exists
+        assert host.file(userhome+'/.ssh/authorized_keys').mode == 0o644
+        assert host.file(userhome+'/.ssh/authorized_keys').user == 'pi'
+        assert host.file(userhome+'/.ssh/authorized_keys').group == 'pi'
+        assert host.file(userhome+'/.ssh').mode == 0o700
+        assert host.file(userhome+'/.ssh').user == 'pi'

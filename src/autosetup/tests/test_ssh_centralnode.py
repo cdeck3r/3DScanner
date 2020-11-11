@@ -29,27 +29,29 @@ class TestSSHCentralnode:
         assert process.returncode == 0, "Should not login into centralnode using user/pass"
 
     # sshkeys need to have specific permissions 
-    def test_sshkeys(self, host):
+    @pytest.mark.parametrize('userhome', ['/home/pi'])
+    def test_sshkeys(self, host, userhome):
         # centralnode's public key
-        assert host.file('~/.ssh/authorized_keys').exists
-        assert host.file('~/.ssh/authorized_keys').mode == 0o644
-        assert host.file('~/.ssh/authorized_keys').user == 'pi'
-        assert host.file('~/.ssh/authorized_keys').group == 'pi'
-        assert host.file('~/.ssh').mode == 0o700
-        assert host.file('~/.ssh').user == 'pi'
+        assert host.file(userhome+'/.ssh/authorized_keys').exists
+        assert host.file(userhome+'/.ssh/authorized_keys').mode == 0o644
+        assert host.file(userhome+'/.ssh/authorized_keys').user == 'pi'
+        assert host.file(userhome+'/.ssh/authorized_keys').group == 'pi'
+        assert host.file(userhome+'/.ssh').mode == 0o700
+        assert host.file(userhome+'/.ssh').user == 'pi'
 
     # sshkeys need to have specific permissions 
-    def test_sshkeys_for_camnode(self, host):
+    @pytest.mark.parametrize('userhome', ['/home/pi'])
+    def test_sshkeys_for_camnode(self, host, userhome):
         # private key for camnode
-        assert host.file('~/.ssh/id_rsa').exists
-        assert host.file('~/.ssh/id_rsa').mode == 0o600
-        assert host.file('~/.ssh/id_rsa').user == 'pi'
-        assert host.file('~/.ssh/id_rsa').group == 'pi'
+        assert host.file(userhome+'/.ssh/id_rsa').exists
+        assert host.file(userhome+'/.ssh/id_rsa').mode == 0o600
+        assert host.file(userhome+'/.ssh/id_rsa').user == 'pi'
+        assert host.file(userhome+'/.ssh/id_rsa').group == 'pi'
 
     # using centralnode as jump server
     # 3dsdev -ssh-> centralnode -remote_ssh_cmd-> camnode
     @pytest.mark.parametrize('nodetype', ['camnode'])
-    def test_ssh_from_centralnode_into_camnode(self, host, nodetype):    
+    def test_ssh_from_centralnode_into_camnode(self, pytestconfig, host, nodetype):    
         camnode = pytestconfig.getini(nodetype.lower())
         remote_ssh_cmd = 'ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -t pi@' + camnode + ' hostname'
         assert host.run(remote_ssh_cmd).succeeded

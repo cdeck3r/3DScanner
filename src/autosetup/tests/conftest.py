@@ -52,7 +52,7 @@ directory for the private key. In the same directory it creates a
 ssh config and specifies the hostname in a same-named file.
 
 '''
-def node_ssh_config(request, pytestconfig, autosetup_zip, keyfile_name):
+def node_ssh_config(request, pytestconfig, nodetype, autosetup_zip, keyfile_name):
     # variable definition (by convention)
     TEST_DIR = pytestconfig.rootpath
     AUTOSETUP_DIR = os.path.abspath('/tmp/autosetup')
@@ -72,7 +72,7 @@ def node_ssh_config(request, pytestconfig, autosetup_zip, keyfile_name):
 
     # start of fixture
     assert os.path.exists(AUTOSETUP_ZIP), 'AUTOSETUP_ZIP does not exist'
-    assert can_ping(pytestconfig, 'camnode')
+    assert can_ping(pytestconfig, nodetype.lower())
     
     # prepare (pre-cleanup), unzip keyfile, set permissions
     try:
@@ -98,7 +98,7 @@ def node_ssh_config(request, pytestconfig, autosetup_zip, keyfile_name):
     # store hostname for others, e.g. host fixture
     # alternative: use cache
     # src: https://docs.pytest.org/en/stable/cache.html#cache
-    hostname = pytestconfig.getini('camnode')
+    hostname = pytestconfig.getini(nodetype.lower())
     with open(HOSTNAME, "w") as f:
         f.write(hostname)
 
@@ -112,7 +112,7 @@ def node_ssh_config(request, pytestconfig, autosetup_zip, keyfile_name):
 '''
 @pytest.fixture(scope="class")
 def camnode_ssh_config(request, pytestconfig):
-    node_ssh_config(request, pytestconfig, 'autosetup_centralnode.zip', 'camnode.priv')
+    node_ssh_config(request, pytestconfig, 'CAMNODE', 'autosetup_centralnode.zip', 'camnode.priv')
     yield
 
 
@@ -122,7 +122,7 @@ def camnode_ssh_config(request, pytestconfig):
 @pytest.fixture(scope="class")
 def centralnode_ssh_config(request, pytestconfig):
     # centralnode's private key is intentionally not part of autosetup_* archives
-    node_ssh_config(request, pytestconfig, 'allkeys.zip', 'centralnode.priv')
+    node_ssh_config(request, pytestconfig, 'CENTRALNODE', 'allkeys.zip', 'centralnode.priv')
     yield
 
 

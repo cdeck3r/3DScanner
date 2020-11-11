@@ -28,6 +28,10 @@ class TestAutosetupCamnode:
         assert host.file('/boot/autosetup/NODETYPE').exists
         assert host.file('/boot/autosetup/NODETYPE').contains(nodetype.upper())
 
+    def test_autosetup_git_installed(self, host):
+        pkg = host.package('git')
+        assert pkg.is_installed
+        assert pkg.version.startswith('1:2.20')    
 
     def test_autosetup_repo_exists(self, host): 
         assert host.file('/boot/autosetup/3DScanner/.git').is_directory
@@ -37,8 +41,3 @@ class TestAutosetupCamnode:
         assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_commons.sh').exists
         assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_camnode.sh').exists
         assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_centralnode.sh').exists
-
-    def test_autosetup_git_installed(self, host):
-        pkg = host.package('git')
-        assert pkg.is_installed
-        assert pkg.version.startswith('1:2.20')    
