@@ -11,14 +11,13 @@ import pytest
 # Tests
 #####################################################
 
+
 @pytest.mark.usefixtures("centralnode_ssh_config")
 class TestAutosetupCentralnode:
-
     @pytest.mark.parametrize('nodetype', ['centralnode'])
     def test_hostname(self, pytestconfig, host, nodetype):
         hostname = pytestconfig.getini(nodetype.lower())
         assert host.run("hostname").stdout.rstrip() == hostname
-        
 
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
@@ -31,13 +30,19 @@ class TestAutosetupCentralnode:
     def test_autosetup_git_installed(self, host):
         pkg = host.package('git')
         assert pkg.is_installed
-        assert pkg.version.startswith('1:2.20')    
+        assert pkg.version.startswith('1:2.20')
 
-    def test_autosetup_repo_exists(self, host): 
+    def test_autosetup_repo_exists(self, host):
         assert host.file('/boot/autosetup/3DScanner/.git').is_directory
 
-    def test_autosetup_install_scripts_exists(self, host): 
+    def test_autosetup_install_scripts_exists(self, host):
         assert host.file('/boot/autosetup/3DScanner/raspi-autosetup').is_directory
-        assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_commons.sh').exists
-        assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_camnode.sh').exists
-        assert host.file('/boot/autosetup/3DScanner/raspi-autosetup/install_centralnode.sh').exists
+        assert host.file(
+            '/boot/autosetup/3DScanner/raspi-autosetup/install_commons.sh'
+        ).exists
+        assert host.file(
+            '/boot/autosetup/3DScanner/raspi-autosetup/install_camnode.sh'
+        ).exists
+        assert host.file(
+            '/boot/autosetup/3DScanner/raspi-autosetup/install_centralnode.sh'
+        ).exists
