@@ -44,6 +44,6 @@ RUN apt-get update && apt-get install -y \
 #
 RUN cd /usr/local/bin \
     && curl -L https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | /bin/bash \
-    && pip3 install pytest-testinfra
+    && pip3 install pytest-testinfra black
 
 CMD ["/bin/bash"]
