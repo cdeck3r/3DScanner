@@ -3,7 +3,7 @@ set -e
 
 #
 # Download RasPiOS images
-# 
+#
 # Author: cdeck3r
 #
 
@@ -39,25 +39,29 @@ RASPIOS_IMAGE_URL='https://downloads.raspberrypi.org/raspios_lite_armhf/images/r
 
 # check for installed program
 # Source: https://stackoverflow.com/a/677212
-command -v "wget" >/dev/null 2>&1 || { echo >&2 "I require wget but it's not installed.  Abort."; exit 1; }
+command -v "wget" >/dev/null 2>&1 || {
+    echo >&2 "I require wget but it's not installed.  Abort."
+    exit 1
+}
 
 # ensure RASPIOS_DIR exists
-mkdir -p "${RASPIOS_DIR}" 
+mkdir -p "${RASPIOS_DIR}"
 # save current dir on stack
 pushd "${RASPIOS_DIR}" >/dev/null
-cd "${RASPIOS_DIR}" || { exit 1; } 
+cd "${RASPIOS_DIR}" || { exit 1; }
 
 # check for image
 IMAGE_ZIPFILE=$(basename ${RASPIOS_IMAGE_URL})
-if [ ! -f ${IMAGE_ZIPFILE} ]; then
+if [ ! -f "${IMAGE_ZIPFILE}" ]; then
     # download image & unzip
     wget -nH -nd "${RASPIOS_IMAGE_URL}"
-    unzip -t ${IMAGE_ZIPFILE} 
-    unzip ${IMAGE_ZIPFILE} 
+    unzip -t "${IMAGE_ZIPFILE}"
+    unzip "${IMAGE_ZIPFILE}"
 fi
 
 # try to mount
 IMAGE_FILE=$(basename -- "${IMAGE_ZIPFILE}")
+# shellcheck disable=SC2034
 IMAGE_FILE_EXT="${IMAGE_FILE##*.}"
 IMAGE_FILE="${IMAGE_FILE%.*}"
 IMAGE_FILE="${IMAGE_FILE}".img

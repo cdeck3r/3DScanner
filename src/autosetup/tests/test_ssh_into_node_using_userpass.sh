@@ -1,15 +1,16 @@
 #!/bin/bash
 
 #
-# SSH into node from 3dsdev 
-# 
+# SSH into node from 3dsdev
+#
 # Author: cdeck3r
 #
 
-# Params: none 
+# Params: none
 
 # this directory is the script directory
-SCRIPT_DIR="$( pwd -P )"
+# shellcheck disable=SC2034
+SCRIPT_DIR="$(pwd -P)"
 # shellcheck disable=SC2034
 SCRIPT_NAME=$0
 
@@ -21,7 +22,7 @@ HOSTNAME=$1
 #####################################################
 
 SSH_CMD="sshpass -p raspberry ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -t pi@${HOSTNAME} hostname"
-    
-${SSH_CMD} > /dev/null
+
+${SSH_CMD} >/dev/null
 
 exit $?

@@ -1,10 +1,9 @@
 #!/bin/bash
-set -e
 
 #
 # Script to initialize a node-specific Raspi for the 3DScanner
 # It installs the autosetup.zip and enables the SSH service.
-# 
+#
 # Author: cdeck3r
 #
 
@@ -34,31 +33,32 @@ AUTOSETUP="${AUTOSETUP_DIR}"/autosetup.sh
 # Include Helper functions
 #####################################################
 
-set_timezone () {
+set_timezone() {
     # src: https://raspberrypi.stackexchange.com/questions/87164/setting-timezone-non-interactively
     local MY_TZ=$1
 
     CURR_TZ=$(timedatectl show --property=Timezone --value)
-    if [ $CURR_TZ != $MY_TZ ]; then
+    if [ "${CURR_TZ}" != "${MY_TZ}" ]; then
         timedatectl set-timezone "${MY_TZ}"
     fi
 }
 
-set_node_name () {
+set_node_name() {
     # src: https://github.com/nmcclain/raspberian-firstboot/blob/master/examples/simple_hostname/firstboot.sh
     local NEW_NAME=$1
 
     if [ -e /sys/class/net/eth0 ]; then
+        # shellcheck disable=SC2002
         MAC=$(cat /sys/class/net/eth0/address | tr -d ':')
     else
         MAC="000000000000"
     fi
-    
+
     NEW_NAME=${NEW_NAME}-${MAC}
     CURR_HOSTNAME=$(hostname)
-    
+
     if [ "${CURR_HOSTNAME}" != "${NEW_NAME}" ]; then
-        echo "${NEW_NAME}" > /etc/hostname
+        echo "${NEW_NAME}" >/etc/hostname
         sed -i "s/${CURR_HOSTNAME}/${NEW_NAME}/g" /etc/hosts
         hostname "${NEW_NAME}"
         # restart avahi
@@ -66,20 +66,19 @@ set_node_name () {
     fi
 }
 
-enable_ssh () {
+enable_ssh() {
     systemctl enable ssh
     systemctl start ssh
 }
 
-tool_check () {
+tool_check() {
     # check for required tools in image's filesystem
     TOOLS=('wget' 'unzip' 'md5sum' 'sed' 'tr')
-    for t in "${TOOLS[@]}"
-    do
-        TOOL=$(find / -name $t)
+    for t in "${TOOLS[@]}"; do
+        TOOL=$(find / -name "$t")
         if [ -z "$TOOL" ]; then
             echo "Tool not found: $t"
-            # make sure ssh runs 
+            # make sure ssh runs
             enable_ssh
             exit 1
         fi
@@ -94,7 +93,7 @@ tool_check () {
 if [ -f "${DONE}" ]; then
     # nothing to do
     echo "booter.done found. Will do nothing."
-    # make sure ssh runs 
+    # make sure ssh runs
     enable_ssh
     exit 0
 fi
@@ -127,11 +126,12 @@ if [ ! -z "${AUTOSETUP_ZIP+x}" ]; then # var is set
         echo "File not found: ${AUTOSETUP}"
     fi
 else # var is unset
-    #nothing to do    
+    #nothing to do
     echo "autosetup.zip not found. Nothing to do."
 fi
 
-# make sure ssh runs 
+# make sure ssh runs
 enable_ssh
 
+# always return successfully
 exit 0
