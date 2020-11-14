@@ -4,8 +4,9 @@
 # Author: cdeck3r
 #
 
-import pytest
 import subprocess
+
+import pytest
 
 
 @pytest.mark.usefixtures("centralnode_ssh_config")

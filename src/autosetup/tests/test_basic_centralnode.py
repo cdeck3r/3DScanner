@@ -7,8 +7,9 @@
 # Author: cdeck3r
 #
 
-import pytest
 import subprocess
+
+import pytest
 
 
 class TestBasicCentralnode:

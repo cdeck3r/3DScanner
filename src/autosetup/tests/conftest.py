@@ -5,13 +5,14 @@
 #
 
 
-from zipfile import ZipFile
 import os
-import sys
 import shutil
 import subprocess
-import testinfra
+import sys
+from zipfile import ZipFile
+
 import pytest
+import testinfra
 
 ''' Make new ini parameter visible 
 '''
