@@ -33,7 +33,10 @@ Complete flow chart of the setup and installation process:
 
 **Target group: developers**
 
-* [Initial node setup](autosetup.md) 
-* Re-run autosetup
+* [Initial node setup](autosetup.md) including unit testing
+* [Re-run autosetup](autosetup_rerun.md)
 * Install software manually via ssh
 
+## Software Development
+
+* [Code quality](codequality.md)

@@ -5,6 +5,7 @@
 ### project-specific files ###
 .env
 raspios
+.doit.db.db
 
 ### Java ###
 # Compiled class file
