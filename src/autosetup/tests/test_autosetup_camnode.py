@@ -45,3 +45,27 @@ class TestAutosetupCamnode:
         assert host.file(
             '/boot/autosetup/3DScanner/raspi-autosetup/install_centralnode.sh'
         ).exists
+
+    def test_autosetup_python_installed(self, host):
+        pkg = host.package('python3')
+        assert pkg.is_installed
+        assert pkg.version.startswith('3.7')
+
+    def test_autosetup_pip3_installed(self, host):
+        pkg = host.package('python3-pip')
+        assert pkg.is_installed
+
+    def test_autosetup_raspistill_installed(self, host):
+        exec_file = '/usr/bin/raspistill'
+        if host.file(exec_file).is_symlink:
+            exec_file = host.file('/usr/bin/raspistill').linked_to
+        assert host.file(exec_file).exists
+        assert host.file(exec_file).mode == 0o755
+
+    def test_autosetup_mosquittoclients_installed(self, host):
+        pkg = host.package('mosquittoclients')
+        assert pkg.is_installed
+
+    def test_autosetup_homie4_installed(self, host):
+        assert host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
+        

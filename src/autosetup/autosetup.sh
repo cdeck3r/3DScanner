@@ -128,7 +128,7 @@ clone_repo
 
 # run install_*.sh
 # Note: set -e is given at script start --> if there is an error,
-# the script stops and returns to caller
+# the script stops and returns to the caller
 find "${INSTALL_SCRIPT_DIR}" -type f -name "*.sh" -print0 | xargs -0 chmod 700
 
 "${INSTALL_SCRIPT_DIR}/install_commons.sh"
