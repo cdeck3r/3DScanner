@@ -29,6 +29,7 @@ SCRIPT_NAME=$0
 # variables
 AUTOSETUP="${SCRIPT_DIR}"/autosetup.sh
 ALLKEYS_ZIP="${SCRIPT_DIR}"/allkeys.zip
+FORCE=$1
 
 #####################################################
 # Include Helper functions
@@ -39,6 +40,14 @@ ALLKEYS_ZIP="${SCRIPT_DIR}"/allkeys.zip
 #####################################################
 # Main program
 #####################################################
+
+# safety check
+# do not delete / overwrite existing .zip files accidentially
+if [ -f "${SCRIPT_DIR}/allkeys.zip" ] && [ "${FORCE}" != "-f" ]; then
+    echo ".zip files found. Will not continue."
+    echo "Use: ${SCRIPT_NAME} -f"
+    exit 1
+fi
 
 # check for installed program
 # Source: https://stackoverflow.com/a/677212
