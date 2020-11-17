@@ -27,7 +27,7 @@ docker exec -it 3dsdev /bin/bash
 Download the default RaspiOS image. Please use the download script for reproducibility.
 
 ```bash
-$ src/raspisetup/raspios_download.sh
+$ src/raspios_setup/raspios_download.sh
 ```
 
 The script downloads `2020-08-20-raspios-buster-armhf-lite.zip` und unzips it in the `raspios` directory in the project root. Change into this directory and create device maps from the the image's partition tables. 
