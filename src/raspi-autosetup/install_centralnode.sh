@@ -26,7 +26,7 @@ apt-get install -y \
 apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 # homie convention https://github.com/mjcumming/homie4
-pip3 install Homie4
+pip3 install --force-reinstall 'Homie4==0.3.4' 'paho-mqtt==1.5.0'
 
 # start up the broker service
 systemctl enable mosquitto.service

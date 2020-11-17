@@ -63,7 +63,7 @@ class TestAutosetupCamnode:
         assert host.file(exec_file).mode == 0o755
 
     def test_autosetup_mosquittoclients_installed(self, host):
-        pkg = host.package('mosquittoclients')
+        pkg = host.package('mosquitto-clients')
         assert pkg.is_installed
 
     def test_autosetup_homie4_installed(self, host):
