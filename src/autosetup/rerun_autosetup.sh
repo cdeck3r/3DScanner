@@ -58,6 +58,22 @@ rm_booter_done() {
     ${ssh_rm_booter_done}
 }
 
+deploy_autosetup_zip() {
+    local node=$1
+    local keyfile=$2
+    local ssh_login
+
+    ssh_login=$(ssh_cmd "${keyfile}")
+
+    # validate: X in autosetup_Xnode.zip -> X == nodetype?
+    # cp autosetup_Xnode.zip /boot
+
+    ## SHOW STOPPER ##
+    # autosetup_Xnode.zip contains new keyfile (therfore, allkeys.zip as well)
+    # deployment must use old keyfile to succeed
+
+}
+
 can_ping() {
     local node=$1
     ping -c 3 "${node}" || {
