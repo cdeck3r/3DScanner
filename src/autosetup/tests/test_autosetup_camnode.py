@@ -35,15 +35,15 @@ class TestAutosetupCamnode:
         assert host.file('/boot/autosetup/3DScanner/.git').is_directory
 
     def test_autosetup_install_scripts_exists(self, host):
-        assert host.file('/boot/autosetup/3DScanner/raspi-autosetup').is_directory
+        assert host.file('/boot/autosetup/3DScanner/src/raspi-autosetup').is_directory
         assert host.file(
-            '/boot/autosetup/3DScanner/raspi-autosetup/install_commons.sh'
+            '/boot/autosetup/3DScanner/src/raspi-autosetup/install_commons.sh'
         ).exists
         assert host.file(
-            '/boot/autosetup/3DScanner/raspi-autosetup/install_camnode.sh'
+            '/boot/autosetup/3DScanner/src/raspi-autosetup/install_camnode.sh'
         ).exists
         assert host.file(
-            '/boot/autosetup/3DScanner/raspi-autosetup/install_centralnode.sh'
+            '/boot/autosetup/3DScanner/src/raspi-autosetup/install_centralnode.sh'
         ).exists
 
     def test_autosetup_python_installed(self, host):

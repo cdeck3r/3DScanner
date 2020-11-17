@@ -26,7 +26,7 @@ NODETYPE="node" # default
 REPO="https://github.com/cdeck3r/3DScanner.git"
 USER=pi
 USER_HOME="/home/${USER}"
-INSTALL_SCRIPT_DIR="${SCRIPT_DIR}/3DScanner/raspi-autosetup"
+INSTALL_SCRIPT_DIR="${SCRIPT_DIR}/3DScanner/src/raspi-autosetup"
 
 #####################################################
 # Include Helper functions
@@ -131,12 +131,15 @@ clone_repo
 # the script stops and returns to the caller
 find "${INSTALL_SCRIPT_DIR}" -type f -name "*.sh" -print0 | xargs -0 chmod 700
 
-"${INSTALL_SCRIPT_DIR}/install_commons.sh"
+cmd="${INSTALL_SCRIPT_DIR}/install_commons.sh"
+${cmd}
 
 if [ ${NODETYPE} = "CAMNODE" ]; then
-    "${INSTALL_SCRIPT_DIR}/install_camnode.sh"
+    cmd="${INSTALL_SCRIPT_DIR}/install_camnode.sh"
+    ${cmd}
 elif [ ${NODETYPE} = "CENTRALNODE" ]; then
-    "${INSTALL_SCRIPT_DIR}/install_centralnode.sh"
+    cmd="${INSTALL_SCRIPT_DIR}/install_centralnode.sh"
+    ${cmd}
 else
     echo "Unknown nodetype: ${NODETYPE}. Nothing to do."
 fi
