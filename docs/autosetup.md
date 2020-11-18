@@ -61,3 +61,4 @@ There are the different testcases available:
 * `test_basic_[cam|central]node.py`: ping node
 * `test_ssh_[cam|central]node.py`: performs various ssh logins using ssh keys
 * `test_autosetup_[cam|central]node.py`: checks various results from the autosetup run
+* `test_mqtt_camnode.py`: runs mqtt commands on camnode connecting to the broker on centralnode
