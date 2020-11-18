@@ -22,6 +22,16 @@ docker exec -it 3dsdev /bin/bash
 
 **Note:** In the priviledge mode, the container has root access to the host system. Unset the variable once you have created the image.
 
+## Quickstart
+
+The following script mounts the given RaspiOS image on `/mnt`. It installs the `booter.sh` script and creates the service in the RaspiOS filesystem. Finally, it unmounts the image. 
+
+```bash
+src/raspios_setup/raspios_customize.sh <path/to/raspios.img>
+```
+
+If you do not provide the image as parameter, the `raspios_customize.sh` expects the RaspiOS image already mounted on `/mnt`. We describe the step-by-step instructions in the following sections.
+
 ## Default RaspiOS
 
 Download the default RaspiOS image. Please use the download script for reproducibility.

@@ -25,17 +25,37 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
+IMAGE=$1
 RASPIOS_MNT="/mnt"
 
 #####################################################
 # Include Helper functions
 #####################################################
 
-# ...
+mount_image() {
+    local img=$1
+    local devname
+
+    kpartx -v -a "${img}" || {
+        echo "Could not mount image: $img"
+        exit 1
+    }
+    devname=$(find /dev/mapper/ -name "loop*" | sort | tail -1 | cut -d'/' -f4 | cut -c-5)
+    mount /dev/mapper/"${devname}"p2 "${RASPIOS_MNT}"
+    mount /dev/mapper/"${devname}"p1 "${RASPIOS_MNT}"/boot
+}
 
 #####################################################
 # Main program
 #####################################################
+
+if [ -f "${IMAGE}" ]; then
+    [ "$(ls -A ${RASPIOS_MNT})" ] && {
+        echo "Mount directory not empty: ${RASPIOS_MNT}"
+        exit 1
+    }
+    mount_image "${IMAGE}"
+fi
 
 # check for kernel image
 KERNEL="${RASPIOS_MNT}"/boot/kernel.img
@@ -74,6 +94,11 @@ for r in "${RESS[@]}"; do
     fi
 done
 
+# disable already installed apt services
+# because they interfere with autosetup.sh activities
+rm -rf "${RASPIOS_MNT}"/etc/systemd/system/timers.target.wants/apt-daily.timer
+rm -rf "${RASPIOS_MNT}"/etc/systemd/system/timers.target.wants/apt-daily-upgrade.timer
+
 # install booter script and service
 #echo "INFO: script not implemented yet"
 #exit 0
@@ -91,7 +116,7 @@ cd "${RASPIOS_MNT}"/etc/systemd/system/multi-user.target.wants || {
     echo "Error installing booter.service"
     exit 2
 }
-ln -s /lib/systemd/system/booter.service . || {
+ln -sf /lib/systemd/system/booter.service . || {
     echo "Could not link to booter.service"
     echo "Error installing booter.service"
     exit 2
@@ -99,3 +124,12 @@ ln -s /lib/systemd/system/booter.service . || {
 
 # change back to script dir
 cd "${SCRIPT_DIR}"
+
+# cleanup: umount and remove partition dev mappings
+if [ -f "${IMAGE}" ]; then
+    # DEVNAME, e.g. loop0
+    DEVNAME=$(mount | grep "${RASPIOS_MNT}" | head -1 | cut -d'/' -f4 | cut -c-5)
+    umount "${RASPIOS_MNT}"/boot
+    umount "${RASPIOS_MNT}"
+    kpartx -d /dev/"${DEVNAME}"
+fi
