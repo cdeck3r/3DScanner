@@ -58,11 +58,21 @@ class TestAutosetupCentralnode:
     def test_autosetup_mosquitto_installed(self, host):
         pkg = host.package('mosquitto')
         assert pkg.is_installed
-        
+
+    def test_autosetup_mosquitto_broker(self, host):
+        assert host.service('mosquitto').is_enabled
+        assert host.service('mosquitto').is_running
+
     def test_autosetup_mosquittoclients_installed(self, host):
         pkg = host.package('mosquitto-clients')
         assert pkg.is_installed
 
+    def test_autosetup_nginx(self, host):
+        assert host.package('nginx').is_installed
+        assert host.service('nginx').is_enabled
+        assert host.service('nginx').is_running
+
     def test_autosetup_homie4_installed(self, host):
-        assert host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
-        
+        assert (
+            host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
+        )

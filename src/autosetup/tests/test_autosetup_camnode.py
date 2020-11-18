@@ -67,5 +67,6 @@ class TestAutosetupCamnode:
         assert pkg.is_installed
 
     def test_autosetup_homie4_installed(self, host):
-        assert host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
-        
+        assert (
+            host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
+        )
