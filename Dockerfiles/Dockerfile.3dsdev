@@ -39,13 +39,15 @@ RUN apt-get update && apt-get install -y \
         python3 \
         python3-pip \
         shellcheck \
+        mosquitto-clients \
     && apt-get clean && rm -rf /var/lib/apt/lists/* 
 #
 # Install other tools
 #
 RUN cd /usr/local/bin \
     && curl -L https://raw.githubusercontent.com/pgrange/bash_unit/master/install.sh | /bin/bash \
-    && pip3 install pytest-testinfra black isort doit
+    && pip3 install pytest-testinfra black isort doit \
+    && pip3 install --force-reinstall 'Homie4==0.3.4' 'paho-mqtt==1.5.0'
 
 # shfmt version 3.2.0 binary release for linux amd64
 RUN cd /usr/local/bin \
