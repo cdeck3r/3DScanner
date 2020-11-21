@@ -179,9 +179,9 @@ NODETYPE=$(echo "${NODE}" | cut -d'-' -f1 | tr '[:lower:]' '[:upper:]')
 keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 
 # simple hostname test
-test_hostname "${NODE}" "${keyfile}"
+#test_hostname "${NODE}" "${keyfile}"
 
-#rm_booter_done "${NODE}" "${keyfile}"
-#shutdown_reboot "${NODE}" "${keyfile}"
+rm_booter_done "${NODE}" "${keyfile}"
+shutdown_reboot "${NODE}" "${keyfile}"
 
 cleanup

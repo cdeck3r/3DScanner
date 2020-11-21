@@ -14,13 +14,14 @@ from zipfile import ZipFile
 import pytest
 import testinfra
 
-''' Make new ini parameter visible 
+''' Make new ini and command line parameter visible 
 '''
 
 
 def pytest_addoption(parser):
     parser.addini('camnode', 'camnode hostname for testing')
     parser.addini('centralnode', 'centralnode hostname for testing')
+    parser.addoption('--force', action='store_true')
 
 
 ''' Pings a given nodetype
