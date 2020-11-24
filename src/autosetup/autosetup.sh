@@ -83,6 +83,36 @@ install_sshkeys() {
     fi
 }
 
+# Edits /etc/ssh/sshd_config adding the following entries
+# ChallengeResponseAuthentication no
+# PasswordAuthentication no
+# UsePAM no
+#
+# Source: https://www.raspberrypi.org/documentation/configuration/security.md
+deactivate_user_login() {
+    local SSHD_CONFIG
+    local TEMPFILE
+
+    SSHD_CONFIG=/etc/ssh/sshd_config
+    TEMPFILE=$(mktemp)
+
+    # remove the line, directly modify the file
+    sed --in-place '/^ChallengeResponseAuthentication/d' "${SSHD_CONFIG}"
+    sed --in-place '/^PasswordAuthentication/d' "${SSHD_CONFIG}"
+    sed --in-place '/^UsePAM/d' "${SSHD_CONFIG}"
+
+    {
+        echo "ChallengeResponseAuthentication no"
+        echo "PasswordAuthentication no"
+        echo "UsePAM no"
+    } >>"${SSHD_CONFIG}"
+
+    # This method ensures we don't repeatly add the same lines
+    uniq "${SSHD_CONFIG}" >"${TEMPFILE}"
+    cat "${TEMPFILE}" >"${SSHD_CONFIG}"
+    rm -rf "${TEMPFILE}"
+}
+
 # install system software
 install_sys_sw() {
     # src: https://github.com/nmcclain/raspberian-firstboot/blob/master/examples/apt_packages/firstboot.sh
@@ -119,6 +149,8 @@ set_node_name "${NODETYPE}"
 
 # setup ssh
 install_sshkeys "${NODETYPE}"
+#deactivate_user_login
+#systemctl reload ssh
 
 # install system sw
 install_sys_sw
