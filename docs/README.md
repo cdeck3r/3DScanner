@@ -37,6 +37,11 @@ Complete flow chart of the setup and installation process:
 * [Re-run autosetup](autosetup_rerun.md)
 * Install software manually via ssh
 
+## Device Description
+
+* [Homie device description](homie_devices.md)
+* [Announcing homie device](homie_devices_announcing.md)
+
 ## Software Development
 
 * [Code quality](codequality.md)

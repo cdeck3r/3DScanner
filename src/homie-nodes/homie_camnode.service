@@ -1,0 +1,10 @@
+[Unit]
+Description=Camnode Test Server
+
+[Service]
+ExecStart=mktemp
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target
