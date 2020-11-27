@@ -68,7 +68,9 @@ def node_ssh_config(request, pytestconfig, nodetype, autosetup_zip, keyfile_name
     # variable definition (by convention)
     TEST_DIR = pytestconfig.rootpath
     AUTOSETUP_DIR = os.path.abspath('/tmp/autosetup')
-    AUTOSETUP_ZIP = os.path.abspath(os.path.join(TEST_DIR, '..', '..', 'autosetup', autosetup_zip))
+    AUTOSETUP_ZIP = os.path.abspath(
+        os.path.join(TEST_DIR, '..', '..', 'autosetup', autosetup_zip)
+    )
     USER = 'root'
     KEYFILE = os.path.abspath(os.path.join(AUTOSETUP_DIR, keyfile_name))
     SSH_CONFIG = os.path.abspath(os.path.join(AUTOSETUP_DIR, 'ssh_config'))

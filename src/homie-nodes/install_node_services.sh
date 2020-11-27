@@ -1,7 +1,6 @@
 #!/bin/bash
 set -e
 
-
 #
 # Install the nodes as homie devices
 #
@@ -24,7 +23,7 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
-NODETYPE=$1 
+NODETYPE=$1
 USER=pi
 USER_HOME="/home/${USER}"
 SERVICE_UNIT_DIR="${USER_HOME}/.config/systemd/user"
@@ -41,12 +40,12 @@ usage() {
 # verfies the script runs as ${USER}
 check_user() {
     local CURR_USER
-    
+
     CURR_USER=$(id --user --name)
     if [ "${CURR_USER}" != "${USER}" ]; then
         return 1
     fi
-    
+
     return 0
 }
 
@@ -54,24 +53,25 @@ check_user() {
 derive_nodetype() {
     if [ -f "/boot/autosetup/NODETYPE" ]; then
         NODETYPE=$(head -1 "/boot/autosetup/NODETYPE")
-    else 
+    else
         NODETYPE=$(hostname | cut -d'-' -f1)
     fi
-    
+
     NODETYPE=$(echo "${NODETYPE}" | tr '[:lower:]' '[:upper:]')
     echo "${NODETYPE}"
-fi
-    
 }
 
 #####################################################
 # Main program
 #####################################################
 
-check_user || { echo "User mismatch. Script must run as user: ${USER}"; exit 1; }
+check_user || {
+    echo "User mismatch. Script must run as user: ${USER}"
+    exit 1
+}
 
 # if nodetype not empty: leave it as it is
-if [ -z ${NODETYPE} ]; then
+if [ -z "${NODETYPE}" ]; then
     NODETYPE=$(derive_nodetype)
 fi
 
@@ -86,13 +86,12 @@ else
     exit 2
 fi
 
-
 # install SERVICE_UNIT_FILE
 mkdir -p "${SERVICE_UNIT_DIR}"
 # test
-FOUND_SERVICE=$(systemctl --user --no-pager --no-legend list-unit-files | grep "${SERVICE_UNIT_FILE}" | wc -l)
+FOUND_SERVICE=$(systemctl --user --no-pager --no-legend list-unit-files | grep -c "${SERVICE_UNIT_FILE}")
 echo "Found instances of ${SERVICE_UNIT_FILE} running: ${FOUND_SERVICE}"
-# stop / remove 
+# stop / remove
 systemctl --user --no-pager --no-legend stop "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend disable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
 # (re)place the new service
