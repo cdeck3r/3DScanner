@@ -7,7 +7,7 @@
 import pytest
 
 
-class TestHomieCamnode:
+class TestHomieMQTT:
     @pytest.mark.skip(reason='not yet implemented')
     @pytest.mark.parametrize('broker', ['centralnode'])
     def test_homie_mqtt(self, pytestconfig, broker):
