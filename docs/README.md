@@ -40,7 +40,7 @@ Complete flow chart of the setup and installation process:
 ## Device Description
 
 * [Homie device description](homie_devices.md)
-* [Announcing homie device](homie_devices_announcing.md)
+* [Homie device service](homie_device_service.md)
 
 ## Software Development
 

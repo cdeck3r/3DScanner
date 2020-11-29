@@ -1,6 +1,6 @@
-# Announcing Nodes
+# Homie Device Service
 
-The scanner's [homie devices](homie_devices.md) announce themselves using `systemd` user service. It starts the python script which publishes the homie device descriptions to the centralnode's mqtt broker.
+The scanner's [homie devices](homie_devices.md) run as `systemd` user service. It starts the python script which publishes the homie device descriptions to the centralnode's mqtt broker.
 
 ## Installation
 
