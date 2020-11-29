@@ -34,7 +34,7 @@ class TestHomieServiceCamnode:
         service_enabled = (
             'systemctl --user --no-pager --no-legend is-enabled ' + servicefile
         )
-        # assert host.run(service_enabled).stdout.rstrip() == 'enabled'
+        assert host.run(service_enabled).stdout.rstrip() == 'enabled'
         service_state = (
             'systemctl --user --no-pager --no-legend is-active ' + servicefile
         )
