@@ -6,6 +6,7 @@
 .env
 raspios
 .doit.db.db
+hodd/hodd*
 
 ### Java ###
 # Compiled class file
