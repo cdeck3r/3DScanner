@@ -60,6 +60,19 @@ class TestAutosetupCentralnode:
         assert pkg.is_installed
 
     def test_autosetup_mosquitto_broker(self, host):
+        # test centralnode specific config file
+        assert host.file('/etc/mosquitto/conf.d/centralnode_mosquitto.conf').exists
+        assert (
+            host.file('/etc/mosquitto/conf.d/centralnode_mosquitto.conf').mode == 0o644
+        )
+        assert (
+            host.file('/etc/mosquitto/conf.d/centralnode_mosquitto.conf').user == 'root'
+        )
+        assert (
+            host.file('/etc/mosquitto/conf.d/centralnode_mosquitto.conf').group
+            == 'root'
+        )
+        # test service itself
         assert host.service('mosquitto').is_enabled
         assert host.service('mosquitto').is_running
 
