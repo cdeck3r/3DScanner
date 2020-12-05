@@ -27,7 +27,6 @@ class Node_Camera(Node_Base):
         )
         self.add_property(self.button)
 
- 
     def __str__(self):
         return str(self.__class__.__name__)
 

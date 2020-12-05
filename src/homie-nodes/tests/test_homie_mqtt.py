@@ -21,16 +21,22 @@ class TestHomieMQTT:
         return process.stdout.rstrip()
 
         
-    #@pytest.mark.skip(reason='not yet implemented')
     def test_homie_camnode_version(self, pytestconfig):
         camnode = pytestconfig.getini('camnode')
         msg = self.mqtt_sub(pytestconfig, 'scanner/'+camnode+'/$homie')
         assert msg == '4.0.0'
-        
-    def test_homie_camnode_name(self, pytestconfig):
+    
+    @pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')    
+    def test_homie_camnode_attributes(self, pytestconfig):
         camnode = pytestconfig.getini('camnode')
         msg = self.mqtt_sub(pytestconfig, 'scanner/'+camnode+'/$name')
         assert msg == camnode
+        msg = self.mqtt_sub(pytestconfig, 'scanner/'+camnode+'/$implementation')
+        assert msg.startswith('Raspberry Pi')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/'+camnode+'/$fw/name')
+        assert msg.startswith('Raspbian')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/'+camnode+'/$fw/version')
+        assert len(msg) > 0
     
     def test_homie_camnode_camera(self, pytestconfig):
         camnode = pytestconfig.getini('camnode')

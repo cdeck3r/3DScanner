@@ -3,8 +3,8 @@ import os
 import platform
 import re
 import subprocess
-import time
 import sys
+import time
 
 from device_camnode import Device_Camnode
 
@@ -87,7 +87,9 @@ def get_ip_from_ping(hostname):
             lines = stdout.split('\n')
             headline = lines[0]
             if hostname not in headline:
-                raise ValueError('hostname {} not contained in ping header'.format(hostname))
+                raise ValueError(
+                    'hostname {} not contained in ping header'.format(hostname)
+                )
 
             # source: https://stackoverflow.com/a/2890905
             ip = re.findall(r'[0-9]+(?:\.[0-9]+){3}', headline)
@@ -95,8 +97,10 @@ def get_ip_from_ping(hostname):
         except ValueError as ve:
             print(ve)
 
+
 def config_homie_settings():
     pass
+
 
 def start_homie_camnode():
     """Starts the main loop to announce the camnode as homie device"""
@@ -111,16 +115,17 @@ def start_homie_camnode():
     # if we get the broker's IP using the default method gethostbyname,
     # we will proceed with the name, otherwise, we ping the broker to receive its ip
     #
-    # Reason: the Homie4 lib's get_local_ip() function 
-    # needs resolve the broker's IP in order to connect to the broker 
+    # Reason: the Homie4 lib's get_local_ip() function
+    # needs resolve the broker's IP in order to connect to the broker
     # https://github.com/mjcumming/Homie4/blob/fa035402e9a67b754b7ad08262b78d3801bf9157/homie/support/network_information.py#L45
-    
-    
+
     # we need the broker's IP address for the Homie4 lib to work properly
     broker_ip = get_ip_from_ping(mqtt_settings['MQTT_BROKER'])
-    assert broker_ip, 'Could not retrieve IP for broker {}'.format(mqtt_settings['MQTT_BROKER'])
+    assert broker_ip, 'Could not retrieve IP for broker {}'.format(
+        mqtt_settings['MQTT_BROKER']
+    )
     mqtt_settings['MQTT_BROKER'] = broker_ip
-    logging.info('Broker IP address is {}'.format(broker_ip))    
+    logging.info('Broker IP address is {}'.format(broker_ip))
 
     try:
         dev = Device_Camnode(

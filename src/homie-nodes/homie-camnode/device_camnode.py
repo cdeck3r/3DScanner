@@ -6,6 +6,7 @@ from node_software import Node_Software
 
 logger = logging.getLogger(__name__)
 
+
 class Device_Camnode(Device_Base):
     """scanner/camnode-hwaddr/..."""
 
