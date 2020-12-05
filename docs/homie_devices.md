@@ -8,10 +8,50 @@ The following devices describe themselves using homie.
 
 * camnode
 * centralnode
-* scanner
+* scanner apparatus
 
-The scanner device describes the entire technical structure as seen by an external observer. It  aggregates all other device descriptions and creates a new device from them with the camnode and centralnode devices as nodes.
+The scanner apparatus describes the entire technical structure as seen by an external observer. It  aggregates all other device descriptions and creates a new device from them with the camnode and centralnode devices as nodes.
 
-## Approach
+The base topic for all devices is `scanner`.
 
-What do we model...
+## Device Attributes
+
+Each device has the following attributes.
+
+Base topic: `scanner/`
+
+| Device           | Attribute       | Sub-Attribute | Notes                       |
+|------------------|-----------------|---------------|-----------------------------|
+| camnode-<hwaddr> | $name           |               | displays camnode-<hwaddr>   |
+|                  | $implementation |               | ex. Raspberry Pi, or x86_64 |
+|                  | $fw             | name          | Linux distro name           |
+|                  | $fw             | version       | kernel version              |
+
+
+## camnode
+
+Complementary to the device attributes, a camnode device has the following relevant nodes and properties.
+
+Base topic: `scanner/` 
+
+| Device           | Node       | Property       | Notes                                          |
+|------------------|------------|----------------|------------------------------------------------|
+| camnode-<hwaddr> | camera     | shutter-button | hit the button to take a picture               |
+|                  | software   | repo-revision  | SHA revision of the repository's master branch |
+|                  |            | local-revision | SHA revision of the local's repo master branch |
+|                  | last-image | name           |                                                |
+|                  |            | datetime       |                                                |
+|                  |            | file           | camnode published images as binary file        |
+
+
+## Centralnode
+
+Complementary to the device attributes, a camnode device has the following relevant nodes and properties.
+
+Base topic: `scanner/` 
+
+...tbd...
+
+## Scanner apparatus
+
+...tbd...
