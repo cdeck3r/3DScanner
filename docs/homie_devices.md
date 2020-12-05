@@ -16,13 +16,13 @@ The base topic for all devices is `scanner`.
 
 ## Device Attributes
 
-Each device has the following attributes.
+Each device (camnode, centralnode) has the following attributes.
 
 Base topic: `scanner/`
 
 | Device           | Attribute       | Sub-Attribute | Notes                       |
 |------------------|-----------------|---------------|-----------------------------|
-| camnode-<hwaddr> | $name           |               | displays camnode-<hwaddr>   |
+| ...node-`<hwaddr>` | $name           |               | displays camnode-`<hwaddr>`   |
 |                  | $implementation |               | ex. Raspberry Pi, or x86_64 |
 |                  | $fw             | name          | Linux distro name           |
 |                  | $fw             | version       | kernel version              |
@@ -36,7 +36,7 @@ Base topic: `scanner/`
 
 | Device           | Node       | Property       | Notes                                          |
 |------------------|------------|----------------|------------------------------------------------|
-| camnode-<hwaddr> | camera     | shutter-button | hit the button to take a picture               |
+| camnode-`<hwaddr>` | camera     | shutter-button | hit the button to take a picture               |
 |                  | software   | repo-revision  | SHA revision of the repository's master branch |
 |                  |            | local-revision | SHA revision of the local's repo master branch |
 |                  | last-image | name           |                                                |
