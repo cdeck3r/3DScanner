@@ -1,0 +1,38 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+rnote over install_camnode.sh #aqua
+  run as ""root"" user
+endrnote
+
+install_camnode.sh -> install_camnode.sh : install software
+install_camnode.sh -> install_camnode.sh : enable linger
+note left  
+Run command:
+""loginctl enable-linger pi""
+end note
+
+rnote over install_node_services.sh #aqua
+  run as ""pi"" user
+endrnote
+
+install_camnode.sh -> install_node_services.sh : install service
+
+install_node_services.sh -> install_node_services.sh : copy service file
+note right of install_node_services.sh 
+service file must be stored in
+""/home/pi/.config/systemd/user""
+end note
+
+install_node_services.sh -> install_node_services.sh : copy homie device program file
+note right of install_node_services.sh 
+device program file is in
+""/home/pi/homie-camnode""
+end note
+
+install_node_services.sh -> install_node_services.sh : enable homie service
+install_node_services.sh -> install_node_services.sh : start homie service
+
+install_camnode.sh <-- install_node_services.sh : done
+@enduml
