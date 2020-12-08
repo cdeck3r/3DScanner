@@ -39,6 +39,7 @@ pip3 install --force-reinstall picamera
 # 1. copy homie device software
 # 2. mkdir IMG_DIR
 # 3. install service
+rm -rf "${USER_HOME}/homie-camnode" # cleanup
 su -c "cp -r ${REPO_DIR}/src/homie-nodes/homie-camnode ${USER_HOME}" "${USER}"
 su -c "mkdir -p ${IMG_DIR}" "${USER}"
 #su -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) /boot/autosetup/3DScanner/src/homie-nodes/install_node_services.sh' "${USER}"
