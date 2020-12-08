@@ -31,7 +31,7 @@ class Node_Camera(Node_Base):
     # states allowed for the camera's shutter button
     BUTTON_STATES = "push,release,timer"
     # Delay time in seconds until next button press is accepted
-    SUPPRESSION_TIMEOUT = 2
+    SUPPRESSION_TIMEOUT = 5
 
     def __init__(
         self,
