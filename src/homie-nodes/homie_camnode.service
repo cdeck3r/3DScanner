@@ -1,8 +1,8 @@
 [Unit]
-Description=Camnode Test Server
+Description=Camnode Homie Service
 
 [Service]
-ExecStart=mktemp
+ExecStart=python3 /home/pi/homie-camnode/homie_camnode.py
 Restart=always
 RestartSec=60
 

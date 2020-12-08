@@ -89,7 +89,7 @@ fi
 # install SERVICE_UNIT_FILE
 mkdir -p "${SERVICE_UNIT_DIR}"
 # test
-FOUND_SERVICE=$(systemctl --user --no-pager --no-legend list-unit-files | grep -c "${SERVICE_UNIT_FILE}")
+FOUND_SERVICE=$(systemctl --user --no-pager --no-legend list-unit-files | grep -c "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; })
 echo "Found instances of ${SERVICE_UNIT_FILE} running: ${FOUND_SERVICE}"
 # stop / remove
 systemctl --user --no-pager --no-legend stop "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }

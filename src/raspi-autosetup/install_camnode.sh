@@ -38,8 +38,13 @@ pip3 install --force-reinstall picamera
 # install homie service; run as ${USER}
 # 1. copy homie device software
 # 2. mkdir IMG_DIR
-# 3. install service
+# 3. enable the service start at boot
+# 4. install service
 rm -rf "${USER_HOME}/homie-camnode" # cleanup
 su -c "cp -r ${REPO_DIR}/src/homie-nodes/homie-camnode ${USER_HOME}" "${USER}"
 su -c "mkdir -p ${IMG_DIR}" "${USER}"
-#su -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) /boot/autosetup/3DScanner/src/homie-nodes/install_node_services.sh' "${USER}"
+
+# enable the service start at each Raspi boot-up for the user ${USER}
+loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
+chmod 755 /boot/autosetup/3DScanner/src/homie-nodes/install_node_services.sh
+su -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) /boot/autosetup/3DScanner/src/homie-nodes/install_node_services.sh' "${USER}"
