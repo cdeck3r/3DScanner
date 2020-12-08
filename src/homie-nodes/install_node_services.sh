@@ -99,7 +99,7 @@ cp "${SCRIPT_DIR}/${SERVICE_UNIT_FILE}" "${SERVICE_UNIT_DIR}"
 systemctl --user daemon-reload || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend start "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend enable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
-# we expect the service acti
+# we expect the service active
 STATE=$(systemctl --user --no-pager --no-legend is-active "${SERVICE_UNIT_FILE}")
 
 if [ "${STATE}" != "active" ]; then

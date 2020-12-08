@@ -64,7 +64,7 @@ class Node_Software(Node_Base):
             ['sudo', 'git', 'fetch', 'origin', branch],
             cwd=repo_dir,
             check=True,
-            stdout=subprocess.PIPE,
+            capture_output=True,
             universal_newlines=True,
         )
         # execute process

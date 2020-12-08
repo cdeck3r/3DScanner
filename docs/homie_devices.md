@@ -36,13 +36,36 @@ Base topic: `scanner/`
 
 | Device           | Node       | Property       | Notes                                          |
 |------------------|------------|----------------|------------------------------------------------|
-| camnode-`<hwaddr>` | camera     | shutter-button | hit the button to take a picture               |
+| camnode-`<hwaddr>` | camera     | shutter-button | push the button to take a picture               |
+|                  |      | shutter-timer | time in ms to wait before taking a picture               |
 |                  | software   | repo-revision  | SHA revision of the repository's master branch |
 |                  |            | local-revision | SHA revision of the local's repo master branch |
-|                  | last-image | name           |                                                |
+|                  | recent-image | filename           | most recent image taken by the camera                                                |
 |                  |            | datetime       |                                                |
-|                  |            | file           | camnode published images as binary file        |
+|                  |            | file           | camnode published images as json formatted base64 encoded file        |
 
+
+Send a *push* message to the shutter button of the camera will take a picture and update the recent-image properties.
+
+```
+mosquitto_pub -h <broker> -t scanner/<device>/camera/shutter-button/set -m push
+```
+
+There is also a shutter-button using a delay timer:
+
+1. Set the delay, e.g. 7000ms:
+
+```
+mosquitto_pub -h <broker> -t scanner/<device>/camera/shutter-timer/set -m 7000
+```
+
+2. Activate the timer:
+
+```
+mosquitto_pub -h <broker> -t scanner/<device>/camera/shutter-button/set -m timer
+```
+
+After the time exceeded, the camera will take a picture and update the recent-image properties.
 
 ## Centralnode
 
