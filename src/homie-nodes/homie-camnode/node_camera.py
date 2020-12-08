@@ -14,6 +14,10 @@ logger = logging.getLogger(__name__)
 
 if not platform.machine().startswith('x86'):
     import picamera
+    # need to declare this outside
+    # See: https://raspberrypi.stackexchange.com/a/77377
+    camera = picamera.PiCamera()
+    
 
 
 class Node_Camera(Node_Base):
@@ -98,8 +102,7 @@ class Node_Camera(Node_Base):
             self.image.update_recent_image(image_file)
             return
         # we expect to run on camnode
-        # Example: https://picamera.readthedocs.io/en/release-1.13/recipes1.html#capturing-to-a-file
-        camera = picamera.PiCamera()
+        # Ex. https://picamera.readthedocs.io/en/release-1.13/recipes1.html#capturing-to-a-file
         camera.resolution = (1024, 768)
         # Camera warm-up time
         time.sleep(2)

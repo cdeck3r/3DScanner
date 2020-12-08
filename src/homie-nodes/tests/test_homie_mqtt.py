@@ -25,7 +25,7 @@ class TestHomieMQTT:
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$homie')
         assert msg == '4.0.0'
 
-    @pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')
+    #@pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')
     def test_homie_camnode_attributes(self, pytestconfig):
         camnode = pytestconfig.getini('camnode')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$name')
@@ -52,3 +52,33 @@ class TestHomieMQTT:
             pytestconfig, 'scanner/' + camnode + '/software/$properties'
         )
         assert msg == 'repo-revision,local-revision'
+
+    def test_homie_camnode_recent_image(self, pytestconfig):
+        camnode = pytestconfig.getini('camnode')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/recent-image/$name')
+        assert msg == 'Recent Image'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/$properties'
+        )
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/recent-image/$type')
+        assert msg == 'file'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/$properties'
+        )
+        assert msg == 'filename,datetime,file'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$datatype'
+        )
+        assert msg == 'string'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$meta/$mainkey-ids'
+        )
+        assert msg == 'encoding,hashfunc,jsonfiledata,jsonfilehash'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$key'
+        )
+        assert msg == 'json_var'
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$value'
+        )
+        assert msg == 'b64file'
