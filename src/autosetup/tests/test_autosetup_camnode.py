@@ -70,3 +70,6 @@ class TestAutosetupCamnode:
         assert (
             host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
         )
+
+    def test_autosetup_camera(self, host):
+        assert host.run('sudo raspi-config nonint get_camera').stdout.rstrip() == '0'

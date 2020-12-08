@@ -32,6 +32,24 @@ INSTALL_SCRIPT_DIR="${SCRIPT_DIR}/3DScanner/src/raspi-autosetup"
 # Include Helper functions
 #####################################################
 
+# enables the picamera on camnode
+# reboots afterwards
+enable_camera() {
+    local NODETYPE=$1
+
+    if [ "${NODETYPE}" = "CAMNODE" ]; then
+        # if enabled do nothing, otherwise enable it
+        [[ $(raspi-config nonint get_camera) -eq 0 ]] || {
+            raspi-config nonint do_camera 0
+            shutdown -r now
+        }
+    else
+        # disable camera
+        raspi-config nonint do_camera 1
+    fi
+
+}
+
 # copy from booter.sh (violates DRY)
 # At booter.sh time, the nodetype is not known
 set_node_name() {
@@ -145,6 +163,7 @@ if [ -z "$NODETYPE" ]; then
 fi
 
 # basic config
+enable_camera "${NODETYPE}"
 set_node_name "${NODETYPE}"
 
 # setup ssh
