@@ -80,7 +80,7 @@ class Node_Image(Node_Base):
 
         self.filename.value = imgfile.filename
         self.datetime.value = imgfile.mtime
-        self.file.value = imgfile.toJSON()
+        self.file.value = imgfile.json
 
 
 class ImageFile(object):
@@ -102,6 +102,10 @@ class ImageFile(object):
         modTimesinceEpoc = os.path.getmtime(self.file)
         return time.strftime('%Y-%m-%dT%H:%M:%S.000', time.localtime(modTimesinceEpoc))
 
+    @property
+    def json(self):
+        return json.dumps(self.__dict__)
+
     def b64(self, file):
         with open(file, 'rb') as f:
             b64string = base64.b64encode(f.read()).decode('ASCII')
@@ -114,5 +118,3 @@ class ImageFile(object):
                 hash_blake2s.update(chunk)
         return hash_blake2s.hexdigest()
 
-    def toJSON(self):
-        return json.dumps(self.__dict__)
