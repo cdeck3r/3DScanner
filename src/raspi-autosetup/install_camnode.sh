@@ -53,5 +53,3 @@ su -c "mkdir -p ${IMG_DIR}" "${USER}"
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
-
-#su -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) /boot/autosetup/3DScanner/src/homie-nodes/install_homie_service.sh' "${USER}"
