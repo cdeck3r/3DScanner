@@ -4,7 +4,7 @@ The scanner's [homie devices](homie_devices.md) run as `systemd` user service. I
 
 ## Installation
 
-The autosetup's node-specific install scripts copy the service files to the `pi` user directory, enable and start the service. The service install script is `src/homie-nodes/install_node_services.sh`. The script must run as user `pi`. The example shows the files to install and run the homie device service required by the script.
+The autosetup's node-specific install scripts copy the service files to the `pi` user directory. They enable and start the service. The service install script is `src/homie-nodes/install_homie_service.sh`. It must run as user `pi`. The example lists the files to run the homie device service.
 
 * `homie_camnode.py` the actual homie device program to run as service, found in `src/homie-nodes/homie-camnode`
 * `homie_camnode.service` is the systemd service unit file; describes what and how to run as a service

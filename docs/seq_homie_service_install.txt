@@ -13,26 +13,26 @@ Run command:
 ""loginctl enable-linger pi""
 end note
 
-rnote over install_node_services.sh #aqua
+rnote over install_homie_service.sh #aqua
   run as ""pi"" user
 endrnote
 
-install_camnode.sh -> install_node_services.sh : install service
+install_camnode.sh -> install_homie_service.sh : install service
 
-install_node_services.sh -> install_node_services.sh : copy service file
-note right of install_node_services.sh 
+install_homie_service.sh -> install_homie_service.sh : copy service file
+note right of install_homie_service.sh 
 service file must be stored in
 ""/home/pi/.config/systemd/user""
 end note
 
-install_node_services.sh -> install_node_services.sh : copy homie device program file
-note right of install_node_services.sh 
+install_homie_service.sh -> install_homie_service.sh : copy homie device program file
+note right of install_homie_service.sh 
 device program file is in
 ""/home/pi/homie-camnode""
 end note
 
-install_node_services.sh -> install_node_services.sh : enable homie service
-install_node_services.sh -> install_node_services.sh : start homie service
+install_homie_service.sh -> install_homie_service.sh : enable homie service
+install_homie_service.sh -> install_homie_service.sh : start homie service
 
-install_camnode.sh <-- install_node_services.sh : done
+install_camnode.sh <-- install_homie_service.sh : done
 @enduml
