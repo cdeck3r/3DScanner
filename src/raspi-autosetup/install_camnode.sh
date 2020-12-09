@@ -46,5 +46,5 @@ su -c "mkdir -p ${IMG_DIR}" "${USER}"
 
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
-chmod 755 /boot/autosetup/3DScanner/src/homie-nodes/install_node_services.sh
+chmod 755 /boot/autosetup/3DScanner/src/homie-nodes/install_homie_service.sh
 su -c 'XDG_RUNTIME_DIR=/run/user/$(id -u) /boot/autosetup/3DScanner/src/homie-nodes/install_homie_service.sh' "${USER}"
