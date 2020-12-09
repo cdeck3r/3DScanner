@@ -29,6 +29,12 @@ The Raspberry Pi community provides an [extensive documentation](https://www.ras
 
 This project utilizes a ssh login using key-based authentication. At the same time it disables password logins. As a result, the system still provides a shell to run scripts from remote, while having a secured access policy. 
 
+Despite the disabled login, the script `src/autosetup/remote_bash.sh` utilizes the key-based authentication to start a remote bash shell. Run the following command on the dev system to find yourself on the node's shell prompt.
+
+```bash
+src/autosetup/remote_bash.sh <node name, e.g. camnode-dca632b40802>
+``` 
+
 Section [*SSHkey Distribution to Secure Access to the Nodes*](sshkeys.md) contains detailed information on ssh key distribution across the nodes. 
 
 ## Software Install Scripts
