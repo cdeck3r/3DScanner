@@ -94,8 +94,10 @@ echo "Found instances of ${SERVICE_UNIT_FILE} running: ${FOUND_SERVICE}"
 # stop / remove
 systemctl --user --no-pager --no-legend stop "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend disable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
-# (re)place the new service
+# (re)place the new service and correct file permissions
 cp "${SCRIPT_DIR}/${SERVICE_UNIT_FILE}" "${SERVICE_UNIT_DIR}"
+chmod 644 "${SERVICE_UNIT_DIR}/${SERVICE_UNIT_FILE}"
+# start and enable new service
 systemctl --user daemon-reload || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend start "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
 systemctl --user --no-pager --no-legend enable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
