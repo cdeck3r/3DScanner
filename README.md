@@ -33,6 +33,7 @@ From a computer science perspective the project proposes a couple of distributed
 * Automate deployment of software directly from github
 * Secure access to Raspberry Pis
 * Distributed management and control via web browser 
+* Infrastructure unit testing
 * Debugging and maintenance support
 
 In all cases, we want to keep the end-user in mind and at the center of our development efforts.
