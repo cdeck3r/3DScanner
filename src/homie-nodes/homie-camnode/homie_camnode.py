@@ -24,7 +24,7 @@ mqtt_settings = {
 
 homie_settings = {
     'topic': 'scanner',
-    'update_interval': 10,
+    'update_interval': 60,
     'implementation': 'unknown',
     'fw_name': 'unknown',
     'fw_version': 'unknown',
