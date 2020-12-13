@@ -188,3 +188,6 @@ dmypy.json
 *.xhtml
 
 # End of https://www.toptal.com/developers/gitignore/api/python,java,web
+
+# Allow
+!docs/reverse_discovery.html
