@@ -9,6 +9,16 @@ set -e
 
 # Params: none
 
+# variables
+USER=pi
+USER_HOME="/home/${USER}"
+REPO_DIR="/boot/autosetup/3DScanner"
+SCANODIS_INSTALL_DIR="${REPO_DIR}/src/scanodis"
+SCANODIS_INSTALL_SCRIPT="${SCANODIS_INSTALL_DIR}/install_scanodis.sh"
+SCANODIS_USER_DIR="${USER_HOME}/$(basename ${SCANODIS_INSTALL_DIR})"
+USER_ID="$(id -u ${USER})"
+
+
 # Exit codes
 # >0 if script breaks
 
@@ -42,3 +52,9 @@ chown root:root /etc/mosquitto/conf.d/centralnode_mosquitto.conf
 systemctl enable mosquitto.service
 systemctl start mosquitto.service
 systemctl restart mosquitto.service # refresh conf
+
+
+# install scanodis (scanner node discovery)
+chmod 755 "${SCANODIS_INSTALL_SCRIPT}"
+rm -rf "${SCANODIS_USER_DIR}" # cleanup
+#su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCANODIS_INSTALL_SCRIPT}" "${USER}"

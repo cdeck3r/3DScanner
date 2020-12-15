@@ -89,3 +89,19 @@ class TestAutosetupCentralnode:
         assert (
             host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
         )
+
+    def test_autosetup_scanodis_tracker_ini(self, host):
+        assert host.file('/boot/autosetup/scanodis_tracker.ini').exists
+        assert host.file('/boot/autosetup/scanodis_tracker.ini').user == 'root'
+        assert host.file('/boot/autosetup/scanodis_tracker.ini').user == 'root'
+
+    def test_autosetup_scanodis_installed(self, host):
+        assert host.file('/home/pi/scanodis/scanodis.sh').exists
+        assert host.file('/home/pi/scanodis/scanodis.sh').mode == 0o700
+
+    def test_autosetup_scanodis_cronjob(self, host):
+        assert (
+            host.run('crontab -l | grep scanodis')
+            .stdout.rstrip()
+            .startswith('0 * * * * /home/pi/scanodis/scanodis.sh')
+        )

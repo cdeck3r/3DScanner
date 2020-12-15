@@ -29,6 +29,7 @@ SCRIPT_NAME=$0
 # variables
 AUTOSETUP="${SCRIPT_DIR}"/autosetup.sh
 ALLKEYS_ZIP="${SCRIPT_DIR}"/allkeys.zip
+TRACKER_INI="${SCRIPT_DIR}"/scanodis_tracker.ini
 FORCE=$1
 
 #####################################################
@@ -59,6 +60,10 @@ command -v "zip" >/dev/null 2>&1 || {
     echo >&2 "I require zip but it's not installed.  Abort."
     exit 1
 }
+command -v "curl" >/dev/null 2>&1 || {
+    echo >&2 "I require curl but it's not installed.  Abort."
+    exit 1
+}
 
 # we need the basic autosetup.sh script
 if [ ! -f "${AUTOSETUP}" ]; then
@@ -67,10 +72,57 @@ if [ ! -f "${AUTOSETUP}" ]; then
 fi
 
 # generate ssh keys
+echo "Create auth keys ..."
 for KEYFILE in "camnode" "centralnode"; do
     ssh-keygen -q -t rsa -f "${SCRIPT_DIR}"/"${KEYFILE}" -N "" -C "${KEYFILE} ssh key"
     mv "${SCRIPT_DIR}"/"${KEYFILE}" "${SCRIPT_DIR}"/"${KEYFILE}".priv
 done
+
+#
+# create TRACKER_INI for the default tracker: ethercalc
+#
+echo "Create ${TRACKER_INI} ... (this may take a while)"
+EC_HEADER="localtime,hostname --short,hostname --long,hostname --ip-address,hostname --all-ip-addresses,hostname --all-fqdns"
+read -r CURL_EC_CREATE <<EOM
+echo "${EC_HEADER}" | \
+curl -L -s -w "\\nresponse_code:%{response_code}" --insecure \
+     --include \
+     --request POST \
+     --header "Content-Type: text/csv" \
+     --data-binary @- 'https://www.ethercalc.net/_'
+EOM
+CURL_RET="$(eval "${CURL_EC_CREATE}")"
+CURL_RET_LOCATION="$(echo -e "${CURL_RET}" | grep -Fi location | cut -d'/' -f3 | tr -d '\r\n')"
+CURL_RET_RESPONSE="$(echo -e "${CURL_RET}" | grep -Fi response_code | cut -d':' -f2 | tr -d '\r\n')"
+# debug
+#echo "Command: $CURL_EC_CREATE"
+#echo "LOCATION: ${CURL_RET_LOCATION}"
+#echo "RESPONSE_CODE: ${CURL_RET_RESPONSE}"
+# test, if creation was successful
+[[ ${CURL_RET_RESPONSE} -eq 201 ]] || {
+    echo "ERROR: Could not create tracker site. HTTP response code: ${CURL_RET_RESPONSE}"
+    exit 2
+}
+TRACKER_SITE="https://ethercalc.net/${CURL_RET_LOCATION}"
+# write tracker ini
+{
+    echo "# SCANODIS - Scanner Node Discovery Tracker file"
+    echo "# "
+    echo "# This file contains tracker URLs."
+    echo "# See src/scanodis for more information."
+    echo "# "
+    echo "TRACKER_ETHERCALC=\"${TRACKER_SITE}\""
+} >"${TRACKER_INI}"
+# test, if tracker is active
+CURL_RET="$(curl -L -s -o /dev/null -w "%{response_code}" "${TRACKER_SITE}")"
+[[ ${CURL_RET} -eq 200 ]] || {
+    echo "ERROR: Could not retrieve tracker site: ${TRACKER_SITE}"
+    echo "HTTP response code: ${CURL_RET}"
+    exit 2
+}
+#
+# /tracker done
+#
 
 # package
 for NODETYPE in "CAMNODE" "CENTRALNODE"; do
@@ -86,25 +138,27 @@ for NODETYPE in "CAMNODE" "CENTRALNODE"; do
     KEYFILE=$(echo ${NODETYPE} | tr '[:upper:]' '[:lower:]')
     SSH_KEYFILE_PUB=${KEYFILE}.pub
     SSH_KEYFILE_PRIV=""
+    TRACKER_INI_FILE=""
 
     if [ "${NODETYPE}" = "CENTRALNODE" ]; then
         SSH_KEYFILE_PRIV=camnode.priv # add camnode's private key for centralnode
+        TRACKER_INI_FILE="${TRACKER_INI}"
     fi
 
     # zip "SSH_KEYFILE" NODETYPE "${AUTOSETUP}"
     AUTOSETUP_ZIP=$(echo autosetup_${NODETYPE}.zip | tr '[:upper:]' '[:lower:]')
     rm -rf "${SCRIPT_DIR}"/"${AUTOSETUP_ZIP}"
     echo "Create $AUTOSETUP_ZIP..."
-    zip -j "${AUTOSETUP_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}"
+    zip -j -q "${AUTOSETUP_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}" "${TRACKER_INI_FILE}"
 done
 
 # package all keys in a separate zip
 rm -rf "${ALLKEYS_ZIP}"
-echo "Create ${AUTOSETUP_ZIP}..."
+echo "Create $(basename "${ALLKEYS_ZIP}")..."
 for KEYFILE in "camnode" "centralnode"; do
     SSH_KEYFILE_PUB=${KEYFILE}.pub
     SSH_KEYFILE_PRIV=${KEYFILE}.priv
-    zip -j "${ALLKEYS_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}"
+    zip -j -q "${ALLKEYS_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}" "${TRACKER_INI}"
 done
 
 # cleanup
@@ -112,4 +166,6 @@ rm -rf "${SCRIPT_DIR}"/NODETYPE
 for KEYFILE in "camnode" "centralnode"; do
     rm -rf "${SCRIPT_DIR}"/"${KEYFILE}"*
 done
+rm -rf "${TRACKER_INI}"
+
 exit 0
