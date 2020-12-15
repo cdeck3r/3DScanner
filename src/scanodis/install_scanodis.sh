@@ -63,7 +63,7 @@ crontab -l | grep -v 'scanodis' | crontab - || { echo "Ignore error: $?"; }
 # copy files, test ...
 mkdir -p "${LOG_DIR}"
 mkdir -p "${SCANODIS_INSTALL_DIR}"
-cp -R "${SCRIPT_DIR}/*" "${SCANODIS_INSTALL_DIR}"
+cp -R "${SCRIPT_DIR}/"* "${SCANODIS_INSTALL_DIR}"
 [ -f "${SCANODIS_SCRIPT}" ] || {
     echo "File does not exist: ${SCANODIS_SCRIPT}"
     exit 2
