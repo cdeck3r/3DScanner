@@ -83,7 +83,7 @@ check_user || {
 mkdir -p "${LOG_DIR}"
 
 # load tracker list
-[ -f "{TRACKER_INI}" ] || {
+[ -f "${TRACKER_INI}" ] || {
     echo "No tracker found. File does not exist: ${TRACKER_INI}"
     exit 1
 }
