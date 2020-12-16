@@ -70,7 +70,7 @@ cp -R "${SCRIPT_DIR}/"* "${SCANODIS_INSTALL_DIR}"
 }
 chmod 700 "${SCANODIS_SCRIPT}"
 
-grep "${LOG_FILE}" "${LOG_CONF}" || {
+grep "${LOG_FILE}" "${LOG_CONF}" > /dev/null || {
     echo "Logfile not under logrotate: ${LOG_FILE}"
     echo "Add logfile to config file: ${LOG_CONF}"
 }
@@ -78,13 +78,13 @@ grep "${LOG_FILE}" "${LOG_CONF}" || {
 # .. and install cronjob - run each hour at minute 0
 (
     crontab -l
-    echo "0 * * * * ${SCANODIS_SCRIPT} 2>&1 ${LOG_FILE}"
+    echo "0 * * * * ${SCANODIS_SCRIPT} > ${LOG_FILE} 2>&1"
 ) | crontab - || {
     echo "Error adding cronjob. Code: $?"
     exit 2
 }
 
 # at the end, we initially start the trackers
-"${SCANODIS_SCRIPT}" 2>&1 "${LOG_FILE}" || { echo "Ignore error: $?"; }
+"${SCANODIS_SCRIPT}" > "${LOG_FILE}" 2>&1 || { echo "Ignore error: $?"; }
 
 exit 0
