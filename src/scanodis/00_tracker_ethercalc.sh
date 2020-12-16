@@ -42,9 +42,9 @@ curl -L -s -o /dev/null -w "%{response_code}" \
      --data-binary @- '$TRACKER'
 EOM
 
-    echo "Command: $CURL_EC_APPEND"
+    #echo "Command: $CURL_EC_APPEND"
     CURL_RET="$(eval "${CURL_EC_APPEND}")"
-    echo "Return code: ${CURL_RET}"
+    #echo "Return code: ${CURL_RET}"
     [[ ${CURL_RET} -eq 202 ]] || { echo "ERROR: Could not publish to tracker. HTTP response code: ${CURL_RET}"; }
 
     return 0
