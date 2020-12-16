@@ -78,7 +78,7 @@ grep "${LOG_FILE}" "${LOG_CONF}" > /dev/null || {
 # .. and install cronjob - run each hour at minute 0
 (
     crontab -l
-    echo "0 * * * * ${SCANODIS_SCRIPT} >> ${LOG_FILE} 2>&1"
+    echo "* * * * * ${SCANODIS_SCRIPT} >> ${LOG_FILE} 2>&1"
 ) | crontab - || {
     echo "Error adding cronjob. Code: $?"
     exit 2
