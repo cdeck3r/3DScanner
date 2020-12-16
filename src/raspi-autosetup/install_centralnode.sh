@@ -57,4 +57,4 @@ systemctl restart mosquitto.service # refresh conf
 # install scanodis (scanner node discovery)
 chmod 755 "${SCANODIS_INSTALL_SCRIPT}"
 rm -rf "${SCANODIS_USER_DIR}" # cleanup
-#su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCANODIS_INSTALL_SCRIPT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCANODIS_INSTALL_SCRIPT}" "${USER}"
