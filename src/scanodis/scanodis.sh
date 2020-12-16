@@ -97,7 +97,8 @@ while IFS= read -r -d '' tracker; do
     # shellcheck disable=SC1090
     # shellcheck disable=SC1091
     source "${tracker}"
-    echo "Run tracker: ${tracker} ..."
+    TS="$(date '+%Y-%m-%d %H:%M:%S')"
+    echo "$TS - Run tracker: ${tracker} ..."
     publish_to_tracker
 done < <(find "${SCRIPT_DIR}" -type f -name '*_tracker_*.sh' -print0 | sort -z)
 
