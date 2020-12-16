@@ -14,6 +14,6 @@
 #####################################################
 
 publish_to_tracker() {
-    echo "This is tracker: dummy"
+    echo "INFO: This is tracker: dummy"
     return 0
 }
