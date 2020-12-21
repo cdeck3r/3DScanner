@@ -1,6 +1,8 @@
 # 3DScanner
 
-This project develops software for a person-sized, full body DIY Raspberry Pi based 3D Scanner. The scanner stands at the [Textile Faculty of the Reutlingen University](https://www.td.reutlingen-university.de/en/startseite-englisch/). There, [Katerina Rose](https://www.td.reutlingen-university.de/fakultaet/ansprechpartner/lehre/#Katerina-Rose) researches novel approaches for digitization in the textil industry including textile technology and sewing pattern using CAD. The scanner is an enabling technology and an instrument a for her research. 
+This project develops software for a person-sized, full body DIY Raspberry Pi based 3D scanner. The scanner stands at the [Textile Faculty of the Reutlingen University](https://www.td.reutlingen-university.de/en/startseite-englisch/). There, [Katerina Rose](https://www.td.reutlingen-university.de/fakultaet/ansprechpartner/lehre/#Katerina-Rose) researches novel approaches for digitization in the textil industry including textile technology and sewing pattern using CAD. The scanner is an enabling technology and an instrument a for her research. The picture below shows the current 3DScanner installation.
+
+![Scanner installation](docs/scanner_apparatus.png)
 
 I support Katerina on the embedded software part for the scanner. This software controls the distributed camera system.
 
