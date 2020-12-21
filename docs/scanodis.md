@@ -8,4 +8,7 @@ In this reverse discovery approach, the node of interest posts its connection de
 
 ## scanodis link-local discovery
 
-*...tbd...*
+[User story](https://trello.com/c/sLm77is1):
+> As a developer, I want to discover all nodes on a local-link network, so that I learn name and IP about all networked scanner nodes.
+
+*tbd*
