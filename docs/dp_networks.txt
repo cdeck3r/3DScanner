@@ -1,0 +1,55 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+skinparam linetype ortho
+
+actor "User" as user
+actor Developer as dev
+
+
+cloud "wired network" as wnet {
+  interface "Camera" as cam
+
+  node camnode << Raspberry Pi >>
+  camnode .. cam
+  node centralnode << Raspberry Pi >>
+
+  node switch
+  node "Desktop PC" as pc
+  note left of pc: optional
+  pc "0..*" -- "1" switch
+  switch "1" -- "1" centralnode
+  switch "1" -- "0..*" camnode  
+}
+note bottom of wnet
+This network wires the 
+scanner Raspberry Pis together.
+end note
+
+cloud "uplink network" {
+  node "router" 
+  node "firewall" as fw
+  fw -- router 
+  router -- switch
+  node "DHCP server" as dhcp
+  dhcp "1" -- router 
+  node "Desktop PC" as desktop
+  node "Smartphone" as phone
+  desktop "0..*" -- router
+  phone "0..*" -- router
+
+}
+
+user -- desktop
+user -- phone
+
+cloud "Internet" {
+  node "GitHub.com" as gh
+  node "Developer PC" as dpc
+  gh -- dpc
+}
+
+dev -- dpc 
+fw -left- Internet 
+dpc --> fw: VPN connection
+@enduml
