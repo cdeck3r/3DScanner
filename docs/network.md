@@ -1,6 +1,6 @@
 # Networking
 
-The 3DScanner Raspberry Pi devices require an Internet connected network to get configured and to retrieve software updates from the GitHub repository. Various network connect with each:
+The 3DScanner Raspberry Pi devices require an Internet connected network to get configured and to retrieve software updates from the GitHub repository. Various network connect with each other:
 
 * scanner network
 * uplink network to the scanner network

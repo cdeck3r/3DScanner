@@ -28,6 +28,11 @@ Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
+## Networking
+
+* [Scanner network](network.md) design and implementation
+* [Device discovery](reverse_discovery.md)
+* [scanodis](scanodis.md) (scanner node discovery)
 
 ## Software Update Process
 
