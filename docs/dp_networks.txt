@@ -7,7 +7,7 @@ actor "User" as user
 actor Developer as dev
 
 
-cloud "wired network" as wnet {
+cloud "scanner network" as wnet {
   interface "Camera" as cam
 
   node camnode << Raspberry Pi >>
