@@ -1,0 +1,19 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+| Dev System |
+start
+note left: <&terminal>create_autosetup.sh
+:create ethercalc sheet;
+
+| Ethercalc.net |
+:new ethercalc sheet|
+
+| Dev System |
+:store sheet URL;
+:<&file>scanner_tracker.ini|
+:add to autosetup ZIP;
+:<&file>autosetup_centralnode.zip|
+stop
+@enduml
