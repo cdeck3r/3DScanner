@@ -15,7 +15,7 @@ The network diagram below depicts how the various components are interconnected.
 
 ## 3DScanner network
 
-The scanner's Raspberry Pi devices, these are the camnodes and the centralnode, connect to a single switch. This local network may contain an optional desktop PC. A user or a developer may have direct access to the nodes using this PC. All shell access is secured by [ssh key authentication](sshkeys.md). Within the scanner's local network, nodes discover themselves using [mDNS](https://en.wikipedia.org/wiki/Multicast_DNS)
+The scanner's Raspberry Pi devices, these are the camnodes and the centralnode, connect to a single switch. This local network may contain an optional desktop PC. A user or a developer may have direct access to the nodes using this PC. All shell access is secured by [ssh key authentication](sshkeys.md). Within the scanner's local network, nodes discover themselves using [mDNS](https://en.wikipedia.org/wiki/Multicast_DNS). The section about [scanodis](scanodis.md#scanodis-link-local-discovery) provides more information about node discovery. 
 
 The local scanner network links to an uplink network, where the end-user may utilize a desktop PC or smartphone to control the 3Dscanner. The uplink network provides a Internet connection, so that the nodes access the software repository at GitHub.com.
 
