@@ -1,0 +1,27 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+| centralnode |
+start
+:<&clock><&terminal>scanodis.sh;
+note left: runs hourly
+
+:read ini file;
+
+:<&file>/boot/autosetup/scanodis_tracker.sh|
+note left: tracker URLs
+
+while (tracker script available?) is (yes)
+:start tracker script;
+:publish host information;
+
+| Ethercalc.net |
+:centralnode's host information|
+
+| centralnode |
+:return to scanodis.sh main loop;
+
+endwhile(no)
+stop
+@enduml
