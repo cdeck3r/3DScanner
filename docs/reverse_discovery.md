@@ -1,4 +1,4 @@
-# Node Reverse discovery
+# Node Reverse Discovery
 
 First tests showed that the name resolution across networks does not work. Instead to discover the node of interest, the node to discover calls the discoverer. We refer to this procedure as *reverse node discovery*. 
 
