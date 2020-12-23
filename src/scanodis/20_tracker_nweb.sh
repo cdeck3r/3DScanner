@@ -15,17 +15,16 @@
 
 publish_to_tracker() {
     local TRACKER
-    local TS
 
     TRACKER=$(get_tracker "TRACKER_NWEB")
     if [ -z "${TRACKER}" ]; then
-        echo "Could not found my tracker from ini file: NWEB"
+        log_echo "ERROR" "Could not found my tracker from ini file: NWEB"
         return 1
     fi
 
-    echo "INFO: Tracker nweb for URL ${TRACKER}"
+    log_echo "INFO" "Tracker nweb for URL ${TRACKER}"
 
-    wget "${TRACKER}/index.html?ip=$(hostname -I)" || { echo "Error ignored: $?"; }
+    wget "${TRACKER}/index.html?ip=$(hostname -I)" || { log_echo "ERROR" "wget did not complete successfully. Return code: $?"; }
 
     return 0
 }

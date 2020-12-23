@@ -19,11 +19,11 @@ publish_to_tracker() {
 
     TRACKER=$(get_tracker "TRACKER_ETHERCALC")
     if [ -z "${TRACKER}" ]; then
-        echo "Could not found my tracker from ini file: TRACKER_ETHERCALC"
+        log_echo "ERROR" "Could not found my tracker from ini file: TRACKER_ETHERCALC"
         return 1
     fi
 
-    echo "INFO: Tracker ethercalc for URL ${TRACKER}"
+    log_echo "INFO" "Tracker ethercalc for URL ${TRACKER}"
 
     if [[ "${TRACKER}" != *"/_/"* ]]; then
         TRACKER_URL="$(dirname "${TRACKER}")/_/$(basename "${TRACKER}")"
@@ -45,7 +45,7 @@ EOM
     #echo "Command: $CURL_EC_APPEND"
     CURL_RET="$(eval "${CURL_EC_APPEND}")"
     #echo "Return code: ${CURL_RET}"
-    [[ ${CURL_RET} -eq 202 ]] || { echo "ERROR: Could not publish to tracker. HTTP response code: ${CURL_RET}"; }
+    [[ ${CURL_RET} -eq 202 ]] || { log_echo "ERROR" "Could not publish to tracker. HTTP response code: ${CURL_RET}"; }
 
     return 0
 }
