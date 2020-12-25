@@ -29,8 +29,10 @@ publish_to_tracker() {
     log_echo "INFO" "Tracker link-local"
 
     # run avahi-browse
+    log_echo "INFO" "Run avahi-browse"
     avahi-browse -atr | grep hostname | grep camnode | tr '[:space:]' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\1/g' > "${TMPFILE}"
     # resolve all found hosts and log them
+    log_echo "INFO" "Run avahi-resolve"
     while IFS="" read -r h || [ -n "$h" ]
     do
         avahi-resolve -4 -n "${h}" >> "${NODELIST}"
