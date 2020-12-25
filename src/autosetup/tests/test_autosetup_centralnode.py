@@ -21,11 +21,15 @@ class TestAutosetupCentralnode:
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
 
+    def test_ssh_avahi_service_file(self, host):
+        assert host.file('/etc/avahi/services/ssh.service').exists
+        assert host.file('/etc/avahi/services/ssh.service').mode == 0o644
+
     @pytest.mark.parametrize('nodetype', ['centralnode'])
     def test_autosetup_nodetype(self, host, nodetype):
         assert host.file('/boot/autosetup/NODETYPE').exists
         assert host.file('/boot/autosetup/NODETYPE').contains(nodetype.upper())
-
+    
     def test_autosetup_git_installed(self, host):
         pkg = host.package('git')
         assert pkg.is_installed
@@ -105,3 +109,12 @@ class TestAutosetupCentralnode:
             .stdout.rstrip()
             .startswith('0 * * * * /home/pi/scanodis/scanodis.sh')
         )
+
+    def test_autosetup_avahi_utils_installed(self, host):
+        assert host.package('avahi-utils').is_installed
+
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_avahi_find_camnode(self, pytestconfig, host, nodetype):
+        camnode_name = pytestconfig.getini(nodetype.lower())
+        cmd = "avahi-browse -atr | grep hostname | tr '[:space:] ' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\\1/g'" + " | grep " + camnode_name
+        assert host.run(cmd).succeeded

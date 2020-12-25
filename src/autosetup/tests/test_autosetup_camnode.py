@@ -21,6 +21,10 @@ class TestAutosetupCamnode:
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
 
+    def test_ssh_avahi_service(self, host):
+        assert host.file('/etc/avahi/services/ssh.service').exists
+        assert host.file('/etc/avahi/services/ssh.service').mode == 0o644
+
     @pytest.mark.parametrize('nodetype', ['camnode'])
     def test_autosetup_nodetype(self, host, nodetype):
         assert host.file('/boot/autosetup/NODETYPE').exists
