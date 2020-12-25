@@ -192,8 +192,8 @@ set_node_name "${NODETYPE}"
 # setup ssh
 install_sshkeys "${NODETYPE}"
 publish_ssh_service
-#deactivate_user_login
-#systemctl reload ssh
+deactivate_user_login
+systemctl reload ssh
 
 # install system sw
 install_sys_sw
