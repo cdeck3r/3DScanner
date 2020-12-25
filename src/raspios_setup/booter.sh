@@ -66,6 +66,28 @@ set_node_name() {
     fi
 }
 
+# publish SSH service via avahi
+publish_ssh_service() {
+    local SSH_SERVICE_FILE
+    SSH_SERVICE_FILE="/etc/avahi/services/ssh.service"
+    
+    cat << EOF > "${SSH_SERVICE_FILE}"
+<service-group>
+
+  <name replace-wildcards="yes">%h</name>
+
+  <service>
+    <type>_ssh._tcp</type>
+    <port>22</port>
+  </service>
+
+</service-group>
+EOF
+    chmod 644 "${SSH_SERVICE_FILE}"
+    # restart avahi
+    systemctl restart avahi-daemon.service
+}
+
 enable_ssh() {
     systemctl enable ssh
     systemctl start ssh
@@ -93,8 +115,9 @@ tool_check() {
 if [ -f "${DONE}" ]; then
     # nothing to do
     echo "booter.done found. Will do nothing."
-    # make sure ssh runs
+    # make sure ssh runs and publish ssh service
     enable_ssh
+    publish_ssh_service
     exit 0
 fi
 
@@ -130,8 +153,9 @@ else # var is unset
     echo "autosetup.zip not found. Nothing to do."
 fi
 
-# make sure ssh runs
+# make sure ssh runs and publish ssh service
 enable_ssh
+publish_ssh_service
 
 # always return successfully
 exit 0

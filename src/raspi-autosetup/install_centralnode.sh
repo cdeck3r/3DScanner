@@ -32,6 +32,8 @@ SCRIPT_DIR="$(
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 
 apt-get install -y \
+    arp-scan \
+    avahi-utils \
     nginx \
     python3-pip \
     mosquitto \

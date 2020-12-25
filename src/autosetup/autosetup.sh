@@ -76,6 +76,29 @@ set_node_name() {
     fi
 }
 
+# publish SSH service via avahi
+publish_ssh_service() {
+    local SSH_SERVICE_FILE
+    SSH_SERVICE_FILE="/etc/avahi/services/ssh.service"
+    
+    cat << EOF > "${SSH_SERVICE_FILE}"
+<service-group>
+
+  <name replace-wildcards="yes">%h</name>
+
+  <service>
+    <type>_ssh._tcp</type>
+    <port>22</port>
+  </service>
+
+</service-group>
+EOF
+    chmod 644 "${SSH_SERVICE_FILE}"
+    # restart avahi
+    systemctl restart avahi-daemon.service
+}
+
+
 # Depending on NODETYPE, the this function installs
 # the ssh keys in the respective directories and
 # changes the permissions accordingly.
@@ -168,6 +191,7 @@ set_node_name "${NODETYPE}"
 
 # setup ssh
 install_sshkeys "${NODETYPE}"
+publish_ssh_service
 #deactivate_user_login
 #systemctl reload ssh
 
