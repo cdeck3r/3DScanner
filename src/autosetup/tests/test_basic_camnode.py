@@ -31,18 +31,20 @@ class TestBasicCamnode:
     @pytest.mark.parametrize('nodetype', ['camnode'])
     def test_ping_node(self, pytestconfig, nodetype):
         host = pytestconfig.getini(nodetype.lower())
-        addr = host[len(nodetype + '-') :]
-        assert self.ping_node('node-' + addr) == 0, "Setup to camnode not completed"
+        addr_start_idx = len(nodetype + '-')
+        addr_end_idx = addr_start_idx + 12
+        addr = host[addr_start_idx:addr_end_idx]
+        assert self.ping_node('node-' + addr + '.local') == 0, "Setup to camnode not completed"
 
     @pytest.mark.xfail
     def test_ping_node0(self):
-        host = 'node-000000000000'
+        host = 'node-000000000000' + '.local'
         assert self.ping_node(host) == 0, "Setup not completed"
 
     @pytest.mark.xfail
     @pytest.mark.parametrize('nodetype', ['camnode'])
     def test_ping_camnode0(self, nodetype):
-        host = nodetype + '-000000000000'
+        host = nodetype + '-000000000000' + '.local'
         assert (
             self.ping_node(host) == 0
         ), "Strange: Camnode has no eth0 hardware address."

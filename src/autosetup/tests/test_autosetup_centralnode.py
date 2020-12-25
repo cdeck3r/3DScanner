@@ -16,7 +16,7 @@ class TestAutosetupCentralnode:
     @pytest.mark.parametrize('nodetype', ['centralnode'])
     def test_hostname(self, pytestconfig, host, nodetype):
         hostname = pytestconfig.getini(nodetype.lower())
-        assert host.run("hostname").stdout.rstrip() == hostname
+        assert host.run("hostname").stdout.rstrip() == hostname[0:len(nodetype + '-') + 12] 
 
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
@@ -115,6 +115,12 @@ class TestAutosetupCentralnode:
 
     @pytest.mark.parametrize('nodetype', ['camnode'])
     def test_avahi_find_camnode(self, pytestconfig, host, nodetype):
+        camnode_name = pytestconfig.getini(nodetype.lower())
+        cmd="avahi-resolve -n -4 " + camnode_name
+        assert host.run(cmd).succeeded
+
+    @pytest.mark.parametrize('nodetype', ['camnode'])
+    def test_avahi_browse_camnode(self, pytestconfig, host, nodetype):
         camnode_name = pytestconfig.getini(nodetype.lower())
         cmd = "avahi-browse -atr | grep hostname | tr '[:space:] ' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\\1/g'" + " | grep " + camnode_name
         assert host.run(cmd).succeeded
