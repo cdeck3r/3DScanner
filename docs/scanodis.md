@@ -25,5 +25,4 @@ When the `autosetup_centralnode.zip` gets extracted on the node, the `scanodis_t
 
 The scanner nodes connect with each other in a [local network](network.md#3dscanner-network). Independent from a node-specific software installation, the developer wants to know which node is reachable under which name and IP address. This is helpful in various debug and setup situations. 
 
-
-*tbd*
+All nodes publish their ssh service. The centralnode browses the local domain for all camnodes and resolves their IPv4 addresses. It logs them into the scanodis log directory as `nodelist.log`. Browsing, resolving and logging runs as a tracker script from within the `scanodis.sh` main loop.
