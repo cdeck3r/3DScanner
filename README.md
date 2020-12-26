@@ -44,6 +44,10 @@ During system operation the camera Raspberry Pis connect to a central node via M
 
 ![System design](http://www.plantuml.com/plantuml/png/3SV13S8m30NGLM21-D0RPpPW01H-h3QYSIhxMy3szFJqhjsmPzFq_RAHHzn4l7xAshdbAqCTqwZ6WZa4JV5UN9Rx0zLCNKODdhI941pF-9qTJQElLlZb7m00)
 
+We utilize the MQTT Homie convention which defines a standardized way of how IoT devices and services announce themselves and their data on the MQTT broker. The camnodes and centralnode implement the Homie convention to publishe data and provides interaction possibilities.
+
+![works with MQTT Homie](https://homieiot.github.io/img/works-with-homie.png) 
+
 ## Documentation
 
 Please see [`docs`](docs) folder for full documentation 
