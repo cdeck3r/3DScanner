@@ -32,6 +32,7 @@ apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 
 apt-get install -y \
     arp-scan \
+    sshpass \
     avahi-utils \
     nginx \
     python3-pip \
