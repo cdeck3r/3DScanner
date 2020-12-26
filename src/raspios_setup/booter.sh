@@ -102,6 +102,7 @@ tool_check() {
             echo "Tool not found: $t"
             # make sure ssh runs
             enable_ssh
+            publish_ssh_service
             exit 1
         fi
     done

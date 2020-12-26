@@ -5,6 +5,7 @@ skinparam componentStyle uml2
 start
 if (<&file>/boot/booter.done) then (exists)
   :enable ssh;
+  :publish ssh service;
   stop
 else (not exists)
   :tool check;
@@ -19,6 +20,7 @@ else (not exists)
     endif
   else (at least one tool missed)      
      :enable ssh;
+     :publish ssh service;
      :log error;
      end
   endif
@@ -26,6 +28,7 @@ else (not exists)
 endif
 
 :enable ssh;
+:publish ssh service;
 :create <&file>/boot/booter.done;
 stop
 

@@ -12,6 +12,7 @@ The script performs a very basic Raspberry Pi setup.
 * set hostname to `node-<hwaddr>`
 * set timezone to Europe/Berlin
 * enable ssh 
+* publish ssh service via avahi
 
 `booter.sh` performs the initial setup only once. The actions depend on the existence of `/boot/booter.done`. The activity diagram depicts the control flow. 
 
@@ -23,7 +24,8 @@ If successfully run, the service creates `booter.done` to indicate the initial r
 
 The `autosetup.sh` script is part of the node-specific `autosetup.zip` archive. After `booter.sh` unzips the archive it hands over the control to the `autosetup.sh` script which performs the node-specific software setup tasks. These tasks consist of
 
-* (re-)set hostname to either ´camnode-<hwaddr>´ or `centralnode-<hwaddr>`   
+* (re-)set hostname to either ´camnode-<hwaddr>´ or `centralnode-<hwaddr>`
+* publish node's ssh service via avahi
 * secure Raspberry Pi by ssh keys
 * install additional system software, e.g. git
 * clone the scanner repository
