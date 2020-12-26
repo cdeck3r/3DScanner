@@ -30,3 +30,4 @@ rns.sh <file directory> <node address>
 
 rns copies all files into `/boot` directory on the node
 
+**Note:** One may run `rns` directly from the cloned repository in `/boot/autosetup/3DScanner` as regular user. 
