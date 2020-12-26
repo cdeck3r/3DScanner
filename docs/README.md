@@ -40,7 +40,7 @@ Complete flow chart of the setup and installation process:
 
 * [Initial node setup](autosetup.md) including unit testing
 * [Re-run autosetup](autosetup_rerun.md)
-* Install software manually via ssh
+* [Install software manually via ssh](manual_sw_install.md)
 
 ## Device Description
 
