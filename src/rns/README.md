@@ -15,5 +15,5 @@ References to project documentation
 Relevant scripts:
 
 * `rns.sh` runs a remote node setup for a single node 
-* `arp_nodelist.sh` performs a arp-scan for Raspberry Pi nodes and stores them as a list of IP addresses 
+* `arp_nodelist.sh` performs a arp-scan for Raspberry Pi nodes and outputs them as a list of IP addresses 
 
