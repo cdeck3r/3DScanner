@@ -70,7 +70,7 @@ cp -R "${SCRIPT_DIR}/"* "${SCANODIS_INSTALL_DIR}"
 }
 chmod 700 "${SCANODIS_SCRIPT}"
 
-grep "${LOG_FILE}" "${LOG_CONF}" > /dev/null || {
+grep "${LOG_FILE}" "${LOG_CONF}" >/dev/null || {
     echo "Logfile not under logrotate: ${LOG_FILE}"
     echo "Add logfile to config file: ${LOG_CONF}"
 }
@@ -85,6 +85,6 @@ grep "${LOG_FILE}" "${LOG_CONF}" > /dev/null || {
 }
 
 # at the end, we initially start the trackers
-"${SCANODIS_SCRIPT}" > "${LOG_FILE}" 2>&1 || { echo "Ignore error: $?"; }
+"${SCANODIS_SCRIPT}" >"${LOG_FILE}" 2>&1 || { echo "Ignore error: $?"; }
 
 exit 0

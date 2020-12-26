@@ -117,4 +117,3 @@ class ImageFile(object):
             for chunk in iter(lambda: f.read(4096), b''):
                 hash_blake2s.update(chunk)
         return hash_blake2s.hexdigest()
-

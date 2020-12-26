@@ -14,10 +14,10 @@ logger = logging.getLogger(__name__)
 
 if not platform.machine().startswith('x86'):
     import picamera
+
     # need to declare this outside
     # See: https://raspberrypi.stackexchange.com/a/77377
     camera = picamera.PiCamera()
-    
 
 
 class Node_Camera(Node_Base):

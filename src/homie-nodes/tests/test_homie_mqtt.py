@@ -25,7 +25,7 @@ class TestHomieMQTT:
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$homie')
         assert msg == '4.0.0'
 
-    #@pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')
+    # @pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')
     def test_homie_camnode_attributes(self, pytestconfig):
         camnode = pytestconfig.getini('camnode')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$name')
@@ -75,10 +75,12 @@ class TestHomieMQTT:
         )
         assert msg == 'encoding,hashfunc,jsonfiledata,jsonfilehash'
         msg = self.mqtt_sub(
-            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$key'
+            pytestconfig,
+            'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$key',
         )
         assert msg == 'json_var'
         msg = self.mqtt_sub(
-            pytestconfig, 'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$value'
+            pytestconfig,
+            'scanner/' + camnode + '/recent-image/file/$meta/jsonfiledata/$value',
         )
         assert msg == 'b64file'

@@ -39,7 +39,6 @@ pip3 install --force-reinstall 'Homie4==0.3.4' 'paho-mqtt==1.5.0'
 # python camera package
 pip3 install --force-reinstall picamera
 
-
 # install homie service; run as ${USER}
 # 1. copy homie device software
 # 2. mkdir IMG_DIR

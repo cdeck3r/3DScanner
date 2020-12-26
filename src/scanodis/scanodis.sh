@@ -35,6 +35,7 @@ LOGROTATE_LOG_FILE="${LOG_DIR}/logrotate.log"
 # Include Helper functions
 #####################################################
 
+# shellcheck disable=SC1090
 source "${SCRIPT_DIR}/funcs.sh"
 
 # verfies the script runs as ${USER}

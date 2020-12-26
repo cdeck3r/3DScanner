@@ -18,7 +18,6 @@ SCANODIS_INSTALL_SCRIPT="${SCANODIS_INSTALL_DIR}/install_scanodis.sh"
 SCANODIS_USER_DIR="${USER_HOME}/$(basename ${SCANODIS_INSTALL_DIR})"
 USER_ID="$(id -u ${USER})"
 
-
 # Exit codes
 # >0 if script breaks
 
@@ -54,7 +53,6 @@ chown root:root /etc/mosquitto/conf.d/centralnode_mosquitto.conf
 systemctl enable mosquitto.service
 systemctl start mosquitto.service
 systemctl restart mosquitto.service # refresh conf
-
 
 # install scanodis (scanner node discovery)
 chmod 755 "${SCANODIS_INSTALL_SCRIPT}"
