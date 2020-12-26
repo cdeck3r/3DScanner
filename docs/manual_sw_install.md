@@ -10,7 +10,7 @@ We discuss two approaches
 A developer may want to install or change software packages. The developer logs into the centralnode. The centralnode knows the ssh auth keys to login on the camnodes.
 
 * [find camnodes using avahi](scanodis.md#scanodis-link-local-discovery) automatically logs ssh services of all camnodes in the network into `log/nodelist.log`
-* [find nodes using arp](../../../src/rns) use `arp_nodelist.sh` 
+* [find nodes using arp](../../../tree/master/src/rns) use `arp_nodelist.sh` 
 
 When the developer has ssh'ed into a camnode, she may perform all types of software operations. Similar to ssh, one may use the scp to copy files. 
 
