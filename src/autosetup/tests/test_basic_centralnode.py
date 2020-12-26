@@ -34,7 +34,9 @@ class TestBasicCentralnode:
         addr_start_idx = len(nodetype + '-')
         addr_end_idx = addr_start_idx + 12
         addr = host[addr_start_idx:addr_end_idx]
-        assert self.ping_node('node-' + addr + '.local') == 0, "Setup to centralnode not completed"
+        assert (
+            self.ping_node('node-' + addr + '.local') == 0
+        ), "Setup to centralnode not completed"
 
     @pytest.mark.xfail
     def test_ping_node0(self):

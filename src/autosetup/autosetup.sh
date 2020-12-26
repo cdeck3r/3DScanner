@@ -80,8 +80,8 @@ set_node_name() {
 publish_ssh_service() {
     local SSH_SERVICE_FILE
     SSH_SERVICE_FILE="/etc/avahi/services/ssh.service"
-    
-    cat << EOF > "${SSH_SERVICE_FILE}"
+
+    cat <<EOF >"${SSH_SERVICE_FILE}"
 <service-group>
 
   <name replace-wildcards="yes">%h</name>
@@ -97,7 +97,6 @@ EOF
     # restart avahi
     systemctl restart avahi-daemon.service
 }
-
 
 # Depending on NODETYPE, the this function installs
 # the ssh keys in the respective directories and
