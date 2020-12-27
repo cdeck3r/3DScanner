@@ -18,7 +18,7 @@ Relevant scripts:
 * `rns_list.sh` runs a remote node setup for list of node addresses
 * `arp_nodelist.sh` performs a [arp-scan](https://linux.die.net/man/1/arp-scan) for Raspberry Pi nodes and outputs them as a list of IP addresses 
 
-Setup a list of nodes
+Setup a list of nodes (run from centralnode)
 
 ```bash
 arp_nodelist.sh | rns_list.sh <directory>
