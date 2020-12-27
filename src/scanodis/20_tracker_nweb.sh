@@ -24,7 +24,7 @@ publish_to_tracker() {
 
     log_echo "INFO" "Tracker nweb for URL ${TRACKER}"
 
-    wget --tries=3 "${TRACKER}/index.html?ip=$(hostname -I)" || { log_echo "ERROR" "wget did not complete successfully. Return code: $?"; }
+    wget --tries=2 "${TRACKER}/index.html?ip=$(hostname -I)" || { log_echo "ERROR" "wget did not complete successfully. Return code: $?"; }
 
     return 0
 }
