@@ -34,7 +34,7 @@ KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
 ssh_cmd() {
     local keyfile=$1
 
-    SSH_CMD="ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    SSH_CMD="ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
     echo "${SSH_CMD}"
 }
 
