@@ -77,7 +77,7 @@ copy_file() {
     local node=$2
     local dest_dir=$3
     local base_filename
-    
+
     base_filename=$(basename "${file}")
 
     # 1. scp to /tmp/file
@@ -86,11 +86,11 @@ copy_file() {
     scp_login=$(scp_cmd)
     scp_copy_file="${scp_login} ${file} ${PI_USER}@${node}:/tmp"
     ${scp_copy_file}
-    
+
     ssh_login=$(ssh_cmd)
     ssh_cp_dest_dir="${ssh_login} -t ${PI_USER}@${node} sudo cp /tmp/${base_filename} ${dest_dir}"
     ${ssh_cp_dest_dir}
-    
+
     ssh_rm_tmp="${ssh_login} -t ${PI_USER}@${node} sudo rm -rf /tmp/${base_filename}"
     ${ssh_rm_tmp}
 }

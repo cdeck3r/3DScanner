@@ -3,7 +3,7 @@ set -e
 
 #
 # rns - remote node setup for a list of nodes
-# 
+#
 # It consumes the from pipe.
 #
 # Author: cdeck3r
@@ -32,12 +32,14 @@ FILE_DIR=$1
 # Include Helper functions
 #####################################################
 
-
 #####################################################
 # Main program
 #####################################################
 
-[ -e "${SCRIPT_DIR}/rns.sh" ] || { echo "Could not find rns.sh in ${SCRIPT_DIR}."; exit 1; }
+[ -e "${SCRIPT_DIR}/rns.sh" ] || {
+    echo "Could not find rns.sh in ${SCRIPT_DIR}."
+    exit 1
+}
 
 [ -d "${FILE_DIR}" ] || {
     echo "File directory does not exist: ${FILE_DIR}"
@@ -47,12 +49,14 @@ FILE_DIR=$1
 if [ -p /dev/stdin ]; then
     echo "Read node addresses from pipe"
     # If we want to read the input line by line
-    while IFS= read addr; do
+    while IFS= read -r addr; do
         echo "Start rns for node: ${addr}"
-        "${SCRIPT_DIR}/rns.sh" "${FILE_DIR}" "${addr}" || { echo "ERROR: Cannot remotely setup node: ${addr}"; echo ""; }
+        "${SCRIPT_DIR}/rns.sh" "${FILE_DIR}" "${addr}" || {
+            echo "ERROR: Cannot remotely setup node: ${addr}"
+            echo ""
+        }
     done
 else
     echo "ERROR: No input pipe found."
     exit 2
 fi
-
