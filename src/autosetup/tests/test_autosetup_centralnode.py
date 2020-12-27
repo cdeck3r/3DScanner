@@ -126,7 +126,7 @@ class TestAutosetupCentralnode:
     def test_avahi_browse_camnode(self, pytestconfig, host, nodetype):
         camnode_name = pytestconfig.getini(nodetype.lower())
         cmd = (
-            "avahi-browse -atr | grep hostname | tr '[:space:] ' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\\1/g'"
+            r"avahi-browse -atr | grep hostname | tr '[:space:] ' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\1/g'"
             + " | grep "
             + camnode_name
         )
