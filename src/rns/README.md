@@ -15,6 +15,13 @@ References to project documentation
 Relevant scripts:
 
 * `rns.sh` runs a remote node setup for a single node 
+* `rns_list.sh` runs a remote node setup for list of node addresses
 * `arp_nodelist.sh` performs a arp-scan for Raspberry Pi nodes and outputs them as a list of IP addresses 
+
+Setup a list of nodes
+
+```bash
+arp_nodelist.sh | rns_list.sh <directory>
+```
 
 **Note:** One may run `rns` directly from the cloned repository in `/boot/autosetup/3DScanner` as regular user. 
