@@ -44,7 +44,7 @@ ssh_cmd() {
     else
         SSH_PASS=""
     fi
-    SSH_CMD="${SSH_PASS} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    SSH_CMD="${SSH_PASS} ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
     echo "${SSH_CMD}"
 }
 
@@ -76,10 +76,23 @@ copy_file() {
     local file=$1
     local node=$2
     local dest_dir=$3
+    local base_filename
+    
+    base_filename=$(basename "${file}")
 
+    # 1. scp to /tmp/file
+    # 2. cp /tmp/file to /boot
+    # 3. rm /tmp/file
     scp_login=$(scp_cmd)
-    scp_copy_file="${scp_login} ${file} ${PI_USER}@${node}:${dest_dir}"
+    scp_copy_file="${scp_login} ${file} ${PI_USER}@${node}:/tmp"
     ${scp_copy_file}
+    
+    ssh_login=$(ssh_cmd)
+    ssh_cp_dest_dir="${ssh_login} -t ${PI_USER}@${node} sudo cp /tmp/${base_filename} ${dest_dir}"
+    ${ssh_cp_dest_dir}
+    
+    ssh_rm_tmp="${ssh_login} -t ${PI_USER}@${node} sudo rm -rf /tmp/${base_filename}"
+    ${ssh_rm_tmp}
 }
 
 test_ssh_login() {
@@ -99,7 +112,7 @@ test_ssh_login() {
     ssh_login=$(ssh_cmd)
     ssh_hostname="${ssh_login} -t ${PI_USER}@${node} hostname"
     ${ssh_hostname} || {
-        echo "Login does not work."
+        echo "Login does not work. USE_SSHPASS: ${USE_SSHPASS}"
         return 1
     }
 }
@@ -108,7 +121,8 @@ compile_files() {
     local FILE_DIR=$1
     SETUP_FILES=()
 
-    # add autosetup.zip files
+    # add autosetup.zip file
+    # prefers autosetup_camnode.zip, if exists
     if [ -f "${FILE_DIR}/autosetup_camnode.zip" ]; then
         SETUP_FILES=("${SETUP_FILES[@]}" "${FILE_DIR}/autosetup_camnode.zip")
     elif [ -f "${FILE_DIR}/autosetup_centralnode.zip" ]; then
@@ -127,7 +141,7 @@ compile_files() {
 
 # some checks first
 # shellcheck disable=SC2153
-[ -z "${SSHPASS}" ] || {
+[ -z "${SSHPASS}" ] && {
     echo "Env var SSHPASS not set. Please set variable."
     exit 1
 }
@@ -143,23 +157,28 @@ done
     echo "File directory does not exist: ${FILE_DIR}"
     exit 1
 }
-[ -z "${NODE_ADDR}" ] || {
+[ -z "${NODE_ADDR}" ] && {
     echo "No node address provided. Abort."
     exit 1
 }
-ping -c 1 "${NODE_ADDR}" || {
+echo "#########################"
+echo "#      Ping test        #"
+echo "#########################"
+ping -c 3 "${NODE_ADDR}" || {
     echo "Cannot ping node: ${NODE_ADDR}"
     exit 1
 }
+echo "#########################"
+echo ""
 
 # test login
 # 1. providing password using sshpass
 # 2. if 1 does not work, test login without password (assuming auth key)
 test_ssh_login "${NODE_ADDR}" || {
-    echo ""
+    echo "ERROR: login test using ssh failed. Abort."
     exit 1
 }
-echo "ssh login successful with USE_SSHPASS = ${USE_SSHPASS}"
+echo "SUCCESS: ssh login test successful with USE_SSHPASS = ${USE_SSHPASS}"
 
 # we walk through the $FILE_DIR for files
 echo "Compile file list..."
