@@ -78,7 +78,8 @@ class TestAutosetupCamnode:
     def test_autosetup_camera(self, host):
         assert host.run('sudo raspi-config nonint get_camera').stdout.rstrip() == '0'
 
-    def test_avahi_resolve_name_conflict(self, host):
+
+    def test_avahi_resolve_name_conflict_service(self, host):
         service_unit_file = 'avahi-resolve-name-conflict.service'
         cmd = (
             'systemctl --no-pager --no-legend list-unit-files | grep -c '
@@ -86,3 +87,9 @@ class TestAutosetupCamnode:
         )
         assert host.run(cmd).succeeded
         assert host.run(cmd).stdout.rstrip() == '1'
+        cmd = (
+            'systemctl --no-pager --no-legend is-enabled '
+            + service_unit_file
+        )
+        assert host.run(cmd).succeeded
+        assert host.run(cmd).stdout.rstrip() == 'enabled'
