@@ -131,3 +131,12 @@ class TestAutosetupCentralnode:
             + camnode_name
         )
         assert host.run(cmd).succeeded
+
+    def test_avahi_resolve_name_conflict(self, host):
+        service_unit_file = 'avahi-resolve-name-conflict.service'
+        cmd = (
+            'systemctl --no-pager --no-legend list-unit-files | grep -c '
+            + service_unit_file
+        )
+        assert host.run(cmd).succeeded
+        assert host.run(cmd).stdout.rstrip() == '1'
