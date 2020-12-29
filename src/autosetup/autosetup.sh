@@ -28,6 +28,16 @@ USER=pi
 USER_HOME="/home/${USER}"
 INSTALL_SCRIPT_DIR="${SCRIPT_DIR}/3DScanner/src/raspi-autosetup"
 
+# resolve avahi name conflict by restart
+# .service and .sh files are created by autosetup.sh 
+SERVICE_UNIT_DIR="/lib/systemd/system"
+SERVICE_UNIT_FILE="avahi-resolve-name-conflict.service"
+SERVICE_UNIT_FILE_PATH="${SERVICE_UNIT_DIR}/${SERVICE_UNIT_FILE}"
+SERVICE_FILE_DIR="/root"
+SERVICE_FILE="avahi-resolve-name-conflict.sh"
+SERVICE_FILE_PATH="${SERVICE_FILE_DIR}/${SERVICE_FILE}"
+
+
 #####################################################
 # Include Helper functions
 #####################################################
@@ -97,6 +107,85 @@ EOF
     # restart avahi
     systemctl restart avahi-daemon.service
 }
+
+# service file 
+# It tests for the conflict and restarts avahi service
+write_service_file() {
+    local service_file_path=$1
+
+    cat << EOF > "${service_file_path}"
+#!/bin/bash
+
+#
+# Tests for avahi hostname conflict 
+# and restarts avahi-daemon, if necessary
+#
+# Author: cdeck3r
+#
+
+systemctl status avahi-daemon.service --no-pager --full | grep -i conflict && { echo "Found avahi name conflict. Will restart avahi."; systemctl restart avahi-daemon.service; }
+EOF
+
+    chmod 755 "${service_file_path}" || { echo "Could not change file permissions: ${service_file_path}"; }
+}
+
+# service unit file for the avahi name conflict resolution
+write_service_unit_file() {
+    local service_unit_file_path=$1
+    local service_file_path=$2
+
+    cat << EOF > "${service_unit_file_path}"
+[Unit]
+Description=Avahi name conflict resolver
+After=network.target
+Before=rc-local.service
+ConditionFileNotEmpty=${service_file_path}
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=300
+ExecStart=${service_file_path}
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    chmod 644 "${service_unit_file_path}" || { echo "Could not change file permissions: ${service_unit_file_path}"; }
+}
+
+# aux service to handle the avahi bug
+# see: https://github.com/lathiat/avahi/issues/117
+avahi_resolve_name_conflict() {
+    local SYSTEMCTL
+
+    SYSTEMCTL="systemctl --no-pager --no-legend"
+
+    # test
+    FOUND_SERVICE=$(${SYSTEMCTL} list-unit-files | grep -c "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; })
+
+    echo "Found instances of ${SERVICE_UNIT_FILE} running: ${FOUND_SERVICE}"
+    # stop / remove
+    ${SYSTEMCTL} stop "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
+    ${SYSTEMCTL} disable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
+
+    # (re)place the new service and correct file permissions
+    write_service_file "${SERVICE_FILE_PATH}"
+    write_service_unit_file "${SERVICE_UNIT_FILE_PATH}" "${SERVICE_FILE_PATH}"
+
+    # start and enable new service
+    #systemctl daemon-reload || { echo "Error ignored: $?"; }
+    ${SYSTEMCTL} start "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
+    ${SYSTEMCTL} enable "${SERVICE_UNIT_FILE}" || { echo "Error ignored: $?"; }
+
+    # we expect the service enabled
+    STATE=$(${SYSTEMCTL} is-enabled "${SERVICE_UNIT_FILE}")
+
+    if [ "${STATE}" != "enabled" ]; then
+        echo "Service not enabled: ${SERVICE_UNIT_FILE}"
+    fi
+}
+
 
 # Depending on NODETYPE, the this function installs
 # the ssh keys in the respective directories and
@@ -193,6 +282,7 @@ install_sshkeys "${NODETYPE}"
 publish_ssh_service
 deactivate_user_login
 systemctl reload ssh
+avahi_resolve_name_conflict
 
 # install system sw
 install_sys_sw
