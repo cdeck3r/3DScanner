@@ -41,7 +41,10 @@ command -v arp-scan >/dev/null || {
     exit 1
 }
 
-ARP_SCAN="sudo arp-scan --localnet --plain -t 100 -r 1"
+MY_IP=$(hostname -I | cut -d' ' -f1)
+MY_MAC=$(cat /sys/class/net/eth0/address)
+
+ARP_SCAN="sudo arp-scan --localnet --plain -t 100 -r 1 | grep -v ${MY_MAC}"
 ${ARP_SCAN} | grep -i "b8:27:eb" | cut -d$'\t' -f1
 ${ARP_SCAN} | grep -i "e4:5f:01" | cut -d$'\t' -f1
 ${ARP_SCAN} | grep -i "dc:a6:32" | cut -d$'\t' -f1
