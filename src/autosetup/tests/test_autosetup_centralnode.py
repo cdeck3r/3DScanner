@@ -132,17 +132,15 @@ class TestAutosetupCentralnode:
         )
         assert host.run(cmd).succeeded
 
-    def test_avahi_resolve_name_conflict_service(self, host):
-        service_unit_file = 'avahi-resolve-name-conflict.service'
-        cmd = (
-            'systemctl --no-pager --no-legend list-unit-files | grep -c '
-            + service_unit_file
+    def test_avahi_resolve_name_conflict_cronjob(self, host):
+        jobfile = 'avahi-resolve-name-conflict.sh'
+        
+        assert host.run('sudo ls -l /root/' + jobfile).succeeded
+        assert host.run('sudo ls /root/' + jobfile).stdout.rstrip() == '/root/'+jobfile
+        
+        assert (
+            host.run('sudo crontab -l | grep ' + jobfile)
+            .stdout.rstrip()
+            .startswith('@reboot sleep 60 && /root/' + jobfile)
         )
-        assert host.run(cmd).succeeded
-        assert host.run(cmd).stdout.rstrip() == '1'
-        cmd = (
-            'systemctl --no-pager --no-legend is-enabled '
-            + service_unit_file
-        )
-        assert host.run(cmd).succeeded
-        assert host.run(cmd).stdout.rstrip() == 'enabled'
+
