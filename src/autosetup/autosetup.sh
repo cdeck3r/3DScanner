@@ -252,7 +252,7 @@ set_node_name "${NODETYPE}"
 # setup ssh
 install_sshkeys "${NODETYPE}"
 publish_ssh_service
-#deactivate_user_login
+deactivate_user_login
 systemctl reload ssh
 
 # avahi resolve name conflict
