@@ -144,3 +144,9 @@ class TestAutosetupCentralnode:
             .startswith('@reboot sleep 60 && /root/' + jobfile)
         )
 
+    def test_avahi_resolve_name_conflict_cronjob_logfile(self, host):
+        logfile = 'avahi-resolve-name-conflict.sh.log'
+        assert host.file('/tmp/' + logfile).exists
+        assert int(host.run('grep -c iteration /tmp/' + logfile).stdout.rstrip()) >= 1
+
+    
