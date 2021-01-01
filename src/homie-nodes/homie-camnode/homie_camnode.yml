@@ -1,0 +1,6 @@
+mqtt:
+    MQTT_BROKER: "centralnode-dca632b407ff.local"
+    MQTT_PORT: 1883
+
+scanner:
+    UPDATE_INTERVAL: 60

@@ -6,6 +6,7 @@ import subprocess
 import sys
 import time
 
+import yaml
 from device_camnode import Device_Camnode
 
 # define console logging
@@ -98,19 +99,27 @@ def get_ip_from_ping(hostname):
             print(ve)
 
 
-def config_homie_settings():
-    pass
+def configure_settings(cfgfile='homie_camnode.yml'):
+    """Load mqtt settings from config file and set relevant homie settings.
 
-
-def start_homie_camnode():
-    """Starts the main loop to announce the camnode as homie device"""
+    The default config file is homie_camnode.yml
+    """
+    try:
+        with open(cfgfile, 'r') as ymlfile:
+            cfg = yaml.full_load(ymlfile)
+            logging.info('Configure node from config file: {}'.format(cfgfile))
+            mqtt_settings['MQTT_BROKER'] = cfg['mqtt']['MQTT_BROKER']
+            mqtt_settings['MQTT_PORT'] = cfg['mqtt']['MQTT_PORT']
+            homie_settings['update_interval'] = cfg['scanner']['UPDATE_INTERVAL']
+    except Exception:
+        logging.warn(
+            'Cannot load config file: {}. Will use default settings.'.format(cfgfile)
+        )
 
     # configure specific settings
     homie_settings["implementation"] = get_implementation()
     homie_settings["fw_name"] = get_fw_name()
     homie_settings["fw_version"] = get_fw_version()
-
-    device_name = str(platform.node())
 
     # if we get the broker's IP using the default method gethostbyname,
     # we will proceed with the name, otherwise, we ping the broker to receive its ip
@@ -127,7 +136,12 @@ def start_homie_camnode():
     mqtt_settings['MQTT_BROKER'] = broker_ip
     logging.info('Broker IP address is {}'.format(broker_ip))
 
+
+def start_homie_camnode():
+    """Starts the main loop to announce the camnode as homie device"""
+
     try:
+        device_name = str(platform.node())
         dev = Device_Camnode(
             name=device_name,
             device_id=device_name,
@@ -145,4 +159,10 @@ def start_homie_camnode():
 
 
 if __name__ == "__main__":
+    # change working directory to this file's directory
+    os.chdir(os.path.dirname(os.path.abspath(__file__)))
+
+    # configure mqtt and homie settings
+    configure_settings()
+
     start_homie_camnode()
