@@ -23,6 +23,8 @@ The `autosetup_NODETYPE.zip` contains:
 * NODETYPE definition file (contains the nodetype as string) 
 * autosetup.sh - the install starter script
 
+Additionally, the centranode's zip archive contains the [scanodis](scanodis.md) config file `scanodis_tracker.ini`.  
+
 ## Securing the Raspberry Pi
 
 The Raspberry Pi community provides an [extensive documentation](https://www.raspberrypi.org/documentation/configuration/security.md) on the various ways to secure the Raspberry Pi. 
@@ -41,3 +43,17 @@ Section [*SSHkey Distribution to Secure Access to the Nodes*](sshkeys.md) contai
 
 The scripts to run on a Raspberry Pi during the software installation are part of the repository to enable versioning. The `autosetup.sh` script clones the 3DScanner repo and runs the scripts from `raspi-autosetup` directory according to the NODETYPE configured.
 
+## Design Choice
+
+What goes into `autosetup.sh` and what goes into install scripts? 
+
+> Idea: autosetup functions shall set the node in a minimum reasonable configuration, even without the cloned repo or an Internet connection to an external service. 
+
+This is a checklist a function needs to fulfill in order to be included in `autosetup.sh`
+
+* function runs without Internet connection to external service
+* bahvior does not depend on no other yet to be installed software 
+* behavior may branch according to NODETYPE 
+* function does not need other params 
+* function does not need to be updated when in PROD
+* function contributes to the system even if no other software is downloaded and / or installed
