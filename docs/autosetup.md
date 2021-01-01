@@ -26,6 +26,7 @@ The `autosetup.sh` script is part of the node-specific `autosetup.zip` archive. 
 
 * (re-)set hostname to either ´camnode-<hwaddr>´ or `centralnode-<hwaddr>`
 * publish node's ssh service via avahi
+* install cronjob in `/root` to run at boot in order to restart the avahi daemon in case of a [hostname conflict](https://github.com/lathiat/avahi/issues/117)
 * secure Raspberry Pi by ssh keys
 * install additional system software, e.g. git
 * clone the scanner repository
