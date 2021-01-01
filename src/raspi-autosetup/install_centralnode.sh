@@ -42,6 +42,9 @@ apt-get install -y \
 # cleanup
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
+# additional python packages
+pip3 install --force-reinstall yaml
+
 # homie convention https://github.com/mjcumming/homie4
 pip3 install --force-reinstall 'Homie4==0.3.4' 'paho-mqtt==1.5.0'
 
