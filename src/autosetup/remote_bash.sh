@@ -21,7 +21,8 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
-NODE=$1 # default
+NODE=$1     # default
+NODETYPE=$2 # default
 PI_USER=pi
 KEYFILE_DIR=/tmp/autosetup
 KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
@@ -30,10 +31,16 @@ KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
 # Include Helper functions
 #####################################################
 
+usage() {
+    echo "Usage: "
+    echo "${SCRIPT_NAME} <nodename>"
+    echo "${SCRIPT_NAME} <ip address> [CENTRALNODE | CAMNODE]"
+}
+
 ssh_cmd() {
     local keyfile=$1
 
-    SSH_CMD="ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no"
+    SSH_CMD="ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
     echo "${SSH_CMD}"
 }
 
@@ -65,7 +72,7 @@ setup_ssh_keyfile() {
     elif [ "${nodetype}" = "CENTRALNODE" ]; then
         keyfile="${KEYFILE_DIR}/centralnode.priv"
     else
-        echo "Nodetype unknown: $NODETYPE"
+        echo "Derived nodetype unknown: $NODETYPE"
         exit 1
     fi
 
@@ -104,6 +111,31 @@ cleanup() {
     rm -rf "${KEYFILE_DIR}"
 }
 
+# source: https://www.linuxjournal.com/content/validating-ip-address-bash-script
+#
+# Test an IP address for validity:
+# Usage:
+#      valid_ip IP_ADDRESS
+#      if [[ $? -eq 0 ]]; then echo good; else echo bad; fi
+#   OR
+#      if valid_ip IP_ADDRESS; then echo good; else echo bad; fi
+function valid_ip() {
+    local ip=$1
+    local stat=1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        # shellcheck disable=SC2206
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 && \
+        ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        stat=$?
+    fi
+    return $stat
+}
+
 ### Test function ###
 test_hostname() {
     local node=$1
@@ -127,7 +159,8 @@ test_hostname() {
 
 # check NODE var
 if [ -z "$NODE" ]; then
-    echo "No node provided. Abort."
+    echo "No node provided."
+    usage
     exit 1
 fi
 
@@ -148,7 +181,22 @@ echo ""
 
 ### /Basic checks ###
 
-NODETYPE=$(echo "${NODE}" | cut -d'-' -f1 | tr '[:lower:]' '[:upper:]')
+valid_ip "${NODE}" || {
+    NODETYPE=$(echo "${NODE}" | cut -d'-' -f1 | tr '[:lower:]' '[:upper:]')
+} && {
+    # read the NODETYPE as 2nd arg from command line
+    if [ -z "${NODETYPE}" ]; then
+        echo "No nodetype provided."
+        usage
+        exit 1
+    fi
+    NODETYPE=$(echo "${NODETYPE}" | tr '[:lower:]' '[:upper:]')
+    if ! [[ "${NODETYPE}" =~ ^(CENTRALNODE|CAMNODE)$ ]]; then
+        echo "Nodetype must be one of [CENTRALNODE | CAMNODE]."
+        usage
+        exit 1
+    fi
+}
 keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 
 # simple hostname test
