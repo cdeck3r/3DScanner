@@ -109,7 +109,7 @@ EOF
 write_avahi_name_conflict_jobfile() {
     local jobfile_path=$1
 
-    cat << 'EOF' >"${jobfile_path}"
+    cat <<'EOF' >"${jobfile_path}"
 #!/bin/bash
 
 #
