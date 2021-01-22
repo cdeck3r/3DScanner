@@ -26,6 +26,7 @@ NODETYPE=$2 # default
 PI_USER=pi
 KEYFILE_DIR=/tmp/autosetup
 KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
+USE_SSHPASS=0
 
 #####################################################
 # Include Helper functions
@@ -37,10 +38,54 @@ usage() {
     echo "${SCRIPT_NAME} <ip address> [CENTRALNODE | CAMNODE]"
 }
 
+ssh_login() {
+    local SSH_PASS
+    local SSH_LOGIN
+
+    if [ "${USE_SSHPASS}" -eq 1 ]; then
+        SSH_PASS="sshpass -e"
+    else
+        SSH_PASS=""
+    fi
+    SSH_LOGIN="${SSH_PASS} "
+    echo "${SSH_LOGIN}"
+}
+
+test_ssh_login() {
+    local node=$1
+    local keyfile=$2
+    local ssh_str
+
+    USE_SSHPASS=1
+    # some checks first
+    # shellcheck disable=SC2153
+    [ -z "${SSHPASS}" ] && {
+        echo "Env var SSHPASS not set. Please set variable."
+    } || {
+        ssh_hostname="$(ssh_cmd ${keyfile}) -t ${PI_USER}@${node} hostname"
+        ${ssh_hostname} > /dev/null && {
+            echo "Login successful. USE_SSHPASS: ${USE_SSHPASS}"
+            return 0
+        }
+    }
+    
+    # test with USE_SSHPASS=0
+    USE_SSHPASS=0
+    ssh_hostname="$(ssh_cmd ${keyfile}) -t ${PI_USER}@${node} hostname"
+    ${ssh_hostname} > /dev/null && {
+        echo "Login successful using ssh keys. USE_SSHPASS: ${USE_SSHPASS}"
+        return 0
+    } || {
+        echo "Login does not work. USE_SSHPASS: ${USE_SSHPASS}"
+        return 1
+    }
+}
+
+
 ssh_cmd() {
     local keyfile=$1
 
-    SSH_CMD="ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
+    SSH_CMD="$(ssh_login) ssh -i ${keyfile} -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
     echo "${SSH_CMD}"
 }
 
@@ -199,8 +244,17 @@ valid_ip "${NODE}" || {
 }
 keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 
+# test login
+# 1. providing password using sshpass
+# 2. if 1 does not work, test login without password (assuming auth key)
+test_ssh_login "${NODE}" "${keyfile}" || {
+    echo "ERROR: login test using ssh failed. Abort."
+    exit 1
+}
+
 # simple hostname test
 #test_hostname "${NODE}" "${keyfile}"
+
 
 remote_bash_shell "${NODE}" "${keyfile}"
 cleanup
