@@ -23,6 +23,7 @@ SCRIPT_NAME=$0
 # variables
 NODE=$1     # default
 NODETYPE=$2 # default
+REMOTE_CMD=$3 # default
 PI_USER=pi
 KEYFILE_DIR=/tmp/autosetup
 KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
@@ -34,8 +35,8 @@ USE_SSHPASS=0
 
 usage() {
     echo "Usage: "
-    echo "${SCRIPT_NAME} <nodename>"
-    echo "${SCRIPT_NAME} <ip address> [CENTRALNODE | CAMNODE]"
+    echo "${SCRIPT_NAME} <nodename> [command]"
+    echo "${SCRIPT_NAME} <ip address> [CENTRALNODE | CAMNODE] [command]"
 }
 
 ssh_login() {
@@ -92,11 +93,12 @@ ssh_cmd() {
 remote_bash_shell() {
     local node=$1
     local keyfile=$2
+    local remote_command=$3
     local ssh_login
 
     ssh_login=$(ssh_cmd "${keyfile}")
-    ssh_remote_bash_bash="${ssh_login} -t ${PI_USER}@${node} bash"
-    ${ssh_remote_bash_bash}
+    ssh_remote_shell_cmd="${ssh_login} -t ${PI_USER}@${node} ${remote_command}"
+    ${ssh_remote_shell_cmd}
 }
 
 can_ping() {
@@ -228,6 +230,8 @@ echo ""
 
 valid_ip "${NODE}" || {
     NODETYPE=$(echo "${NODE}" | cut -d'-' -f1 | tr '[:lower:]' '[:upper:]')
+    # read the REMOTE_CMD as 2nd arg from command line
+    REMOTE_CMD=$2
 } && {
     # read the NODETYPE as 2nd arg from command line
     if [ -z "${NODETYPE}" ]; then
@@ -252,9 +256,8 @@ test_ssh_login "${NODE}" "${keyfile}" || {
     exit 1
 }
 
-# simple hostname test
-#test_hostname "${NODE}" "${keyfile}"
-
-
-remote_bash_shell "${NODE}" "${keyfile}"
+# default REMOTE_CMD is bash
+[ -z "${REMOTE_CMD}" ] && { REMOTE_CMD="bash"; } 
+# run remote shell with REMOTE_CMD
+remote_bash_shell "${NODE}" "${keyfile}" "${REMOTE_CMD}"
 cleanup
