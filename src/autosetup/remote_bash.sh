@@ -1,4 +1,5 @@
 #!/bin/bash
+trap cleanup EXIT
 
 #
 # Remotely starts a bash shell on the given node
@@ -259,5 +260,5 @@ test_ssh_login "${NODE}" "${keyfile}" || {
 # default REMOTE_CMD is bash
 [ -z "${REMOTE_CMD}" ] && { REMOTE_CMD="bash"; } 
 # run remote shell with REMOTE_CMD
-remote_bash_shell "${NODE}" "${keyfile}" "${REMOTE_CMD}"
+remote_bash_shell "${NODE}" "${keyfile}" "${REMOTE_CMD}" 
 cleanup
