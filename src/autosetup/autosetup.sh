@@ -27,6 +27,7 @@ REPO="https://github.com/cdeck3r/3DScanner.git"
 USER=pi
 USER_HOME="/home/${USER}"
 INSTALL_SCRIPT_DIR="${SCRIPT_DIR}/3DScanner/src/raspi-autosetup"
+BRANCH_FILE="/boot/BRANCH"
 
 # resolve avahi name conflict by restarting avahi-daemon
 # run cronjob after each boot-up
@@ -225,7 +226,11 @@ install_sys_sw() {
 # we can hard code the repo URL, because this script
 # is in the same repo: so this script and the repo are strongly connected
 clone_repo() {
-    git clone ${REPO}
+    local branch=$1
+
+    # set default
+    [ -z "${branch}" ] && { branch="master"; }
+    git clone --branch "${branch}" ${REPO}
 }
 
 #####################################################
@@ -262,8 +267,12 @@ systemctl restart cron.service
 # install system sw
 install_sys_sw
 
-# download autosetup scripts
-clone_repo
+# download autosetup scripts from branch 
+BRANCH="master" # default
+if [ -f "${BRANCH_FILE}" ]; then
+    BRANCH=$(head -1 "${BRANCH_FILE}")
+fi
+clone_repo "${BRANCH}"
 
 # run install_*.sh
 # Note: set -e is given at script start --> if there is an error,
