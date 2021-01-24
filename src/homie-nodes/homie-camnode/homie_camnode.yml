@@ -1,5 +1,5 @@
 mqtt:
-    MQTT_BROKER: "centralnode-dca632b407ff.local"
+    MQTT_BROKER: "centralnode-dca632b4084d.local"
     MQTT_PORT: 1883
 
 scanner:
