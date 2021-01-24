@@ -49,4 +49,5 @@ Complete flow chart of the setup and installation process:
 
 ## Software Development
 
+* [Dev and Prod](dev_prod.md)
 * [Code quality](codequality.md)
