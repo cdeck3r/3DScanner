@@ -28,6 +28,14 @@ rns.sh <file directory> <node address>
 * `<file directory>` contains files to copy.  Currently, it supports `autosetup_*.zip` and `booter.sh`. 
 * `<node address>` name or IP address of Raspberry Pi node to copy files to
 
-rns copies all files into `/boot` directory on the node
+rns copies all files into `/boot` directory on the node and re-runs the autosetup through reboot.
+
+Use [xargs](https://man7.org/linux/man-pages/man1/xargs.1.html) to run `rns.sh` for a list of nodes. 
+```bash
+cat <addr file>  | xargs -n 1 -I addr rns.sh <file dir> addr"
+```
+
+The `<addr file>` contains one node address per line. The `-I addr` specifies a freely choosen parameter name, here *addr* for the address from the file. Use this name as the positional argument of `rns.sh`.
+
 
 **Note:** One may run `rns` directly from the cloned repository in `/boot/autosetup/3DScanner` as regular user. 

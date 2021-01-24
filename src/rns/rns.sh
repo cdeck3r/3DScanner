@@ -197,4 +197,4 @@ done
 # restart the autosetup process
 echo "Reboot and restart the autosetup process..."
 rm_booter_done "${NODE_ADDR}"
-shutdown_reboot "${NODE_ADDR}"
+shutdown_reboot "${NODE_ADDR}" || { echo "Error ignored: $?"; }
