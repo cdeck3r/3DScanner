@@ -64,7 +64,7 @@ test_ssh_login() {
     [ -z "${SSHPASS}" ] && {
         echo "Env var SSHPASS not set. Please set variable."
     } || {
-        ssh_hostname="$(ssh_cmd ${keyfile}) -t ${PI_USER}@${node} hostname"
+        ssh_hostname="$(ssh_cmd /dev/null) -t ${PI_USER}@${node} hostname"
         ${ssh_hostname} > /dev/null && {
             echo "Login successful. USE_SSHPASS: ${USE_SSHPASS}"
             return 0
