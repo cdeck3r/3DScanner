@@ -1,5 +1,5 @@
 #!/bin/bash
-set -e
+trap cleanup EXIT
 
 #
 # Re-runs the autosetup
@@ -182,6 +182,6 @@ keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 #test_hostname "${NODE}" "${keyfile}"
 
 rm_booter_done "${NODE}" "${keyfile}"
-shutdown_reboot "${NODE}" "${keyfile}"
+shutdown_reboot "${NODE}" "${keyfile}" || { echo "Error ignored: $?"; }
 
 cleanup
