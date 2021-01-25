@@ -50,6 +50,34 @@ class TestAutosetupCamnode:
             '/boot/autosetup/3DScanner/src/raspi-autosetup/install_centralnode.sh'
         ).exists
 
+    def test_repo_branch(self, host):
+        """Test the branch the repository's head points to.
+
+        If there is a `/boot/BRANCH` file, the repo head is
+        equal the branch from this file. Allowed values are `dev` or `master`.
+        Otherwise the repo's head points to the master branch.
+        """
+        git_head = '/boot/autosetup/3DScanner/.git/HEAD'
+        if host.file('/boot/BRANCH').exists:
+            branch = host.run('head -1 /boot/BRANCH').stdout.rstrip()
+            if branch == 'dev':
+                assert (
+                    host.run('head -1 ' + git_head).stdout.rstrip()
+                    == 'ref: refs/heads/dev'
+                )
+            elif branch == 'master':
+                assert (
+                    host.run('head -1 ' + git_head).stdout.rstrip()
+                    == 'ref: refs/heads/master'
+                )
+            else:
+                assert False, 'No valid branch: ' + branch
+        else:
+            assert (
+                host.run('head -1 ' + git_head).stdout.rstrip()
+                == 'ref: refs/heads/master'
+            )
+
     def test_autosetup_python_installed(self, host):
         pkg = host.package('python3')
         assert pkg.is_installed
@@ -78,13 +106,14 @@ class TestAutosetupCamnode:
     def test_autosetup_camera(self, host):
         assert host.run('sudo raspi-config nonint get_camera').stdout.rstrip() == '0'
 
-
     def test_avahi_resolve_name_conflict_cronjob(self, host):
         jobfile = 'avahi-resolve-name-conflict.sh'
-        
+
         assert host.run('sudo ls -l /root/' + jobfile).succeeded
-        assert host.run('sudo ls /root/' + jobfile).stdout.rstrip() == '/root/'+jobfile
-        
+        assert (
+            host.run('sudo ls /root/' + jobfile).stdout.rstrip() == '/root/' + jobfile
+        )
+
         assert (
             host.run('sudo crontab -l | grep ' + jobfile)
             .stdout.rstrip()
