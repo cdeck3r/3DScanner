@@ -89,11 +89,15 @@ class Node_Software(Node_Base):
     def sw_local_revision(self):
         """Read the local's revision"""
         rd = self._repo_dir()
-        if rd is not None:
-            with open(
-                os.path.abspath(os.path.join(rd, '.git/refs/heads/master')), 'r'
-            ) as revfile:
+        if rd is None:
+            return 'unknown'
+        try:
+            for h in ['.git/refs/heads/master', '.git/refs/heads/dev']:
+                git_heads = os.path.join(rd, h)
+                if os.path.exists(git_heads):
+                    break
+            with open(os.path.abspath(git_heads), 'r') as revfile:
                 revision = revfile.readline().rstrip()
-        else:
+        except Exception:
             revision = 'unknown'
         return revision
