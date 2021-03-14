@@ -93,8 +93,7 @@ class Node_RecentImages(Node_Base):
         def finalize(tmpdir):
             # Delete tmpdir and inform clients
             try:
-                pass
-                # shutil.rmtree(tmpdir)
+                shutil.rmtree(tmpdir)
             except OSError as e:
                 logger.error("Error deleting {} : {}".format(dir_path, e.strerror))
             self.current_run_state = 'idle'
