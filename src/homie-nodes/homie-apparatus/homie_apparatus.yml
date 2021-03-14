@@ -1,0 +1,14 @@
+mqtt:
+    MQTT_BROKER: "centralnode-dca632b407ff"
+    MQTT_PORT: 1883
+
+homie:
+    UPDATE_INTERVAL: 60
+    IMPLEMENTATION: 'Full body DIY Raspberry Pi based 3D scanner'
+    FW_NAME: '3DScanner'
+    FW_VERSION: '0.1'
+
+device:
+    TOTAL_CAMS: 48
+    IMG_DIR: "/tmp/www-images"
+    IMG_TMP_DIR: "/tmp"

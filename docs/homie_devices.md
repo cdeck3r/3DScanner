@@ -69,7 +69,7 @@ After the time exceeded, the camera will take a picture and update the recent-im
 
 ## Centralnode
 
-Complementary to the device attributes, a camnode device has the following relevant nodes and properties.
+Complementary to the device attributes, a centralnode device has the following relevant nodes and properties.
 
 Base topic: `scanner/` 
 
@@ -77,4 +77,18 @@ Base topic: `scanner/`
 
 ## Scanner apparatus
 
-...tbd...
+The scanner apparatus is a homie device describing the entire technical structure as seen by an external observer. It runs on the centralnode by default, but it is not limited to. 
+
+Complementary to the device attributes, a apparatus device has the following relevant nodes and properties.
+
+Base topic: `scanner/` 
+
+| Device    | Node     | Property    | Notes                                                                             |
+|-----------|---------------|------------------|-----------------------------------------------------------------------------------|
+| apparatus | camera       | shutter-button   | triggers all cameras at the same time                                             |
+|           |               | last-button-push | datetime "yyy-mm-dd HH:mm:ss" of last shutter button pressed                      |
+|           |               | online           | cameras online and ready for taking picures                                       |
+|           |               | online_percent   | percentage value of cameras online                                                |
+|           | recent-images | store-images     | retrieve recent images from all cameras and make  them accessible to the end-user |
+|           |               | last-update      | datetime "yyyy-mm-dd HH:mm:ss" of most recent image                              |
+
