@@ -1,0 +1,10 @@
+[Unit]
+Description=Apparatus Homie Service
+
+[Service]
+ExecStart=python3 /home/pi/homie-apparatus/homie_apparatus.py
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target

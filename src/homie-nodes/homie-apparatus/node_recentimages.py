@@ -49,7 +49,7 @@ class Node_RecentImages(Node_Base):
         self.device = device
 
         # image storage location must exist
-        self.img_dir = self.device.device_settings['img_dir']
+        self.img_dir = os.path.expanduser(self.device.device_settings['img_dir'])
         assert os.path.isdir(self.img_dir)
 
         """scanner/apparatus/recent-images/save-all"""
@@ -112,7 +112,7 @@ class Node_RecentImages(Node_Base):
         # so we can decode the b64 data
 
         # retrieve images
-        tmpdir_root = self.device.device_settings['img_tmp_dir']
+        tmpdir_root = os.path.expanduser(self.device.device_settings['img_tmp_dir'])
         tmpdir = tempfile.mkdtemp(dir=tmpdir_root)
         try:
             imgs = self.retrieve_images_from_camnodes(tmpdir)

@@ -12,6 +12,12 @@ class TestHomieApparatus:
     def test_homie_apparatus_config(self, host):
         assert host.file('/home/pi/homie-apparatus/homie_apparatus.yml').exists
 
+    def test_homie_apparatus_directories(self, host):
+        # see definition in homie-apparatus/homie_apparatus.yml
+        assert host.file('/home/pi/www-images').is_directory
+        assert host.file('/home/pi/tmp').is_directory
+
+
     def mqtt_sub(self, pytestconfig, topic, wait=2):
         broker = pytestconfig.getini('mqttbroker')
         # execute process

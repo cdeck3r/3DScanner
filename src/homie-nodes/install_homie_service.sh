@@ -80,11 +80,16 @@ if [ "${NODETYPE}" = "CAMNODE" ]; then
     SERVICE_UNIT_FILE="homie_camnode.service"
 elif [ "${NODETYPE}" = "CENTRALNODE" ]; then
     SERVICE_UNIT_FILE="homie_centralnode.service"
+    SERVICE_UNIT_FILE="homie_apparatus.service"
 else
     echo "No valid nodetype: ${NODETYPE}"
     usage
     exit 2
 fi
+
+# TODO: 
+# Declare SERVICE_UNIT_FILE(s) in Array
+# Iterate through array for install
 
 # install SERVICE_UNIT_FILE
 mkdir -p "${SERVICE_UNIT_DIR}"
