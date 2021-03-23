@@ -48,9 +48,14 @@ class Node_RecentImages(Node_Base):
 
         self.device = device
 
-        # image storage location must exist
+        # create image storage location must exist
         self.img_dir = os.path.expanduser(self.device.device_settings['img_dir'])
+        os.makedirs(self.img_dir, mode=0o755, exist_ok=True)
         assert os.path.isdir(self.img_dir)
+        # temp directory to store retrieved images in json format
+        self.img_tmp_dir = os.path.expanduser(self.device.device_settings['img_tmp_dir'])
+        os.makedirs(self.img_tmp_dir, mode=0o755, exist_ok=True)
+        assert os.path.isdir(self.img_tmp_dir)
 
         """scanner/apparatus/recent-images/save-all"""
         # function's default state is 'idle'
@@ -82,6 +87,14 @@ class Node_RecentImages(Node_Base):
     def __str__(self):
         return str(self.__class__.__name__)
 
+    def count_dirs_and_files(self, path):
+        """Counts the dir and files in path directory"""
+        dircount, filecount = 0, 0
+        for _, d, f in os.walk(path):
+            dircount += len(d)
+            filecount += len(f)
+        return (dircount, filecount)
+
     def save_all(self, action):
         """Collects recent images from all camera nodes and stores them"""
 
@@ -112,8 +125,7 @@ class Node_RecentImages(Node_Base):
         # so we can decode the b64 data
 
         # retrieve images
-        tmpdir_root = os.path.expanduser(self.device.device_settings['img_tmp_dir'])
-        tmpdir = tempfile.mkdtemp(dir=tmpdir_root)
+        tmpdir = tempfile.mkdtemp(dir=self.img_tmp_dir)
         try:
             imgs = self.retrieve_images_from_camnodes(tmpdir)
         except Exception as e:

@@ -18,8 +18,6 @@ SCANODIS_INSTALL_SCRIPT="${SCANODIS_INSTALL_DIR}/install_scanodis.sh"
 SCANODIS_USER_DIR="${USER_HOME}/$(basename ${SCANODIS_INSTALL_DIR})"
 USER_ID="$(id -u ${USER})"
 # variables for homie apparatus device install
-IMG_DIR="${USER_HOME}/www-images"
-IMG_TMP="${USER_HOME}/tmp"
 HOMIE_NODES_DIR="${REPO_DIR}/src/homie-nodes"
 HOMIE_APPARATUS_DIR="${HOMIE_NODES_DIR}/homie-apparatus"
 HOMIE_APPARATUS_USER_DIR="${USER_HOME}/$(basename ${HOMIE_APPARATUS_DIR})"
@@ -73,13 +71,10 @@ systemctl restart cron.service
 
 # install homie service; run as ${USER}
 # 1. copy homie device software
-# 2. create image directory
-# 3. enable the service start at boot
-# 4. install service
+# 2. enable the service start at boot
+# 3. install service
 rm -rf "${HOMIE_APPARATUS_USER_DIR}" # cleanup
 su -c "cp -r ${HOMIE_APPARATUS_DIR} ${USER_HOME}" "${USER}"
-su -c "mkdir -p ${IMG_DIR}" "${USER}"
-su -c "mkdir -p ${IMG_TMP}" "${USER}"
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
