@@ -93,10 +93,14 @@ Base topic: `scanner/`
 |           |               | last-saved       | datetime "yyyy-mm-dd HH:mm:ss" of most recent images                              |
 |           |               | image-count      | number of images retrieved at last update                                         |
 
+1. Let all cameras on the camnodes take pictures.
 
-save-all 
-states: run, idle
-states: push, release
-states: press, release
-states: start, stop
-states: hit, ...run
+```
+mosquitto_pub -h <broker> -t scanner/apparatus/shutter-button/set -m push
+```
+
+2. Run `save-all` to retrieve all images from the camnodes and store them.
+
+```
+mosquitto_pub -h <broker> -t scanner/apparatus/recent-images/save-all/set -m run
+```

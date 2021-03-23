@@ -134,7 +134,7 @@ def start_homie_apparatus():
             time.sleep(1)
 
     except (KeyboardInterrupt, SystemExit):
-        print("Got quit signal for homie-camnode.")
+        print("Got quit signal for homie-apparatus.")
 
 
 if __name__ == "__main__":
