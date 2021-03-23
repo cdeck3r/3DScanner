@@ -3,5 +3,10 @@ mqtt:
     MQTT_BROKER: "centralnode-b827eb9c072e.local"
     MQTT_PORT: 1883
 
-scanner:
+homie:
     UPDATE_INTERVAL: 60
+    
+device:
+    CAMERA_X_RES: 1024
+    CAMERA_Y_RES: 768
+

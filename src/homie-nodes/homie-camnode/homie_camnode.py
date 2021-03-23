@@ -31,6 +31,11 @@ homie_settings = {
     'fw_version': 'unknown',
 }
 
+device_settings = {
+    'camera_x_res': 1024,
+    'camera_y_res': 768,
+}
+
 
 def get_implementation():
     """scanner/camnode-hwaddr/$implementation"""
@@ -110,7 +115,10 @@ def configure_settings(cfgfile='homie_camnode.yml'):
             logging.info('Configure node from config file: {}'.format(cfgfile))
             mqtt_settings['MQTT_BROKER'] = cfg['mqtt']['MQTT_BROKER']
             mqtt_settings['MQTT_PORT'] = cfg['mqtt']['MQTT_PORT']
-            homie_settings['update_interval'] = cfg['scanner']['UPDATE_INTERVAL']
+            homie_settings['update_interval'] = cfg['homie']['UPDATE_INTERVAL']
+            # device specific settings
+            device_settings['camera_x_res'] = cfg['device']['CAMERA_X_RES']
+            device_settings['camera_y_res'] = cfg['device']['CAMERA_Y_RES']
     except Exception:
         logging.warn(
             'Cannot load config file: {}. Will use default settings.'.format(cfgfile)
@@ -146,7 +154,8 @@ def start_homie_camnode():
             name=device_name,
             device_id=device_name,
             homie_settings=homie_settings,
-            mqtt_settings=mqtt_settings,
+            mqtt_settings=mqtt_settings,            
+            device_settings=device_settings,
         )
         dev.start()
 
@@ -164,5 +173,4 @@ if __name__ == "__main__":
 
     # configure mqtt and homie settings
     configure_settings()
-
     start_homie_camnode()

@@ -57,6 +57,11 @@ class Node_Camera(Node_Base):
         assert self.image.update_recent_image
         assert self.image.new_file
 
+        self.device = device
+        # camera resolution settings
+        self.x_res = self.device.device_settings['camera_x_res']
+        self.y_res = self.device.device_settings['camera_y_res']
+
         self.button_push_time = 0
         # button's default value is 'release'
         self.button = Property_Enum(
@@ -103,7 +108,7 @@ class Node_Camera(Node_Base):
             return
         # we expect to run on camnode
         # Ex. https://picamera.readthedocs.io/en/release-1.13/recipes1.html#capturing-to-a-file
-        camera.resolution = (1024, 768)
+        camera.resolution = (self.x_res, self.y_res)
         # Camera warm-up time
         time.sleep(2)
         image_file = self.image.new_file()

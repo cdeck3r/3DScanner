@@ -17,7 +17,11 @@ class Device_Camnode(Device_Base):
         name=None,
         homie_settings=None,
         mqtt_settings=None,
+        device_settings=None,
     ):
+
+        self.device_settings = device_settings
+        self.mqtt_settings = mqtt_settings
 
         super().__init__(device_id, name, homie_settings, mqtt_settings)
 
