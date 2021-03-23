@@ -22,8 +22,8 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
-NODE=$1     # default
-NODETYPE=$2 # default
+NODE=$1       # default
+NODETYPE=$2   # default
 REMOTE_CMD=$3 # default
 PI_USER=pi
 KEYFILE_DIR=/tmp/autosetup
@@ -56,25 +56,24 @@ ssh_login() {
 test_ssh_login() {
     local node=$1
     local keyfile=$2
-    local ssh_str
 
     USE_SSHPASS=1
     # some checks first
     # shellcheck disable=SC2153
-    [ -z "${SSHPASS}" ] && {
+    if [ -z "${SSHPASS}" ]; then
         echo "Env var SSHPASS not set. Please set variable."
-    } || {
+    else
         ssh_hostname="$(ssh_cmd /dev/null) -t ${PI_USER}@${node} hostname"
-        ${ssh_hostname} > /dev/null && {
+        ${ssh_hostname} >/dev/null && {
             echo "Login successful. USE_SSHPASS: ${USE_SSHPASS}"
             return 0
         }
-    }
-    
+    fi
+
     # test with USE_SSHPASS=0
     USE_SSHPASS=0
-    ssh_hostname="$(ssh_cmd ${keyfile}) -t ${PI_USER}@${node} hostname"
-    ${ssh_hostname} > /dev/null && {
+    ssh_hostname="$(ssh_cmd "${keyfile}") -t ${PI_USER}@${node} hostname"
+    ${ssh_hostname} >/dev/null && {
         echo "Login successful using ssh keys. USE_SSHPASS: ${USE_SSHPASS}"
         return 0
     } || {
@@ -82,7 +81,6 @@ test_ssh_login() {
         return 1
     }
 }
-
 
 ssh_cmd() {
     local keyfile=$1
@@ -258,7 +256,7 @@ test_ssh_login "${NODE}" "${keyfile}" || {
 }
 
 # default REMOTE_CMD is bash
-[ -z "${REMOTE_CMD}" ] && { REMOTE_CMD="bash"; } 
+[ -z "${REMOTE_CMD}" ] && { REMOTE_CMD="bash"; }
 # run remote shell with REMOTE_CMD
-remote_bash_shell "${NODE}" "${keyfile}" "${REMOTE_CMD}" 
+remote_bash_shell "${NODE}" "${keyfile}" "${REMOTE_CMD}"
 cleanup

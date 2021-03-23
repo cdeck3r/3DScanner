@@ -267,7 +267,7 @@ systemctl restart cron.service
 # install system sw
 install_sys_sw
 
-# download autosetup scripts from branch 
+# download autosetup scripts from branch
 BRANCH="master" # default
 if [ -f "${BRANCH_FILE}" ]; then
     BRANCH=$(head -1 "${BRANCH_FILE}")

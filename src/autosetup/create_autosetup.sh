@@ -147,7 +147,7 @@ for NODETYPE in "CAMNODE" "CENTRALNODE"; do
 
     # zip "SSH_KEYFILE" NODETYPE "${AUTOSETUP}"
     AUTOSETUP_ZIP=$(echo autosetup_${NODETYPE}.zip | tr '[:upper:]' '[:lower:]')
-    rm -rf "${SCRIPT_DIR}"/"${AUTOSETUP_ZIP}"
+    rm -rf "${SCRIPT_DIR:?}/${AUTOSETUP_ZIP}"
     echo "Create $AUTOSETUP_ZIP..."
     zip -j -q "${AUTOSETUP_ZIP}" "${SSH_KEYFILE_PUB}" "${SSH_KEYFILE_PRIV}" "${SCRIPT_DIR}"/NODETYPE "${AUTOSETUP}" "${TRACKER_INI_FILE}"
 done
@@ -164,7 +164,7 @@ done
 # cleanup
 rm -rf "${SCRIPT_DIR}"/NODETYPE
 for KEYFILE in "camnode" "centralnode"; do
-    rm -rf "${SCRIPT_DIR}"/"${KEYFILE}"*
+    rm -rf "${SCRIPT_DIR:?}"/"${KEYFILE}"*
 done
 rm -rf "${TRACKER_INI}"
 
