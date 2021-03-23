@@ -15,7 +15,6 @@ set -e
 # variables
 USER=pi
 USER_HOME="/home/${USER}"
-IMG_DIR="${USER_HOME}/images"
 REPO_DIR="/boot/autosetup/3DScanner"
 HOMIE_NODES_DIR="${REPO_DIR}/src/homie-nodes"
 HOMIE_CAMNODE_DIR="${HOMIE_NODES_DIR}/homie-camnode"
@@ -44,12 +43,10 @@ pip3 install --force-reinstall picamera
 
 # install homie service; run as ${USER}
 # 1. copy homie device software
-# 2. mkdir IMG_DIR
-# 3. enable the service start at boot
-# 4. install service
+# 2. enable the service start at boot
+# 3. install service
 rm -rf "${HOMIE_CAMNODE_USER_DIR}" # cleanup
 su -c "cp -r ${HOMIE_CAMNODE_DIR} ${USER_HOME}" "${USER}"
-su -c "mkdir -p ${IMG_DIR}" "${USER}"
 
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }

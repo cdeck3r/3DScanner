@@ -111,6 +111,7 @@ class Node_Camera(Node_Base):
         camera.capture(image_file)
         # tell the recent-image node to update
         self.image.update_recent_image(image_file)
+        # TODO: delete image_file to clean-up
 
     def shutter_button(self, button_action):
         """Received new button action from some external publisher"""

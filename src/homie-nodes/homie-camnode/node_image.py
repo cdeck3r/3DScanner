@@ -35,6 +35,7 @@ class Node_Image(Node_Base):
 
         super().__init__(device, id, name, type_, retain, qos)
 
+        os.makedirs(Node_Image.IMAGE_DIR, mode=0o755, exist_ok=True)
         assert os.path.exists(Node_Image.IMAGE_DIR)
 
         self.device_name = device.name
