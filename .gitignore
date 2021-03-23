@@ -8,6 +8,7 @@ raspios
 .doit.db.db
 hodd/hodd*
 accounts.txt
+log/*
 
 ### Java ###
 # Compiled class file
