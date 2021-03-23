@@ -1,6 +1,4 @@
 import base64
-
-# from datetime import datetime
 import datetime
 import hashlib
 import json
@@ -25,14 +23,12 @@ class Node_RecentImages(Node_Base):
     """The recent image taken by the camnode's camera
 
     scanner/apparatus/recent-images/...
-    scanner/apparatus/recent-images/store-images
-    scanner/apparatus/recent-images/last-update
+    scanner/apparatus/recent-images/save-all
+    scanner/apparatus/recent-images/last-saved
+    scanner/apparatus/recent-images/image-count
     """
-
     # allowed function states
     RUN_STATES = "run,idle"
-    # Delay time in seconds until next function call accepted
-    SUPPRESSION_TIMEOUT = 5
 
     def __init__(
         self,
@@ -47,47 +43,46 @@ class Node_RecentImages(Node_Base):
         super().__init__(device, id, name, type_, retain, qos)
 
         # important function we need
-        assert self.store_images
+        assert self.save_all
         assert Node_RecentImages.RUN_STATES
-        assert Node_RecentImages.SUPPRESSION_TIMEOUT
 
         self.device = device
 
         # image storage location must exist
-        self.image_dir = self.device.device_settings['img_dir']
-        assert os.path.isdir(self.image_dir)
+        self.img_dir = self.device.device_settings['img_dir']
+        assert os.path.isdir(self.img_dir)
 
-        """scanner/apparatus/recent-images/store-images"""
+        """scanner/apparatus/recent-images/save-all"""
         # function's default state is 'idle'
-        self.fn_store_images = Property_Enum(
+        self.prop_save_all = Property_Enum(
             node=self,
-            id="store-images",
-            name="Retrieve all images",
+            id="save-all",
+            name="Save all images",
             data_format=Node_RecentImages.RUN_STATES,
-            set_value=self.store_images,
+            set_value=self.save_all,
             value='idle',
         )
-        self.current_run_state = self.fn_store_images.value
-        self.add_property(self.fn_store_images)
+        self.current_run_state = self.prop_save_all.value
+        self.add_property(self.prop_save_all)
 
         """
-        scanner/apparatus/recent-images/last-update
+        scanner/apparatus/recent-images/last-saved
         scanner/apparatus/recent-images/image-count
         """
-        self.last_update = Property_DateTime(
-            node=self, id='last-update', name='Most recent image date'
+        self.last_saved = Property_DateTime(
+            node=self, id='last-saved', name='Most recent image date'
         )
         self.image_count = Property_Integer(
-            node=self, id='image-count', name='Retrieved images', settable=False
+            node=self, id='image-count', name='Count of saved images', settable=False
         )
 
         self.add_property(self.image_count)
-        self.add_property(self.last_update)
+        self.add_property(self.last_saved)
 
     def __str__(self):
         return str(self.__class__.__name__)
 
-    def store_images(self, action):
+    def save_all(self, action):
         """Collects recent images from all camera nodes and stores them"""
 
         def finalize(tmpdir):
@@ -97,14 +92,14 @@ class Node_RecentImages(Node_Base):
             except OSError as e:
                 logger.error("Error deleting {} : {}".format(dir_path, e.strerror))
             self.current_run_state = 'idle'
-            self.fn_store_images.value = self.current_run_state
+            self.prop_save_all.value = self.current_run_state
 
         if action != 'run':
             return
         if self.current_run_state == 'run':
             return
         self.current_run_state = 'run'
-        self.fn_store_images.value = self.current_run_state
+        self.prop_save_all.value = self.current_run_state
 
         # retrieve recent-image json with b64 encoded images in tmp dir
         # decode images
@@ -138,12 +133,12 @@ class Node_RecentImages(Node_Base):
         # filter
         imgs = self.filter_images(imgs)
         # copy & store
-        imgdir = ImageDir(self.image_dir)
-        imgdir.copy_files_from(imgs)
+        img_dir = ImageDir(self.img_dir)
+        img_dir.copy_files_from(imgs)
 
         # update properties
-        self.last_update.value = imgdir.mtime
-        self.image_count.value = len(imgdir.files)
+        self.last_saved.value = img_dir.mtime
+        self.image_count.value = len(img_dir.files)
 
         # cleanup
         finalize(tmpdir)
@@ -258,7 +253,7 @@ class ImageDir(object):
 
     def copy_to(self, dest_dir):
         """Copy the content from image dir to destination directory"""
-        # not pythonic :-(
+        # TODO: not pythonic :-(
         raise NotImplementedError
 
     def copy_from(self, src_dir):

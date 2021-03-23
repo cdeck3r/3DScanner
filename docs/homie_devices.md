@@ -83,12 +83,20 @@ Complementary to the device attributes, a apparatus device has the following rel
 
 Base topic: `scanner/` 
 
-| Device    | Node     | Property    | Notes                                                                             |
+| Device    | Node          | Property         | Notes                                                                             |
 |-----------|---------------|------------------|-----------------------------------------------------------------------------------|
-| apparatus | camera       | shutter-button   | triggers all cameras at the same time                                             |
+| apparatus | cameras       | shutter-button   | triggers all cameras at the same time                                             |
 |           |               | last-button-push | datetime "yyy-mm-dd HH:mm:ss" of last shutter button pressed                      |
 |           |               | online           | cameras online and ready for taking picures                                       |
 |           |               | online_percent   | percentage value of cameras online                                                |
-|           | recent-images | store-images     | retrieve recent images from all cameras and make  them accessible to the end-user |
-|           |               | last-update      | datetime "yyyy-mm-dd HH:mm:ss" of most recent image                              |
+|           | recent-images | save-all         | retrieve recent images from all cameras and make  them accessible to the end-user |
+|           |               | last-saved       | datetime "yyyy-mm-dd HH:mm:ss" of most recent images                              |
+|           |               | image-count      | number of images retrieved at last update                                         |
 
+
+save-all 
+states: run, idle
+states: push, release
+states: press, release
+states: start, stop
+states: hit, ...run
