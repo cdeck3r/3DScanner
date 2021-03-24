@@ -115,7 +115,7 @@ def configure_settings(cfgfile='homie_camnode.yml'):
             logging.info('Configure node from config file: {}'.format(cfgfile))
             mqtt_settings['MQTT_BROKER'] = cfg['mqtt']['MQTT_BROKER']
             mqtt_settings['MQTT_PORT'] = cfg['mqtt']['MQTT_PORT']
-            homie_settings['update_interval'] = cfg['homie']['UPDATE_INTERVAL']
+            homie_settings['update_interval'] = int(cfg['homie']['UPDATE_INTERVAL'])
             # device specific settings
             device_settings['camera_x_res'] = cfg['device']['CAMERA_X_RES']
             device_settings['camera_y_res'] = cfg['device']['CAMERA_Y_RES']
