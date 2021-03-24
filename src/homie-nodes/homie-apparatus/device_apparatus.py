@@ -2,6 +2,7 @@ import logging
 
 from homie.device_base import Device_Base
 from node_recentimages import Node_RecentImages
+from node_cameras import Node_Cameras
 
 logger = logging.getLogger(__name__)
 
@@ -26,9 +27,9 @@ class Device_Apparatus(Device_Base):
         super().__init__(self.device_id, self.name, homie_settings, mqtt_settings)
 
         # add the Node_Camera node
-        # cam = Node_Camera(device=self)
-        # self.add_node(cam)
-        # logger.info('Add node: {}'.format(cam))
+        cam = Node_Cameras(device=self)
+        self.add_node(cam)
+        logger.info('Add node: {}'.format(cam))
 
         # add the Node_RecentImage node
         recimg = Node_RecentImages(device=self)

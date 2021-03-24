@@ -65,19 +65,24 @@ class TestHomieApparatus:
             pytestconfig, 'scanner/apparatus/cameras/$properties'
         )
         msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/$type')
-        assert msg == 'file'
+        assert msg == 'camera'
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/apparatus/cameras/$properties'
         )
-        assert msg == 'shutter-button,last-button-push,online,online-percent'
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/online/$settable'
-        )
-        assert msg == 'false'
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/online/$datatype'
-        )
-        assert msg == 'integer'
+        
+        for p in ['shutter-button','last-button-push','online','online-percent']:
+            assert p in msg
+        
+        for p in ['online', 'online-percent']:
+            msg = self.mqtt_sub(
+                pytestconfig, 'scanner/apparatus/cameras/'+p+'/$settable'
+            )
+            assert msg == 'false'
+            msg = self.mqtt_sub(
+                pytestconfig, 'scanner/apparatus/cameras/'+p+'/$datatype'
+            )
+            assert msg == 'integer'
+            
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/apparatus/cameras/online'
         )

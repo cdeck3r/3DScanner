@@ -88,13 +88,13 @@ def configure_settings(cfgfile='homie_apparatus.yml'):
             logging.info('Configure node from config file: {}'.format(cfgfile))
             mqtt_settings['MQTT_BROKER'] = cfg['mqtt']['MQTT_BROKER']
             mqtt_settings['MQTT_PORT'] = cfg['mqtt']['MQTT_PORT']
-            homie_settings['update_interval'] = cfg['homie']['UPDATE_INTERVAL']
+            homie_settings['update_interval'] = int(cfg['homie']['UPDATE_INTERVAL'])
             # configure specific settings
             homie_settings["implementation"] = cfg['homie']['IMPLEMENTATION']
             homie_settings["fw_name"] = cfg['homie']['FW_NAME']
             homie_settings["fw_version"] = cfg['homie']['FW_VERSION']
             # device specific settings
-            device_settings['total_cams'] = cfg['device']['TOTAL_CAMS']
+            device_settings['total_cams'] = int(cfg['device']['TOTAL_CAMS'])
             device_settings['img_dir'] = cfg['device']['IMG_DIR']
             device_settings['img_tmp_dir'] = cfg['device']['IMG_TMP_DIR']
     except Exception:
