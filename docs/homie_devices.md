@@ -91,10 +91,10 @@ Base topic: `scanner/`
 | apparatus | cameras       | shutter-button   | triggers all cameras at the same time                                             |
 |           |               | last-button-push | datetime "yyy-mm-dd HH:mm:ss" of last shutter button pressed                      |
 |           |               | online           | cameras online and ready for taking picures                                       |
-|           |               | online_percent   | percentage value of cameras online                                                |
+|           |               | online-percent   | percentage value of cameras online                                                |
 |           | recent-images | save-all         | retrieve recent images from all cameras and make  them accessible to the end-user |
 |           |               | last-saved       | datetime "yyyy-mm-dd HH:mm:ss" of most recent images                              |
-|           |               | image-count      | number of images retrieved at last update                                         |
+|           |               | image-count      | number of images retrieved at last update                                         |                                    |
 
 1. Let all cameras on the camnodes take pictures.
 
