@@ -28,7 +28,7 @@ Base topic: `scanner/`
 |                  | $fw             | version       | kernel version              |
 
 
-## camnode
+## Camnode
 
 Complementary to the device attributes, a camnode device has the following relevant nodes and properties.
 
@@ -67,6 +67,9 @@ mosquitto_pub -h <broker> -t scanner/<device>/camera/shutter-button/set -m timer
 
 After the time exceeded, the camera will take a picture and update the recent-image properties.
 
+The homie [camnode device implementation](https://github.com/cdeck3r/3DScanner/tree/master/src/homie-nodes/homie-camnode) loads configuration settings from  [`homie_camnode.yml`](https://github.com/cdeck3r/3DScanner/blob/master/src/homie-nodes/homie-camnode/homie_camnode.yml).
+
+
 ## Centralnode
 
 Complementary to the device attributes, a centralnode device has the following relevant nodes and properties.
@@ -104,3 +107,5 @@ mosquitto_pub -h <broker> -t scanner/apparatus/shutter-button/set -m push
 ```
 mosquitto_pub -h <broker> -t scanner/apparatus/recent-images/save-all/set -m run
 ```
+
+The homie [apparatus device implementation](https://github.com/cdeck3r/3DScanner/tree/master/src/homie-nodes/homie-apparatus) loads configuration settings from  [`homie_apparatus.yml`](https://github.com/cdeck3r/3DScanner/blob/master/src/homie-nodes/homie-apparatus/homie_apparatus.yml).
