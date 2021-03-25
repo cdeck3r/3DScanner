@@ -1,0 +1,40 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+skinparam linetype polyline
+allow_mixing
+
+
+skinparam classBackgroundColor<<system>> AntiqueWhite
+skinparam classBackgroundColor<<hardware>> AntiqueWhite
+
+actor "end user" as user
+
+hide members
+hide circle
+
+class "scanner" <<system>>
+class "camnode" as canode <<homie device>>  
+class "centralnode" as cenode <<homie device>>
+class apparatus <<homie device>>
+class "Raspberry Pi" as raspi <<hardware>>
+
+note right of cenode
+  Functions
+  * MQTT broker
+  * file storage
+end note
+
+scanner "1" *-right-- "1" cenode: < manages
+scanner "1" *-left-- "*" canode
+scanner "1" *-up-- "1" apparatus : < controls
+scanner "1" o-down-- "1..*" raspi
+
+cenode "1" -- "1" raspi : runs on >
+canode "1" -- "1" raspi : runs on >
+
+
+apparatus ..> canode
+apparatus ..> cenode
+user -- apparatus: interacts >
+@enduml
