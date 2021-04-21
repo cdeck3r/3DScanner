@@ -129,6 +129,9 @@ tool_check
 set_timezone "Europe/Berlin"
 set_node_name "node"
 
+# make sure ssh runs since autosetup relies on ssh
+enable_ssh
+
 # select autosetup.zip
 # we will prefer camnode setup over central node, if it exists.
 unset AUTOSETUP_ZIP
