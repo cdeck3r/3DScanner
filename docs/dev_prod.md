@@ -17,3 +17,13 @@ The [autosetup](autosetup_rerun.md) selects the branch found in the first line o
 ## Pull Development into Production
 
 Create a pull request from the `dev` branch into the `master` branch. Finally, [re-run autosetup](autosetup_rerun.md) to reboot the node and install the new software from the repository's master branch.
+
+## Re-enable Password-based Login
+
+During development we may face the situation to access the dev system with user / password instead of ssh key-based auth. The following naive script will re-enable password auth.
+
+```bash
+cat /etc/ssh/sshd_config | grep -v ChallengeResponseAuthentication | grep -v PasswordAuthentication | grep -v UsePAM > /tmp/sshd_config && cp /tmp/sshd_config /etc/ssh/sshd_config && systemctl restart sshd
+```
+
+**IMPORTANT:** Re-run the autosetup, see [autosetup_rerun.md](autosetup_rerun.md), to enable ssh key-based auth as the default behavior.
