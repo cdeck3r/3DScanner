@@ -62,7 +62,8 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-precheck 1
+SKIP_CHECK=$(false; echo $?)
+precheck "${SKIP_CHECK}"
 
 diag "${HR}"
 diag "Check for camera nodes"

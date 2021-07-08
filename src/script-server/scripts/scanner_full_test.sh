@@ -51,7 +51,8 @@ diag "${HR}"
 diag "Scanner Full Test"
 diag "${HR}"
 
-precheck 0
+SKIP_CHECK=$(true; echo $?)
+precheck "${SKIP_CHECK}"
 
 diag " "
 diag "${HR}"

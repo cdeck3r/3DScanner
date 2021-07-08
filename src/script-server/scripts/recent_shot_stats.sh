@@ -74,7 +74,8 @@ plan_no_plan
 # error counter 
 let err_cnt=0
 
-precheck 0
+SKIP_CHECK=$(true; echo $?)
+precheck "${SKIP_CHECK}"
 
 diag "${HR}"
 diag "Time difference: shutter button and last-saved images"

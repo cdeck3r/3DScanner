@@ -60,7 +60,9 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-precheck 0
+SKIP_CHECK=$(true; echo $?)
+precheck "${SKIP_CHECK}"
+
 
 diag "${HR}"
 diag "List camera nodes online"

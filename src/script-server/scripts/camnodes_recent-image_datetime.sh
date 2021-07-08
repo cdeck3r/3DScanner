@@ -60,7 +60,8 @@ plan_no_plan
 # error counter 
 let err_cnt=0
 
-precheck 1
+SKIP_CHECK=$(false; echo $?)
+precheck "${SKIP_CHECK}"
 
 diag "${HR}"
 diag "List all recent-image datetime"
