@@ -105,8 +105,7 @@ su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
 # 3. install service
 rm -rf "${SCRIPT_SERVER_USER_DIR}" # cleanup
 # download and copy
-wget https://github.com/bugy/script-server/releases/download/1.16.0/script-se
-rver.zip -O /tmp/script-server.zip -q
+wget 'https://github.com/bugy/script-server/releases/download/1.16.0/script-server.zip' -O /tmp/script-server.zip -q
 su "${USER}" <<'EOF'
 mkdir "${SCRIPT_SERVER_USER_DIR}"
 unzip -q /tmp/script-server.zip -d "${SCRIPT_SERVER_USER_DIR}"
