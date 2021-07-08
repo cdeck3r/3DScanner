@@ -109,7 +109,7 @@ wget 'https://github.com/bugy/script-server/releases/download/1.16.0/script-serv
 # usually in /home/pi
 mkdir "${SCRIPT_SERVER_USER_DIR}"
 unzip -q /tmp/script-server.zip -d "${SCRIPT_SERVER_USER_DIR}"
-cp -r "${SCRIPT_SERVER_INSTALL_DIR}/*" "${SCRIPT_SERVER_USER_DIR}"
+cp -r "${SCRIPT_SERVER_INSTALL_DIR}" "$(dirname ${SCRIPT_SERVER_USER_DIR})"
 chmod u+x "${SCRIPT_SERVER_USER_DIR}/scripts/*.sh" 
 chown -R ${USER}:${USER} "${SCRIPT_SERVER_USER_DIR}"
 # cleanup
