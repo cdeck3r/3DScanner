@@ -1,0 +1,9 @@
+{
+  "port": 5000,
+  "address": "127.0.0.1",
+  "title": "3D Scanner",
+    
+  "access": {
+	"admin_users": ["*"]
+	}
+}

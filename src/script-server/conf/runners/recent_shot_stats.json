@@ -1,0 +1,7 @@
+{
+  "name": "Computes some stats from the scanner's recent image shot.",
+  "script_path": "recent_shot_stats.sh",
+  "working_directory": "scripts",
+  "description": "Use this after the taking images with the scanner. See image count and delay between shutter button and image.",
+  "parameters": []
+}

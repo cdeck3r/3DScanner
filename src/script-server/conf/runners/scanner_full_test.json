@@ -1,0 +1,7 @@
+{
+  "name": "For developers: Runs all scripts.",
+  "script_path": "scanner_full_test.sh",
+  "working_directory": "scripts",
+  "description": "Intented for developers. Scanner shoots images. Be patient. It takes a while.",
+  "parameters": []
+}

@@ -1,0 +1,7 @@
+{
+  "name": "For end-user: Push to fire all scanner cameras.",
+  "script_path": "shutter-button.sh",
+  "working_directory": "scripts",
+  "description": "All scanner cameras fire and the images are stored for the end-user.",
+  "parameters": []
+}

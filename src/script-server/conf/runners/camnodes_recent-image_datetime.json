@@ -1,0 +1,7 @@
+{
+  "name": "List all camera nodes' recent-image datetime",
+  "script_path": "camnodes_recent-image_datetime.sh",
+  "working_directory": "scripts",
+  "description": "One can see, which camnode provides a recent image.",
+  "parameters": []
+}
