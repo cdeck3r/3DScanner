@@ -1,0 +1,10 @@
+[Unit]
+Description=script-server UI for the scanner apparatus
+
+[Service]
+ExecStart=python3 /home/pi/script-server/launcher.py
+Restart=always
+RestartSec=60
+
+[Install]
+WantedBy=default.target

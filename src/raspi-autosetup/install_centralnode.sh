@@ -22,6 +22,10 @@ HOMIE_NODES_DIR="${REPO_DIR}/src/homie-nodes"
 HOMIE_APPARATUS_DIR="${HOMIE_NODES_DIR}/homie-apparatus"
 HOMIE_APPARATUS_USER_DIR="${USER_HOME}/$(basename ${HOMIE_APPARATUS_DIR})"
 SERVICE_INSTALL_SCRIPT="${HOMIE_NODES_DIR}/install_homie_service.sh"
+# variables for script-server UI
+SCRIPT_SERVER_INSTALL_DIR="${REPO_DIR}/src/script-server"
+SCRIPT_SERVER_INSTALL_SCRIPT="${SCRIPT_SERVER_INSTALL_DIR}/install_script_server.sh"
+SCRIPT_SERVER_USER_DIR="${USER_HOME}/script-server"
 
 # Exit codes
 # >0 if script breaks
@@ -63,6 +67,21 @@ systemctl enable mosquitto.service
 systemctl start mosquitto.service
 systemctl restart mosquitto.service # refresh conf
 
+
+# create root, configure and restart nginx
+#
+# create: take root from conf file
+NGINX_ROOT=$(cat "${SCRIPT_DIR}/centralnode_nginx.conf" | sed -e 's/^[[:space:]]*//
+' | egrep '^root' | cut -d' ' -f2 | cut -d';' -f1 | head -1)
+mkdir -p "${NGINX_ROOT}"
+chmod 755 "${NGINX_ROOT}"
+chown ${USER}:${USER} "${NGINX_ROOT}"
+# ... configure and restart nginx
+cp "${SCRIPT_DIR}/centralnode_nginx.conf" /etc/nginx/sites-available/default
+chmod 644 /etc/nginx/sites-available/default
+chown root:root /etc/nginx/sites-available/default
+systemctl restart nginx
+
 # install scanodis (scanner node discovery)
 chmod 755 "${SCANODIS_INSTALL_SCRIPT}"
 rm -rf "${SCANODIS_USER_DIR}" # cleanup
@@ -79,3 +98,23 @@ su -c "cp -r ${HOMIE_APPARATUS_DIR} ${USER_HOME}" "${USER}"
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
+
+# install script-server UI; run as ${USER}
+# 1. Download and cp script-server in "${SCRIPT_SERVER_USER_DIR}"
+# 2. enable the service start at boot
+# 3. install service
+rm -rf "${SCRIPT_SERVER_USER_DIR}" # cleanup
+# download and copy
+wget https://github.com/bugy/script-server/releases/download/1.16.0/script-se
+rver.zip -O /tmp/script-server.zip -q
+su "${USER}" <<'EOF'
+mkdir "${SCRIPT_SERVER_USER_DIR}"
+unzip -q /tmp/script-server.zip -d "${SCRIPT_SERVER_USER_DIR}"
+cp -r "${SCRIPT_SERVER_INSTALL_DIR}/*" "${SCRIPT_SERVER_USER_DIR}"
+chmod u+x "${SCRIPT_SERVER_USER_DIR}/scripts/*.sh
+EOF
+rm -rf /tmp/script-server.zip
+# enable the service start at each Raspi boot-up for the user ${USER}
+loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
+chmod 755 "${SCRIPT_SERVER_INSTALL_SCRIPT}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCRIPT_SERVER_INSTALL_SCRIPT}" "${USER}"
