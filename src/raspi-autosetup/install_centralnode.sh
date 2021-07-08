@@ -93,7 +93,7 @@ systemctl restart cron.service
 # 2. enable the service start at boot
 # 3. install service
 rm -rf "${HOMIE_APPARATUS_USER_DIR}" # cleanup
-su -c "cp -r ${HOMIE_APPARATUS_DIR} ${USER_HOME}" "${USER}"
+su -c "cp -r ${HOMIE_APPARATUS_DIR} $(dirname ${HOMIE_APPARATUS_USER_DIR})" "${USER}"
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
@@ -110,7 +110,7 @@ wget 'https://github.com/bugy/script-server/releases/download/1.16.0/script-serv
 mkdir "${SCRIPT_SERVER_USER_DIR}"
 unzip -q /tmp/script-server.zip -d "${SCRIPT_SERVER_USER_DIR}"
 cp -r "${SCRIPT_SERVER_INSTALL_DIR}" "$(dirname ${SCRIPT_SERVER_USER_DIR})"
-chmod u+x "${SCRIPT_SERVER_USER_DIR}/scripts/*.sh" 
+chmod -R u+x "${SCRIPT_SERVER_USER_DIR}/scripts"
 chown -R ${USER}:${USER} "${SCRIPT_SERVER_USER_DIR}"
 # cleanup
 rm -rf /tmp/script-server.zip
