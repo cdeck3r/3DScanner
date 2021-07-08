@@ -9,6 +9,7 @@ raspios
 hodd/hodd*
 accounts.txt
 log/*
+scanodis_tracker.ini
 
 ### Java ###
 # Compiled class file
