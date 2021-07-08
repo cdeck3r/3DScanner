@@ -106,12 +106,13 @@ su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
 rm -rf "${SCRIPT_SERVER_USER_DIR}" # cleanup
 # download and copy
 wget 'https://github.com/bugy/script-server/releases/download/1.16.0/script-server.zip' -O /tmp/script-server.zip -q
-su "${USER}" <<'EOF'
+# usually in /home/pi
 mkdir "${SCRIPT_SERVER_USER_DIR}"
 unzip -q /tmp/script-server.zip -d "${SCRIPT_SERVER_USER_DIR}"
 cp -r "${SCRIPT_SERVER_INSTALL_DIR}/*" "${SCRIPT_SERVER_USER_DIR}"
-chmod u+x "${SCRIPT_SERVER_USER_DIR}/scripts/*.sh
-EOF
+chmod u+x "${SCRIPT_SERVER_USER_DIR}/scripts/*.sh" 
+chown -R ${USER}:${USER} "${SCRIPT_SERVER_USER_DIR}"
+# cleanup
 rm -rf /tmp/script-server.zip
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
