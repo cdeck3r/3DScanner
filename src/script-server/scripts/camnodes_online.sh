@@ -81,7 +81,7 @@ echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f2,4- | sort
 diag "${HR}"
 
 LAST_UPDATE_TS=$(echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f4- | cut -d' ' -f2- | sort | tr " " "_")
-mapfile -t LAST_UPDATE_TS_ARRAY < <(${LAST_UPDATE_TS})
+mapfile -t LAST_UPDATE_TS_ARRAY < <(echo "${LAST_UPDATE_TS}")
 
 LATE_UPDATE_NODES=0
 curr_t_sec=$(date +"%s")
