@@ -2,7 +2,7 @@
 
 #
 # Common functions to include in scripts
-# 
+#
 # Author: cdeck3r
 #
 
@@ -12,20 +12,20 @@
 # src:  https://wiki.bash-hackers.org/snipplets/print_horizontal_line#the_parameter_expansion_way
 #
 hr_old() {
-  local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
-  local cols=${COLUMNS:-$(tput cols)}
-  (( cols-=2 )) # modified for use in tap's diag function
-  while ((${#line} < cols)); do line+="$line"; done
-  printf '%s%s%s\n' "$start" "${line:0:cols}" "$end"
+    local start=$'\e(0' end=$'\e(B' line='qqqqqqqqqqqqqqqq'
+    local cols=${COLUMNS:-$(tput cols)}
+    ((cols -= 2)) # modified for use in tap's diag function
+    while ((${#line} < cols)); do line+="$line"; done
+    printf '%s%s%s\n' "$start" "${line:0:cols}" "$end"
 }
 
 #
 # src: https://wiki.bash-hackers.org/snipplets/print_horizontal_line#a_line_across_the_entire_width_of_the_terminal
 #
 hr() {
-  local cols=${COLUMNS:-$(tput cols)}
-  (( cols-=2 )) # modified for use in tap's diag function
-  printf '%*s\n' "${COLUMNS:-$cols}" '' | tr ' ' -
+    local cols=${COLUMNS:-$(tput cols)}
+    ((cols -= 2)) # modified for use in tap's diag function
+    printf '%*s\n' "${COLUMNS:-$cols}" '' | tr ' ' -
 }
 
 # requires tap-functions.sh
@@ -46,18 +46,18 @@ precheck() {
 
     # min req.
     [[ -n "${MQTT_BROKER}" ]] || { BAIL_OUT "Variable MQTT_BROKER not set"; }
-    
-    skip "${skip_check}" "No pre-check required" || { 
+
+    skip "${skip_check}" "No pre-check required" || {
         diag "${HR}"
         diag "Check pre-requisites"
         diag "${HR}"
         okx tool_check
         [[ -n "${MQTT_BROKER}" ]] || { BAIL_OUT "Variable MQTT_BROKER not set"; }
 
-        okx test -n "${MQTT_BROKER}" 
+        okx test -n "${MQTT_BROKER}"
 
         diag "Ping MQTT broker: ${MQTT_BROKER}"
-        okx ping -c 3 "${MQTT_BROKER}" 
+        okx ping -c 3 "${MQTT_BROKER}"
         # shellcheck disable=SC2181
         [[ $? -eq 0 ]] || {
             BAIL_OUT "No ping to broker. Scanner not working."

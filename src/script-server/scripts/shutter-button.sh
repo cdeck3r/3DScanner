@@ -4,7 +4,7 @@
 #
 # Pushes the scanner's camera shutter-button
 # The script publishs a message to scanner/apparatus/cameras/shutter-button
-# 
+#
 # Author: cdeck3r
 #
 
@@ -23,19 +23,18 @@ cd "$SCRIPT_DIR" || exit
 # shellcheck disable=SC2034
 SCRIPT_NAME=$0
 
-
 # Vars
 YIELD_TIME_SEC=4 #time to wait before starting to save images
 MAX_WAIT_SEC_SAVE_IMAGES=30
 
 MQTT_BROKER="" # set empty
 
-[ -f "${SCRIPT_DIR}/common_vars.conf" ] || { 
+[ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
     echo "Could find required config file: common_vars.conf"
     echo "Abort."
     exit 1
 }
-[ -f "${SCRIPT_DIR}/tap-functions.sh" ] || { 
+[ -f "${SCRIPT_DIR}/tap-functions.sh" ] || {
     echo "Could find required file: tap-functions.sh"
     echo "Abort."
     exit 1
@@ -44,12 +43,11 @@ MQTT_BROKER="" # set empty
 source "${SCRIPT_DIR}/common_vars.conf"
 source "${SCRIPT_DIR}/tap-functions.sh"
 
-
 #####################################################
 # Include Helper functions
 #####################################################
 
-[ -f "${SCRIPT_DIR}/funcs.sh" ] || { 
+[ -f "${SCRIPT_DIR}/funcs.sh" ] || {
     echo "Could find required file: funcs.sh"
     echo "Abort."
     exit 1
@@ -64,7 +62,10 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-SKIP_CHECK=$(true; echo $?)
+SKIP_CHECK=$(
+    true
+    echo $?
+)
 precheck "${SKIP_CHECK}"
 
 diag "${HR}"
@@ -75,7 +76,7 @@ TOPIC='scanner/apparatus/recent-images/last-saved'
 LAST_SAVED="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 LAST_SAVED_EXE=$(${LAST_SAVED})
 is $? 0 "Retrieve last-saved datetime"
-LAST_SAVED_RES=$(echo "${LAST_SAVED_EXE}"| head -1)
+LAST_SAVED_RES=$(echo "${LAST_SAVED_EXE}" | head -1)
 echo "${LAST_SAVED_RES}"
 
 LAST_SAVED_DT=$(echo "${LAST_SAVED_RES}" | cut -d' ' -f2)
@@ -117,30 +118,28 @@ ${SAVE_ALL_IMAGES}
 is $? 0 "Start saving all camera images... wait to complete"
 
 # loop until last-saved changes
-(( counter=MAX_WAIT_SEC_SAVE_IMAGES ))
-while (( --counter > 0 )); do
+((counter = MAX_WAIT_SEC_SAVE_IMAGES))
+while ((--counter > 0)); do
     TOPIC='scanner/apparatus/recent-images/last-saved'
     LAST_SAVED="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
     LAST_SAVED_EXE=$(${LAST_SAVED})
-    is $? 0 "Check # $((MAX_WAIT_SEC_SAVE_IMAGES-counter)): Wait to complete..."
-    LAST_SAVED_RES=$( echo "${LAST_SAVED_EXE}" | head -1)
+    is $? 0 "Check # $((MAX_WAIT_SEC_SAVE_IMAGES - counter)): Wait to complete..."
+    LAST_SAVED_RES=$(echo "${LAST_SAVED_EXE}" | head -1)
     echo "${LAST_SAVED_RES}"
 
     # compute diff
     LAST_SAVED_DT=$(echo "${LAST_SAVED_RES}" | cut -d' ' -f2)
     last_saved_sec=$(date -d"${LAST_SAVED_DT}" +"%s")
 
-    (( prev_last_saved_sec != last_saved_sec )) && { break; }
+    ((prev_last_saved_sec != last_saved_sec)) && { break; }
 
     sleep 1
 done
 # counter shall not be 0 to indicate success
 isnt ${counter} 0 "Save all camera images"
 
-# Summary 
+# Summary
 diag "${HR}"
-(( counter == 0 )) && { diag "${RED}[FAIL]${NC} - Possible problem. Check output."; }
-(( counter > 0 )) && { diag "${GREEN}[SUCCESS]${NC} - Now download the images."; }
+((counter == 0)) && { diag "${RED}[FAIL]${NC} - Possible problem. Check output."; }
+((counter > 0)) && { diag "${GREEN}[SUCCESS]${NC} - Now download the images."; }
 diag "${HR}"
-
-

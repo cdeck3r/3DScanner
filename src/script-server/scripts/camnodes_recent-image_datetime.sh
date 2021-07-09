@@ -2,8 +2,8 @@
 # shellcheck disable=SC1090
 
 #
-# List all recent-image datetime 
-# 
+# List all recent-image datetime
+#
 # Author: cdeck3r
 #
 
@@ -25,12 +25,12 @@ SCRIPT_NAME=$0
 # Vars
 MQTT_BROKER="" # set empty
 
-[ -f "${SCRIPT_DIR}/common_vars.conf" ] || { 
+[ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
     echo "Could find required config file: common_vars.conf"
     echo "Abort."
     exit 1
 }
-[ -f "${SCRIPT_DIR}/tap-functions.sh" ] || { 
+[ -f "${SCRIPT_DIR}/tap-functions.sh" ] || {
     echo "Could find required file: tap-functions.sh"
     echo "Abort."
     exit 1
@@ -43,7 +43,7 @@ source "${SCRIPT_DIR}/tap-functions.sh"
 # Include Helper functions
 #####################################################
 
-[ -f "${SCRIPT_DIR}/funcs.sh" ] || { 
+[ -f "${SCRIPT_DIR}/funcs.sh" ] || {
     echo "Could find required file: funcs.sh"
     echo "Abort."
     exit 1
@@ -58,10 +58,13 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-# error counter 
-(( err_cnt=0 ))
+# error counter
+((err_cnt = 0))
 
-SKIP_CHECK=$(false; echo $?)
+SKIP_CHECK=$(
+    false
+    echo $?
+)
 precheck "${SKIP_CHECK}"
 
 diag "${HR}"
@@ -79,33 +82,33 @@ mapfile -t RECENT_IMAGE_DATETIME_ARRAY < <(echo "${RECENT_IMAGE_DATETIME_RES}" |
 
 curr_sec=$(date -d'now' +"%s")
 for camnode in "${RECENT_IMAGE_DATETIME_ARRAY[@]}"; do
-    cn=$(echo "${camnode}"|cut -d_ -f1)
-    dt=$(echo "${camnode}"|cut -d_ -f2)
+    cn=$(echo "${camnode}" | cut -d_ -f1)
+    dt=$(echo "${camnode}" | cut -d_ -f2)
     dt_sec=$(date -d"${dt}" +"%s")
-    
-    # dt >= 1 hour 
-    # 1 hour > dt >= 12 hours 
-    # 12 hour > dt 
-    
-    (( one_hour_old=curr_sec-3600 ))
-    (( twelve_hours_old=curr_sec-43200 ))
-    
-    if (( dt_sec >= one_hour_old )); then
+
+    # dt >= 1 hour
+    # 1 hour > dt >= 12 hours
+    # 12 hour > dt
+
+    ((one_hour_old = curr_sec - 3600))
+    ((twelve_hours_old = curr_sec - 43200))
+
+    if ((dt_sec >= one_hour_old)); then
         pass "${cn} ${dt}"
-    elif (( dt_sec >= twelve_hours_old )); then
+    elif ((dt_sec >= twelve_hours_old)); then
         fail "Image not older than 12h - ${cn} ${dt}"
-        (( err_cnt+=1 ))
+        ((err_cnt += 1))
     else
         fail "Image older than 12h - ${cn} ${dt}"
-        (( err_cnt+=1 ))
+        ((err_cnt += 1))
     fi
 done
 
 # summary eval for recent-image datetime
 diag "${HR}"
-if (( err_cnt == 0 )); then
+if ((err_cnt == 0)); then
     diag "${GREEN}[SUCCESS]${NC} - All camnodes provide recent images."
-elif (( err_cnt <= 5 )); then
+elif ((err_cnt <= 5)); then
     diag "${YELLOW}[WARNING]${NC} - A few nodes provide old images. Check output."
 else
     diag "${RED}[FAIL]${NC} - Severe problem. Several nodes provide old images. Check output."
@@ -115,4 +118,3 @@ if [[ -n "${OLDEST_RECENT_IMAGE_DATETIME}" ]]; then
     diag "${CYAN}[INFO]${NC} - Oldest recent image: ${OLDEST_RECENT_IMAGE_DATETIME}"
 fi
 diag "${HR}"
-

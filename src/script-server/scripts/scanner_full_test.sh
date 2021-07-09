@@ -3,7 +3,7 @@
 
 #
 # Scanner full test runs a sequence of test functions
-# 
+#
 # Author: cdeck3r
 #
 
@@ -24,7 +24,6 @@ SCRIPT_NAME=$0
 
 # Vars
 
-
 source "${SCRIPT_DIR}/common_vars.conf"
 source "${SCRIPT_DIR}/tap-functions.sh"
 
@@ -32,7 +31,7 @@ source "${SCRIPT_DIR}/tap-functions.sh"
 # Include Helper functions
 #####################################################
 
-[ -f "${SCRIPT_DIR}/funcs.sh" ] || { 
+[ -f "${SCRIPT_DIR}/funcs.sh" ] || {
     echo "Could find required file: funcs.sh"
     echo "Abort."
     exit 1
@@ -47,12 +46,14 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-
 diag "${HR}"
 diag "Scanner Full Test"
 diag "${HR}"
 
-SKIP_CHECK=$(true; echo $?)
+SKIP_CHECK=$(
+    true
+    echo $?
+)
 precheck "${SKIP_CHECK}"
 
 diag " "
@@ -64,7 +65,7 @@ diag "${HR}"
     diag "${RED}[FAIL]${NC} - Severe problem when operating the scanner."
     BAIL_OUT "Abort."
 }
-"${SCRIPT_DIR}/camnodes_online.sh" 
+"${SCRIPT_DIR}/camnodes_online.sh"
 "${SCRIPT_DIR}/camnodes_recent-image_datetime.sh"
 
 diag " "
@@ -72,8 +73,7 @@ diag "${HR}"
 diag "Scanner shoots image and computes stats "
 diag "${HR}"
 
-"${SCRIPT_DIR}/shutter-button.sh" \
-&& "${SCRIPT_DIR}/recent_shot_stats.sh"
+"${SCRIPT_DIR}/shutter-button.sh" &&
+    "${SCRIPT_DIR}/recent_shot_stats.sh"
 
 diag "${HR}"
-
