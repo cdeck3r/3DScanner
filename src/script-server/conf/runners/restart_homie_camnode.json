@@ -1,0 +1,7 @@
+{
+  "name": "Restart camera service",
+  "script_path": "restart_homie_camnode.sh",
+  "working_directory": "scripts",
+  "description": "Restarts the homie camnode service on each camera node. This is necessary to fully rebuild a camnode's connection after the centralnode had restarted.",
+  "parameters": []
+}
