@@ -1,4 +1,5 @@
 #!/bin/bash 
+# shellcheck disable=SC2181,SC2162,SC2034,SC2154,SC2214,SC2086,SC2004,SC2155,SC2046,SC2124,SC2196
 
 #
 # A producer for the TAP specification

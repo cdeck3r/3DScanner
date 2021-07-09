@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # Scanner full test runs a sequence of test functions
@@ -59,8 +60,7 @@ diag "${HR}"
 diag "Basic Tests shall work"
 diag "${HR}"
 
-"${SCRIPT_DIR}/check_scanner.sh"
-[[ $? -eq 0 ]] || {
+"${SCRIPT_DIR}/check_scanner.sh" || {
     diag "${RED}[FAIL]${NC} - Severe problem when operating the scanner."
     BAIL_OUT "Abort."
 }

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # Lists all online camnodes
@@ -68,6 +69,7 @@ diag "${HR}"
 diag "List camera nodes online"
 diag "${HR}"
 
+# shellcheck disable=SC2016
 TOPIC='scanner/+/$stats/lastupdate'
 LAST_UPDATE="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 LAST_UPDATE_RES=$(${LAST_UPDATE})
@@ -78,19 +80,21 @@ echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f2,4- | sort
 diag "${HR}"
 
 LAST_UPDATE_TS=$(echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f4- | cut -d' ' -f2- | sort | tr " " "_")
-LAST_UPDATE_TS_ARRAY=($(echo "${LAST_UPDATE_TS}"))
+mapfile -t LAST_UPDATE_TS_ARRAY < <(${LAST_UPDATE_TS})
+
+
 LATE_UPDATE_NODES=0
 curr_t_sec=$(date +"%s")
 
-let t_sec_threshold=curr_t_sec-PAST_UPDATE_SEC
+(( t_sec_threshold=curr_t_sec-PAST_UPDATE_SEC ))
 for ts in "${LAST_UPDATE_TS_ARRAY[@]}"; do
-    t=$(echo ${ts} | tr "_" " ")
+    t=$(echo "${ts}" | tr "_" " ")
     # need to swap month and day, because 
     # 06/07/2021 17:38:27 is considered as "Jun 7, 2021 17:38:27"
     t_swap=$(date -d "${t}" +"%d/%m/%Y %H:%M:%S")
     # convert in seconds since epoch
     t_sec=$(date -d "${t_swap}" +"%s")
-    (( t_sec <= t_sec_threshold )) && { let LATE_UPDATE_NODES+=1; }
+    (( t_sec <= t_sec_threshold )) && { (( LATE_UPDATE_NODES+=1 )); }
 done
 if (( LATE_UPDATE_NODES > 0 )); then
     diag "${RED}[FAIL]${NC} - Nodes with no update for at least $((PAST_UPDATE_SEC/60)) min: ${LATE_UPDATE_NODES}."

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # Pushes the scanner's camera shutter-button
@@ -63,9 +64,6 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
-# error counter 
-let err_cnt=0
-
 SKIP_CHECK=$(true; echo $?)
 precheck "${SKIP_CHECK}"
 
@@ -116,15 +114,15 @@ TOPIC="scanner/apparatus/recent-images/save-all/set"
 MSG="run"
 SAVE_ALL_IMAGES="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC} -m ${MSG}"
 ${SAVE_ALL_IMAGES}
-is $? 0 "Save all camera images"
+is $? 0 "Start saving all camera images... wait to complete"
 
 # loop until last-saved changes
-let counter=MAX_WAIT_SEC_SAVE_IMAGES
+(( counter=MAX_WAIT_SEC_SAVE_IMAGES ))
 while (( --counter > 0 )); do
     TOPIC='scanner/apparatus/recent-images/last-saved'
     LAST_SAVED="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
     LAST_SAVED_EXE=$(${LAST_SAVED})
-    is $? 0 "Check # $((MAX_WAIT_SEC_SAVE_IMAGES-counter)): Retrieve last-saved datetime"
+    is $? 0 "Check # $((MAX_WAIT_SEC_SAVE_IMAGES-counter)): Wait to complete..."
     LAST_SAVED_RES=$( echo "${LAST_SAVED_EXE}" | head -1)
     echo "${LAST_SAVED_RES}"
 
@@ -132,7 +130,7 @@ while (( --counter > 0 )); do
     LAST_SAVED_DT=$(echo "${LAST_SAVED_RES}" | cut -d' ' -f2)
     last_saved_sec=$(date -d"${LAST_SAVED_DT}" +"%s")
 
-    (( ${prev_last_saved_sec} != ${last_saved_sec} )) && { break; }
+    (( prev_last_saved_sec != last_saved_sec )) && { break; }
 
     sleep 1
 done

@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # List all recent-image datetime 
@@ -58,7 +59,7 @@ HR=$(hr) # horizontal line
 plan_no_plan
 
 # error counter 
-let err_cnt=0
+(( err_cnt=0 ))
 
 SKIP_CHECK=$(false; echo $?)
 precheck "${SKIP_CHECK}"
@@ -74,7 +75,8 @@ is $? 0 "Retrieve recent image datetime from each camera node"
 
 # loop through each camnode and check its recent-image/datetime
 diag "Check each recent image datetime"
-RECENT_IMAGE_DATETIME_ARRAY=($(echo "${RECENT_IMAGE_DATETIME_RES}" | sort | tr " " "_"))
+mapfile -t RECENT_IMAGE_DATETIME_ARRAY < <(echo "${RECENT_IMAGE_DATETIME_RES}" | sort | tr " " "_")
+
 curr_sec=$(date -d'now' +"%s")
 for camnode in "${RECENT_IMAGE_DATETIME_ARRAY[@]}"; do
     cn=$(echo "${camnode}"|cut -d_ -f1)
@@ -85,17 +87,17 @@ for camnode in "${RECENT_IMAGE_DATETIME_ARRAY[@]}"; do
     # 1 hour > dt >= 12 hours 
     # 12 hour > dt 
     
-    let one_hour_old=curr_sec-3600
-    let twelve_hours_old=curr_sec-43200
+    (( one_hour_old=curr_sec-3600 ))
+    (( twelve_hours_old=curr_sec-43200 ))
     
     if (( dt_sec >= one_hour_old )); then
         pass "${cn} ${dt}"
     elif (( dt_sec >= twelve_hours_old )); then
         fail "Image not older than 12h - ${cn} ${dt}"
-        let err_cnt+=1
+        (( err_cnt+=1 ))
     else
         fail "Image older than 12h - ${cn} ${dt}"
-        let err_cnt+=1
+        (( err_cnt+=1 ))
     fi
 done
 

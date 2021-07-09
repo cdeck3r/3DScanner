@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # Check connection to scanner 
@@ -69,14 +70,15 @@ diag "${HR}"
 diag "Check for camera nodes"
 diag "${HR}"
 
+# shellcheck disable=SC2016
 TOPIC='scanner/+/$stats/lastupdate'
 LAST_UPDATE="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 LAST_UPDATE_EXE=$( ${LAST_UPDATE} )
 is $? 0 "Search for all camera nodes"
-NUM_NODES=$( echo "${LAST_UPDATE_EXE}" | grep -v apparatus | wc -l)
+NUM_NODES=$( echo "${LAST_UPDATE_EXE}" | grep -vc apparatus )
 (( NUM_NODES > 0 )) || { fail "No camera nodes found."; } 
 
-
+# shellcheck disable=SC2016
 TOPIC='scanner/+/$state'
 READY="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 READY_EXE=$( ${READY} )
@@ -86,9 +88,9 @@ READY_RES=$( echo "${READY_EXE}" | grep -v apparatus )
 
 # loop through each camnode and check its $state
 diag "List each ready camera node"
-READY_RES_ARRAY=($(echo "${READY_RES}" | tr " " "_"))
+mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
 for camnode in "${READY_RES_ARRAY[@]}"; do
-    is $(echo "${camnode}"|cut -d_ -f2) "ready" "$(echo ${camnode}|tr '_' ' ')"
+    is "$(echo "${camnode}"|cut -d_ -f2)" "ready" "$(echo "${camnode}"|tr '_' ' ')"
 done
 
 # Summary evaluation of ready camnodes 

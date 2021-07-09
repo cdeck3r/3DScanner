@@ -1,4 +1,5 @@
 #!/bin/bash
+# shellcheck disable=SC1090
 
 #
 # Recent shot statistics 
@@ -72,7 +73,7 @@ HR=$(hr) # horizontal line
 plan_no_plan
 
 # error counter 
-let err_cnt=0
+(( err_cnt=0 ))
 
 SKIP_CHECK=$(true; echo $?)
 precheck "${SKIP_CHECK}"
@@ -102,12 +103,12 @@ LAST_SAVED_DT=$(echo "${LAST_SAVED_RES}" | cut -d' ' -f2)
 last_button_push_sec=$(date -d"${LAST_BUTTON_PUSH_DT}" +"%s")
 last_saved_sec=$(date -d"${LAST_SAVED_DT}" +"%s")
 
-let diff_sec=last_saved_sec-last_button_push_sec
+(( diff_sec=last_saved_sec-last_button_push_sec ))
 if (( diff_sec <= DIFF_SEC_THR )); then
     pass "Time difference: ${diff_sec} seconds"
 else
     fail "Time difference: ${diff_sec} seconds"
-    let err_cnt+=1
+    (( err_cnt+=1 ))
 fi
 
 
@@ -124,7 +125,7 @@ IMAGE_COUNT_RES=$(echo "${IMAGE_COUNT_EXE}"| head -1)
 echo "${IMAGE_COUNT_RES}"
 
 IMAGE_COUNT_VAL=$(echo "${IMAGE_COUNT_RES}" | cut -d' ' -f2)
-(( IMAGE_COUNT_VAL > 0 )) || { fail "No recent images found."; let err_cnt+=1; }
+(( IMAGE_COUNT_VAL > 0 )) || { fail "No recent images found."; (( err_cnt+=1 )); }
 
 diag " "
 
