@@ -31,7 +31,7 @@ hr() {
 # requires tap-functions.sh
 tool_check() {
     # check for required tools avail from shell
-    TOOLS=('mosquitto_sub' 'mosquitto_pub' 'tr' 'wc' 'date')
+    TOOLS=('mosquitto_sub' 'mosquitto_pub' 'tr' 'wc' 'date' 'uniq')
     for t in "${TOOLS[@]}"; do
         # check for installed program
         # Source: https://stackoverflow.com/a/677212
