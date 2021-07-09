@@ -4,6 +4,6 @@
   "title": "3D Scanner",
     
   "access": {
-	"admin_users": ["*"]
+	"trusted_ips": ["127.0.0.1", "::1"]
 	}
 }
