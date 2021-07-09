@@ -23,7 +23,6 @@ hr_old() {
 # src: https://wiki.bash-hackers.org/snipplets/print_horizontal_line#a_line_across_the_entire_width_of_the_terminal
 #
 hr() {
-  export TERM="xterm"
   local cols=${COLUMNS:-$(tput cols)}
   (( cols-=2 )) # modified for use in tap's diag function
   printf '%*s\n' "${COLUMNS:-$cols}" '' | tr ' ' -
