@@ -76,7 +76,7 @@ diag "Collect camnodes from nodelist"
 diag "${HR}"
 
 [ -f "${NODELIST_LOG}" ] || { BAIL_OUT "File not found: ${NODELIST_LOG}"; }
-mapfile -t CAMNODE_IP_ARRAY < <(uniq "${NODELIST_LOG}" | cut -d$'\t' -f2)
+mapfile -t CAMNODE_IP_ARRAY < <(cat "${NODELIST_LOG}" |sort|uniq|cut -d$'\t' -f2)
 is $? 0 "Read IP addresses from nodelist"
 isnt "${#CAMNODE_IP_ARRAY[@]}" 0 "IP addresses available"
 
