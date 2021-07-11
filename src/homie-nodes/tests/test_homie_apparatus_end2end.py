@@ -107,9 +107,9 @@ class TestHomieApparatusEnd2End:
         )
         assert True
 
-    @pytest.mark.parametrize('waiting_time', [2])
+    @pytest.mark.parametrize('waiting_time', [20])
     def test_homie_apparatus_recent_images_last_saved_check(self, host, pytestconfig, waiting_time):
-        time.sleep(3*waiting_time)
+        time.sleep(waiting_time)
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/apparatus/recent-images/last-saved'
         )
