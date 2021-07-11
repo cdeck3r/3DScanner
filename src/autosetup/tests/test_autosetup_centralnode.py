@@ -178,3 +178,34 @@ class TestAutosetupCentralnode:
         logfile = 'avahi-resolve-name-conflict.sh.log'
         assert host.file('/tmp/' + logfile).exists
         assert int(host.run('grep -c iteration /tmp/' + logfile).stdout.rstrip()) >= 1
+
+    def test_autosetup_script_server_installed(self, host):
+        assert host.file('/home/pi/script-server/launcher.py').exists
+        assert host.file('/home/pi/script-server/launcher.py').mode == 0o775
+
+    def test_autosetup_script_server_connect(self, host):
+        assert (
+            int(
+                host.run(
+                    'wget 127.0.0.1:5000 -v -O /dev/null 2>&1 | grep -c "200 OK"'
+                ).stdout.rstrip()
+            )
+            == 1
+        )
+
+    def test_autosetup_script_server_shutter_button(self, host):
+        assert host.file('/home/pi/script-server/scripts').is_directory
+        assert host.file('/home/pi/script-server/scripts/tap-functions.sh').exists
+        assert host.file('/home/pi/script-server/scripts/funcs.sh').exists
+        assert host.file('/home/pi/script-server/scripts/common_vars.conf').exists
+        assert host.file('/home/pi/script-server/scripts/shutter-button.sh').exists
+        assert (
+            host.file('/home/pi/script-server/scripts/shutter-button.sh').mode == 0o744
+        )
+
+    def test_autosetup_script_server_cronjob(self, host):
+        assert (
+            host.run('crontab -l | grep script-server')
+            .stdout.rstrip()
+            .startswith('0 * * * * /home/pi/script-server/logrotate.sh')
+        )
