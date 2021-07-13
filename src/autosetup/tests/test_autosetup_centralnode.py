@@ -120,6 +120,11 @@ class TestAutosetupCentralnode:
         assert host.service('nginx').is_enabled
         assert host.service('nginx').is_running
 
+    def test_autosetup_wwwdir(self, host):
+        assert host.file('/home/pi/www-images').is_directory
+        assert host.file('/home/pi/www-images').mode == 0o755
+
+
     def test_autosetup_homie4_installed(self, host):
         assert (
             host.run('pip3 freeze | grep Homie4').stdout.rstrip().startswith('Homie4')
@@ -203,7 +208,9 @@ class TestAutosetupCentralnode:
             host.file('/home/pi/script-server/scripts/shutter-button.sh').mode == 0o744
         )
 
-    def test_autosetup_script_server_cronjob(self, host):
+    def test_autosetup_script_server_housekeeping(self, host):
+        assert host.file('/home/pi/script-server/scripts/image_housekeeping.sh').exists
+        assert host.file('/home/pi/script-server/logrotate.conf').exists
         assert (
             host.run('crontab -l | grep script-server')
             .stdout.rstrip()
