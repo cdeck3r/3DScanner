@@ -79,7 +79,7 @@ grep "${LOG_FILE}" "${LOG_CONF}" >/dev/null || {
 (
     crontab -l
     echo "0 * * * * ${SCANODIS_SCRIPT} >> ${LOG_FILE} 2>&1"
-) | crontab - || {
+) | sort | uniq | crontab - || {
     echo "Error adding cronjob. Code: $?"
     exit 2
 }

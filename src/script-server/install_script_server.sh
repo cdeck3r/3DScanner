@@ -123,7 +123,7 @@ if [ -f "${LOGROTATE_CONF}" ]; then
     (
         crontab -l
         echo "0 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -l ${LOGROTATE_LOG} ${LOGROTATE_CONF} >/dev/null 2>&1"
-    ) | crontab - || {
+    ) | sort | uniq | crontab - || {
         echo "Error adding cronjob. Code: $?"
         exit 2
     }
