@@ -120,3 +120,4 @@ rm -rf /tmp/script-server.zip
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SCRIPT_SERVER_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCRIPT_SERVER_INSTALL_SCRIPT}" "${USER}"
+systemctl restart cron.service

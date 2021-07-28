@@ -29,6 +29,12 @@ NODETYPE=$1
 USER=pi
 USER_HOME="/home/${USER}"
 SERVICE_UNIT_DIR="${USER_HOME}/.config/systemd/user"
+SCRIPT_SERVER_USER_DIR="${USER_HOME}/script-server"
+
+LOG_DIR="${USER_HOME}/log"
+LOGROTATE_CONF="${SCRIPT_SERVER_USER_DIR}/logrotate.conf"
+LOGROTATE_LOG="${LOG_DIR}/logrotate_script-server.log"
+LOGROTATE_STATE="${LOG_DIR}/logrotate_script-server.state"
 
 #####################################################
 # Include Helper functions
@@ -106,6 +112,24 @@ STATE=$(systemctl --user --no-pager --no-legend is-active "${SERVICE_UNIT_FILE}"
 
 if [ "${STATE}" != "active" ]; then
     echo "Service not active: ${SERVICE_UNIT_FILE}"
+    exit 2
+fi
+
+# create log directory
+mkdir -p "${LOG_DIR}"
+
+# install daily logrotate cronjob - run each night at 2am
+if [ -f "${LOGROTATE_CONF}" ]; then
+    (
+        crontab -l
+        echo "0 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -l ${LOGROTATE_LOG} ${LOGROTATE_CONF} >/dev/null 2>&1"
+    ) | crontab - || {
+        echo "Error adding cronjob. Code: $?"
+        exit 2
+    }
+else
+    echo "File does not exist: ${LOGROTATE_CONF}"
+    echo "Could not install logrotate cronjob"
     exit 2
 fi
 
