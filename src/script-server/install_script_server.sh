@@ -92,6 +92,10 @@ else
     exit 2
 fi
 
+
+# remove script-server log rotation from crontab
+crontab -l | grep -v 'script-server' | crontab - || { echo "Ignore error: $?"; }
+
 # install SERVICE_UNIT_FILE
 mkdir -p "${SERVICE_UNIT_DIR}"
 # test
