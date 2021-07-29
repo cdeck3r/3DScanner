@@ -187,6 +187,9 @@ class TestAutosetupCentralnode:
     def test_autosetup_script_server_installed(self, host):
         assert host.file('/home/pi/script-server/launcher.py').exists
         assert host.file('/home/pi/script-server/launcher.py').mode == 0o775
+        # does not work in testinfra because the script_server.service is a user service
+        #assert host.service('script_server.service').is_enabled
+        #assert host.service('script_server.service').is_running
 
     def test_autosetup_script_server_connect(self, host):
         assert (
@@ -208,11 +211,23 @@ class TestAutosetupCentralnode:
             host.file('/home/pi/script-server/scripts/shutter-button.sh').mode == 0o744
         )
 
-    def test_autosetup_script_server_housekeeping(self, host):
-        assert host.file('/home/pi/script-server/scripts/image_housekeeping.sh').exists
+    def test_autosetup_script_server_logrotate(self, host):
+        assert host.file('/home/pi/log/script-server.log').exists
+        assert host.file('/home/pi/log/processes').is_directory
         assert host.file('/home/pi/script-server/logrotate.conf').exists
+        assert (
+            host.run('grep "/home/pi/log/script-server.log" /home/pi/script-server/logrotate.conf').succeeded
+        )
+        assert (
+            host.run('grep "/home/pi/log/processes" /home/pi/script-server/logrotate.conf').succeeded
+        )
         assert (
             host.run('crontab -l | grep script-server')
             .stdout.rstrip()
-            .startswith('0 * * * * /home/pi/script-server/logrotate.sh')
+            .startswith('0 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_script-server.state')
         )
+
+    def test_autosetup_script_server_housekeeping(self, host):
+        assert host.file('/home/pi/www-images').is_directory
+        assert host.file('/home/pi/housekeeping').is_directory
+        assert host.file('/home/pi/housekeeping/image_housekeeping.sh').exists
