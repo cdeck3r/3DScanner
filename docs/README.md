@@ -11,9 +11,14 @@
 
 ## Operation 
 
-An extended documentation for end-users.
+**Target group: end-users**
 
-*tbd*
+* GUI documentation 
+
+**Target group: developers**
+
+* [Logging and housekeeping](logging_housekeeping.md)
+
 
 ## Setup and Install Raspberry Pis
 
@@ -47,9 +52,6 @@ Complete flow chart of the setup and installation process:
 * [Homie device description](homie_devices.md)
 * [Homie device service](homie_device_service.md)
 
-## Operation
-
-* [Logging and housekeeping](logging_housekeeping.md)
 
 ## Software Development
 
