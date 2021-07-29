@@ -47,6 +47,10 @@ Complete flow chart of the setup and installation process:
 * [Homie device description](homie_devices.md)
 * [Homie device service](homie_device_service.md)
 
+## Operation
+
+* [Logging and housekeeping](logging_housekeeping.md)
+
 ## Software Development
 
 * [Dev and Prod](dev_prod.md)
