@@ -31,7 +31,6 @@ CONF_FILE="${SCRIPT_DIR}/logrotate.conf"
 STATE_FILE="${LOG_DIR}/logrotate_housekeeping.state"
 LOGROTATE_LOG_FILE="${LOG_DIR}/logrotate_housekeeping.log"
 
-
 #####################################################
 # Include Helper functions
 #####################################################
@@ -50,7 +49,6 @@ check_user() {
 
     return 0
 }
-
 
 #####################################################
 # Main program

@@ -39,3 +39,12 @@ The housekeeping process works as follows:
 
 It is `low watermark < high watermark`. The process basically defines a hysteresis. 
 
+**Usage**
+
+```bash
+Usage: housekeeping.sh <directory> <low watermark> [high watermark]
+```
+
+If no high watermark is provided, it sets it to the total disk size the directory, which effectively deletes the entire directory content.
+
+

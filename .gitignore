@@ -10,6 +10,7 @@ hodd/hodd*
 accounts.txt
 log/*
 scanodis_tracker.ini
+bash_unit
 
 ### Java ###
 # Compiled class file
