@@ -238,6 +238,16 @@ class TestAutosetupCentralnode:
             .startswith('0 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/www-images')
         )
 
+    def test_autosetup_tmpimage_housekeeping(self, host):
+        assert host.file('/home/pi/tmp').is_directory
+        assert host.file('/home/pi/housekeeping').is_directory
+        assert host.file('/home/pi/housekeeping/housekeeping.sh').exists
+        assert (
+            host.run('crontab -l | grep housekeeping.sh')
+            .stdout.rstrip()
+            .startswith('30 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/tmp')
+        )
+
 
     def test_autosetup_housekeeping_logrotate(self, host):
         assert host.file('/home/pi/housekeeping/logrotate.conf').exists
