@@ -78,12 +78,20 @@ check_params() {
     return 0
 }
 
+make_scripts_executable() {
+    chmod -R 744 *.sh
+}
+
 #####################################################
 # Main program
 #####################################################
 
 check_user || {
     log_echo "ERROR" "User mismatch. Script must run as user: ${USER}. Abort."
+    exit 1
+}
+make_scripts_executable || {
+    log_echo "ERROR" "Scripts are not executable. Abort."
     exit 1
 }
 check_params || { exit 1; }

@@ -26,6 +26,10 @@ SERVICE_INSTALL_SCRIPT="${HOMIE_NODES_DIR}/install_homie_service.sh"
 SCRIPT_SERVER_INSTALL_DIR="${REPO_DIR}/src/script-server"
 SCRIPT_SERVER_INSTALL_SCRIPT="${SCRIPT_SERVER_INSTALL_DIR}/install_script_server.sh"
 SCRIPT_SERVER_USER_DIR="${USER_HOME}/script-server"
+# variables for housekeeping
+HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
+HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
+HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
 
 # Exit codes
 # >0 if script breaks
@@ -121,3 +125,17 @@ loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SCRIPT_SERVER_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCRIPT_SERVER_INSTALL_SCRIPT}" "${USER}"
 systemctl restart cron.service
+
+# install housekeeping; run as ${USER}
+# 1. Remove and re-create user directory for housekeeping
+# 2. Copy files into user directory and set credentials for install script
+# 3. Run install script as ${USER} 
+# Restart cron service
+rm -rf "${HOUSEKEEPING_USER_DIR}" # cleanup
+mkdir "${HOUSEKEEPING_USER_DIR}"
+cp -r "${HOUSEKEEPING_INSTALL_DIR}" "$(dirname ${HOUSEKEEPING_USER_DIR})"
+chown -R ${USER}:${USER} "${HOUSEKEEPING_USER_DIR}"
+chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${NGINX_ROOT}" "${USER}"
+systemctl restart cron.service
+
