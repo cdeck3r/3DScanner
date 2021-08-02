@@ -13,7 +13,6 @@ Relevant scripts:
 
 * `housekeeping.sh`
 * `install_housekeeping.sh`
-* ...
 
 ### Unit testing
 
