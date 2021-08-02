@@ -214,6 +214,7 @@ class TestAutosetupCentralnode:
     def test_autosetup_script_server_logrotate(self, host):
         assert host.file('/home/pi/log/script-server.log').exists
         assert host.file('/home/pi/log/processes').is_directory
+        assert host.file('/home/pi/log/processes_log').is_directory
         assert host.file('/home/pi/script-server/logrotate.conf').exists
         assert (
             host.run('grep "/home/pi/log/script-server.log" /home/pi/script-server/logrotate.conf').succeeded
@@ -227,7 +228,24 @@ class TestAutosetupCentralnode:
             .startswith('0 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_script-server.state')
         )
 
-    def test_autosetup_script_server_housekeeping(self, host):
+    def test_autosetup_wwwimages_housekeeping(self, host):
         assert host.file('/home/pi/www-images').is_directory
         assert host.file('/home/pi/housekeeping').is_directory
-        assert host.file('/home/pi/housekeeping/image_housekeeping.sh').exists
+        assert host.file('/home/pi/housekeeping/housekeeping.sh').exists
+        assert (
+            host.run('crontab -l | grep housekeeping.sh')
+            .stdout.rstrip()
+            .startswith('0 3 * * * /home/pi/housekeeping.sh /home/pi/www-images')
+        )
+
+
+    def test_autosetup_housekeeping_logrotate(self, host):
+        assert host.file('/home/pi/housekeeping/logrotate.conf').exists
+        assert (
+            host.run('grep "/home/pi/log/housekeeping.log" /home/pi/housekeeping/logrotate.conf').succeeded
+        )
+        assert (
+            host.run('crontab -l | grep housekeeping | grep logrotate')
+            .stdout.rstrip()
+            .startswith('30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_housekeeping.state')
+        )
