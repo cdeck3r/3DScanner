@@ -12,10 +12,11 @@ set -e
 # low watermark [unit: KB]
 # high watermark [unit: KB]
 DATA_DIR=$1
-LOW_MARK=$((1 * 1024 * 1024))  # 1GB default
-HIGH_MARK=$((2 * 1024 * 1024)) # 2GB default
 LOW_MARK=$2
 HIGH_MARK=$3
+
+[[ -z "${LOW_MARK}" ]] && { LOW_MARK=$((1 * 1024 * 1024)); } # 1GB default 
+[[ -z "${HIGH_MARK}" ]] && { HIGH_MARK=$((2 * 1024 * 1024)); } # 2GB default
 
 # Exit codes
 # 1 - if precond not satisfied
