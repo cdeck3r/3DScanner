@@ -127,7 +127,7 @@ class TestAutosetupCamnode:
         assert (
             host.run('crontab -l | grep housekeeping.sh | grep /home/pi/images')
             .stdout.rstrip()
-            .startswith('30 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/images')
+            .startswith('0 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/images')
         )
 
     def test_autosetup_housekeeping_logrotate(self, host):
