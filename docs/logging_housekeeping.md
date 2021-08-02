@@ -11,6 +11,7 @@ A few software components write logfiles in form of proprietary formats the defa
 
 * [scanodis](scanodis.md)
 * [script-server UI](script-server_ui.md)
+* image [housekeeping](#image-housekeeping)
 
 Each performs its own logrotation using the following convention:
 
