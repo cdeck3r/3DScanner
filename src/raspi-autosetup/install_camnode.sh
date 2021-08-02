@@ -22,6 +22,11 @@ HOMIE_CAMNODE_USER_DIR="${USER_HOME}/$(basename ${HOMIE_CAMNODE_DIR})"
 SERVICE_INSTALL_SCRIPT="${HOMIE_NODES_DIR}/install_homie_service.sh"
 USER_ID="$(id -u ${USER})"
 
+# variables for housekeeping
+HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
+HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
+HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
+
 # ignore wrong date
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 
@@ -52,3 +57,16 @@ su -c "cp -r ${HOMIE_CAMNODE_DIR} ${USER_HOME}" "${USER}"
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
+
+# install housekeeping; run as ${USER}
+# 1. Remove and re-create user directory for housekeeping
+# 2. Copy files into user directory and set credentials for install script
+# 3. Run install script as ${USER} 
+# Restart cron service
+rm -rf "${HOUSEKEEPING_USER_DIR}" # cleanup
+mkdir "${HOUSEKEEPING_USER_DIR}"
+cp -r "${HOUSEKEEPING_INSTALL_DIR}" "$(dirname ${HOUSEKEEPING_USER_DIR})"
+chown -R ${USER}:${USER} "${HOUSEKEEPING_USER_DIR}"
+chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${USER_HOME}/images" "${USER}"
+systemctl restart cron.service

@@ -119,3 +119,24 @@ class TestAutosetupCamnode:
             .stdout.rstrip()
             .startswith('@reboot sleep 60 && /root/' + jobfile)
         )
+
+    def test_autosetup_images_housekeeping(self, host):
+        assert host.file('/home/pi/images').is_directory
+        assert host.file('/home/pi/housekeeping').is_directory
+        assert host.file('/home/pi/housekeeping/housekeeping.sh').exists
+        assert (
+            host.run('crontab -l | grep housekeeping.sh | grep /home/pi/images')
+            .stdout.rstrip()
+            .startswith('30 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/images')
+        )
+
+    def test_autosetup_housekeeping_logrotate(self, host):
+        assert host.file('/home/pi/housekeeping/logrotate.conf').exists
+        assert (
+            host.run('grep "/home/pi/log/housekeeping.log" /home/pi/housekeeping/logrotate.conf').succeeded
+        )
+        assert (
+            host.run('crontab -l | grep housekeeping | grep logrotate')
+            .stdout.rstrip()
+            .startswith('30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_housekeeping.state')
+        )
