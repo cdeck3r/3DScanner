@@ -243,7 +243,7 @@ class TestAutosetupCentralnode:
         assert host.file('/home/pi/housekeeping').is_directory
         assert host.file('/home/pi/housekeeping/housekeeping.sh').exists
         assert (
-            host.run('crontab -l | grep housekeeping.sh')
+            host.run('crontab -l | grep housekeeping.sh | grep /home/pi/tmp')
             .stdout.rstrip()
             .startswith('30 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/tmp')
         )
