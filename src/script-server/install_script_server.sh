@@ -121,6 +121,7 @@ fi
 
 # create log directory
 mkdir -p "${LOG_DIR}"
+mkdir -p "${LOG_DIR}/processes_log"
 
 # install daily logrotate cronjob - run each night at 2am
 if [ -f "${LOGROTATE_CONF}" ]; then
