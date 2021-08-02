@@ -1,10 +1,8 @@
 #!/bin/bash
 
-
 #
 # We test for different invalid input param format
 #
-
 
 # this directory is the script directory
 SCRIPT_DIR="$(
@@ -23,6 +21,7 @@ _SUT="$(dirname "${SUT}")/_$(basename "${SUT}")"
 # Unit tests
 #####################################################
 
+# shellcheck disable=SC1090
 source "${SCRIPT_DIR}/setup_suite.sh"
 
 test_no_params() {
@@ -84,4 +83,3 @@ test_three_params_float_text() {
 test_three_params_negfloat_text() {
     assert_fail "${_SUT} data_dir -1.23 text" "Script should exit 1, if one of the watermark params ist not an integer"
 }
-

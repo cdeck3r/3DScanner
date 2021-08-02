@@ -23,6 +23,7 @@ TEST_DATA_DIR="/tmp/test_data_dir"
 # Unit tests
 #####################################################
 
+# shellcheck disable=SC1090
 source "${SCRIPT_DIR}/setup_suite.sh"
 
 _logfile_start() {
@@ -31,25 +32,25 @@ _logfile_start() {
 
 test_invalid_data_dir() {
     local INVALID_TEST_DATA_DIR
-    
+
     INVALID_TEST_DATA_DIR="invalid_${TEST_DATA_DIR}"
-    assert_status_code 2 "${_SUT} ${INVALID_TEST_DATA_DIR} 123 456" 
+    assert_status_code 2 "${_SUT} ${INVALID_TEST_DATA_DIR} 123 456"
 }
 
 test_low_watermark_gt_total() {
     local _LOW_WATERMARK=99999999999999999
-    assert_status_code 2 "${_SUT} ${TEST_DATA_DIR} ${_LOW_WATERMARK} 456" 
+    assert_status_code 2 "${_SUT} ${TEST_DATA_DIR} ${_LOW_WATERMARK} 456"
 }
 
 test_high_watermark_not_provided() {
-    assert "${_SUT} ${TEST_DATA_DIR} 123" 
+    assert "${_SUT} ${TEST_DATA_DIR} 123"
     assert _logfile_start
     assert "grep 'High watermark not specified. Will delete the entire directory' ${TEST_LOG_FILE}"
 }
 
 test_high_watermark_gt_total() {
     local _HIGH_WATERMARK=99999999999999999
-    assert "${_SUT} ${TEST_DATA_DIR} 123 ${_HIGH_WATERMARK}" 
+    assert "${_SUT} ${TEST_DATA_DIR} 123 ${_HIGH_WATERMARK}"
     assert _logfile_start
     assert "grep 'High watermark is greater than total disk space' ${TEST_LOG_FILE}"
 }
@@ -57,12 +58,11 @@ test_high_watermark_gt_total() {
 test_sufficient_space() {
     PARTITION="/"
     FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
-    LOW_WATERMARK=$((FREE-1024))
+    LOW_WATERMARK=$((FREE - 1024))
     assert "${_SUT} ${TEST_DATA_DIR} ${LOW_WATERMARK}"
     assert _logfile_start
     assert "grep 'Sufficient free space avail:' ${TEST_LOG_FILE}"
 }
-
 
 setup() {
     mkdir -p "${TEST_DATA_DIR}"
