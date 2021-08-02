@@ -1,0 +1,6 @@
+{
+  "name": "====================",
+  "script_path": "echo 'NOP'",
+  "description": "No function, it just separates scripts entries in the left menu.",
+  "parameters": []
+}
