@@ -4,13 +4,15 @@ The nodes utilize the [homie convention](https://homieiot.github.io/) to describ
 
 ## Devices Descriptions
 
-The following devices describe themselves using homie.
+Devices are abstraction for scanner components and functions and describe themselves using homie. The following class diagram depicts three homie devices.
 
 * camnode
 * centralnode
 * scanner apparatus
 
-The scanner apparatus describes the entire technical structure as seen by an external observer. It  aggregates all other device descriptions and creates a new device from them with the camnode and centralnode devices as nodes.
+![Class diagram of homie devices](http://www.plantuml.com/plantuml/png/3SN14K8X30JGLhG1SlWtptPW0Gmk6M64u2IBMhw-opjtmzXLjuzJ8rzn4V7oIO_EjkyxrB6CQanOKr0LpyFbkDvGpDHbbk2_kX22KI9oMxDhhlhkq4ZyyWS0)
+
+The scanner apparatus describes the entire technical structure, referred to as `<<system>> scanner`, as seen by an external observer. It depends on the other device descriptions from the camnode and centralnode devices.
 
 The base topic for all devices is `scanner`.
 
