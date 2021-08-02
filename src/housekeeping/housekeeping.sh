@@ -118,7 +118,7 @@ check_param() {
 # first things first
 check_user || {
     log_echo "ERROR" "User mismatch. Script must run as user: ${USER}. Abort."
-    exit 254
+    exit 1
 }
 check_param || {
     usage
@@ -159,14 +159,14 @@ FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
     # start deleting files from DATA_DIR
     log_echo_file "WARN" "Insufficient space: ${FREE}"
     log_echo_file "INFO" "Start deleting files from directory: ${DATA_DIR}"
-    mapfile -t DATA_FILE_ARRAY < <(find "${DATA_DIR}" -type f -printf "%T+ %p\n" | sort | cut -d' ' -f2)
-    
+    mapfile -t DATA_FILE_ARRAY < <(find "${DATA_DIR}" -type f -printf "%T+ %p\\n" | sort | cut -d' ' -f2)
+
     for f in "${DATA_FILE_ARRAY[@]}"; do
         rm -rf "$f"
-        ((files_deleted+=1))
+        ((files_deleted += 1))
         FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
-        ((FREE>HIGH_MARK)) && { break; }
-    done    
+        ((FREE > HIGH_MARK)) && { break; }
+    done
 }
 
 # Finalize: delete all empty dirs in DATA_DIR
