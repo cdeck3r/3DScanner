@@ -235,7 +235,7 @@ class TestAutosetupCentralnode:
         assert (
             host.run('crontab -l | grep housekeeping.sh')
             .stdout.rstrip()
-            .startswith('0 3 * * * /home/pi/housekeeping.sh /home/pi/www-images')
+            .startswith('0 3 * * * /home/pi/housekeeping/housekeeping.sh /home/pi/www-images')
         )
 
 
