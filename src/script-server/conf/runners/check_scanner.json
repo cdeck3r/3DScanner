@@ -1,5 +1,5 @@
 {
-  "name": "2. Scanner health status",
+  "name": " 2. Scanner health status",
   "script_path": "check_scanner.sh",
   "working_directory": "scripts",
   "description": "Use this at first. It checks the connection to the scanner and counts ready cameras nodes",
