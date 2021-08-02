@@ -18,6 +18,7 @@ SUT="${SCRIPT_DIR}/../housekeeping.sh"
 _SUT="$(dirname "${SUT}")/_$(basename "${SUT}")"
 TEST_DATA_DIR="/tmp/test_data_dir"
 TEST_FREE=0
+TEST_TOTAL=0
 
 #####################################################
 # Unit tests
@@ -182,12 +183,48 @@ test_delete_files_in_directory_structure() {
     assert_fail "ls ${TEST_DATA_DIR}/emptytestdir" "Directory shall be removed"
 }
 
+test_delete_all_files_when_low_watermark_equals_totalsize() {
+    # create data in TEST_DATA_DIR
+    for i in {1..5}; do
+        _create_test_data "${TEST_DATA_DIR}/testfile_$i.dat" "1M"
+    done
+    assert "_files_in_test_data_dir_equals 5"
+    # we are below
+    LOW_WATERMARK="${TEST_TOTAL}" 
+    assert "${_SUT} ${TEST_DATA_DIR} ${LOW_WATERMARK}"
+    assert _logfile_start
+    assert "grep 'Insufficient space' ${TEST_LOG_FILE}"
+    assert "grep 'Start deleting files from directory:' ${TEST_LOG_FILE}"
+    assert "grep 'Deleted files: 5' ${TEST_LOG_FILE}"
+    assert "_files_in_test_data_dir_equals 0"
+    assert _logfile_delete_empty_dirs
+}
+
+test_delete_all_files_when_low_watermark_and_high_watermark_equals_totalsize() {
+    # create data in TEST_DATA_DIR
+    for i in {1..5}; do
+        _create_test_data "${TEST_DATA_DIR}/testfile_$i.dat" "1M"
+    done
+    assert "_files_in_test_data_dir_equals 5"
+    # we are below
+    LOW_WATERMARK="${TEST_TOTAL}" 
+    HIGH_WATERMARK="${LOW_WATERMARK}" 
+    assert "${_SUT} ${TEST_DATA_DIR} ${LOW_WATERMARK} ${HIGH_WATERMARK}"
+    assert _logfile_start
+    assert "grep 'Insufficient space' ${TEST_LOG_FILE}"
+    assert "grep 'Start deleting files from directory:' ${TEST_LOG_FILE}"
+    assert "grep 'Deleted files: 5' ${TEST_LOG_FILE}"
+    assert "_files_in_test_data_dir_equals 0"
+    assert _logfile_delete_empty_dirs
+}
+
 setup() {
     mkdir -p "${TEST_DATA_DIR}"
     mkdir -p "${TEST_LOG_DIR}"
 
     PARTITION="/"
     TEST_FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
+    TEST_TOTAL=$(df --output=size -k "${PARTITION}" | tail -n 1 | xargs) # total capacity
 }
 teardown() {
     rm -rf "${TEST_DATA_DIR}"
