@@ -106,3 +106,8 @@ else
     diag "${RED}[FAIL]${NC} - Too few camera nodes ready: ${NUM_READY_NODES}."
 fi
 diag "${HR}"
+diag " "
+
+# Check for available disk space - perform housekeeping
+./housekeeping.sh
+
