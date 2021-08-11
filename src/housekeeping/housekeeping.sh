@@ -171,6 +171,6 @@ FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
 
 # Finalize: delete all empty dirs in DATA_DIR
 log_echo_file "INFO" "Delete all empty directories in directory: ${DATA_DIR}"
-find "${DATA_DIR}" -type d -empty -delete >/dev/null
+find "${DATA_DIR}" -mindepth 1 -type d -empty -delete >/dev/null
 
 log_echo_file "INFO" "Deleted files: ${files_deleted}"

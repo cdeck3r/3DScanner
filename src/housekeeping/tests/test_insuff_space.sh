@@ -63,6 +63,8 @@ test_empty_data_dir() {
     assert "grep 'Start deleting files from directory:' ${TEST_LOG_FILE}"
     assert "grep 'Deleted files: 0' ${TEST_LOG_FILE}"
     assert _logfile_delete_empty_dirs
+    # TEST_DATA_DIR still exists
+    assert "test -d ${TEST_DATA_DIR}" "Directory does not exist: ${TEST_DATA_DIR}"
 }
 
 test_delete_one_file_dir_empty() {
