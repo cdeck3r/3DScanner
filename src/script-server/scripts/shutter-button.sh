@@ -26,6 +26,7 @@ SCRIPT_NAME=$0
 # Vars
 YIELD_TIME_SEC=4 #time to wait before starting to save images
 MAX_WAIT_SEC_SAVE_IMAGES=30
+ENABLE_HOUSEKEEPING=1 # performs image housekeeping before saving images
 
 MQTT_BROKER="" # set empty
 
@@ -106,6 +107,7 @@ diag "Give some time before starting to save all images"
 sleep ${YIELD_TIME_SEC}
 
 diag " "
+(( ENABLE_HOUSEKEEPING )) && { ./housekeeping.sh; diag " "; }
 
 diag "${HR}"
 diag "Saving all camera images"
