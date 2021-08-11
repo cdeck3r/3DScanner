@@ -1,6 +1,6 @@
 {
   "name": "- 2. Scanner health status",
-  "script_path": "check_scanner.sh",
+  "script_path": "scanner_health_status.sh",
   "working_directory": "scripts",
   "description": "It checks the connection to the scanner and counts ready cameras nodes and other relevant status information.",
   "parameters": []
