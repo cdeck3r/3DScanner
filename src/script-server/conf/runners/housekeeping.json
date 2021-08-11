@@ -1,5 +1,5 @@
 {
-  "name": "Runs housekeeping for image files",
+  "name": "Run housekeeping for image files",
   "script_path": "housekeeping.sh",
   "working_directory": "scripts",
   "description": "If available disk space is low, it removes old images. This script also runs as a daily job during the night.",
