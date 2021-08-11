@@ -151,7 +151,7 @@ FREE=$(df --output=avail -k "${PARTITION}" | tail -n1 | xargs)
 
 ((FREE > LOW_MARK)) && {
     log_echo_file "INFO" "Sufficient free space avail: ${FREE}"
-    exit 0
+    files_deleted=0
 }
 
 ((FREE < LOW_MARK)) && {
