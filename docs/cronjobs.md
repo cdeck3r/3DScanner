@@ -15,6 +15,7 @@ These are the cronjobs running on the CENTRALNODE.
 | 3am     | pi   | Run [housekeeping](../src/housekeeping) for `/home/pi/www-images` |
 | 3:30am  | pi   | Run [housekeeping](../src/housekeeping) for `/home/pi/tmp`        |
 | @reboot | pi   | Run [reboot](`..src/reboot/`)                                     |
+| @reboot | root | Run `avahi-resolve-name-conflict.sh`                              |
 
 
 ## CAMNODE
