@@ -181,7 +181,7 @@ fi
 # create log directory
 mkdir -p "${LOG_DIR}"
 
-# install daily logrotate cronjob - run each night at 2am
+# install daily logrotate cronjob - run each night at 2:30am
 if [ -f "${LOGROTATE_CONF}" ]; then
     (
         crontab -l
