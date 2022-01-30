@@ -259,3 +259,13 @@ class TestAutosetupCentralnode:
             .stdout.rstrip()
             .startswith('30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_housekeeping.state')
         )
+
+    def test_autosetup_reboot(self, host):
+        assert host.file('/home/pi/reboot').is_directory
+        assert host.file('/home/pi/reboot/reboot.sh').exists
+        assert host.file('/home/pi/reboot/reboot.sh').mode == 0o744
+        assert (
+            host.run('crontab -l | grep reboot.sh')
+            .stdout.rstrip()
+            .startswith('@reboot /home/pi/reboot/reboot.sh')
+        )

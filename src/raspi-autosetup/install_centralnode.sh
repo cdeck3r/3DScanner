@@ -30,6 +30,10 @@ SCRIPT_SERVER_USER_DIR="${USER_HOME}/script-server"
 HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
 HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
 HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
+# variables for reboot
+REBOOT_INSTALL_DIR="${REPO_DIR}/src/reboot"
+REBOOT_USER_DIR="${USER_HOME}/reboot"
+REBOOT_INSTALL_SCRIPT="${REBOOT_USER_DIR}/install_reboot.sh"
 
 # Exit codes
 # >0 if script breaks
@@ -39,6 +43,15 @@ SCRIPT_DIR="$(
     cd "$(dirname "$0")" || exit
     pwd -P
 )"
+
+#
+# Remove / kill cronjobs
+# - shutdown: in the root's crontab
+# - reboot.sh: kill the pi's reboot.sh job
+crontab -l | grep -v 'shutdown' | crontab - || { echo "Ignore error: $?"; }
+REBOOT_SH_PID=$(pgrep -f 'reboot.sh') && {
+    kill -9 "${REBOOT_SH_PID}"
+}
 
 # ignore wrong date
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
@@ -56,12 +69,11 @@ apt-get install -y \
 apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # additional python packages
-pip3 install --force-reinstall pyyaml 
+pip3 install --force-reinstall pyyaml
 pip3 install --force-reinstall tornado
 
 # homie convention https://github.com/mjcumming/homie4
 pip3 install --force-reinstall 'Homie4==0.3.4' 'paho-mqtt==1.5.0'
-
 
 # configure broker
 cp "${SCRIPT_DIR}/centralnode_mosquitto.conf" /etc/mosquitto/conf.d
@@ -72,7 +84,6 @@ chown root:root /etc/mosquitto/conf.d/centralnode_mosquitto.conf
 systemctl enable mosquitto.service
 systemctl start mosquitto.service
 systemctl restart mosquitto.service # refresh conf
-
 
 # create root, configure and restart nginx
 #
@@ -129,7 +140,7 @@ systemctl restart cron.service
 # install housekeeping; run as ${USER}
 # 1. Remove and re-create user directory for housekeeping
 # 2. Copy files into user directory and set credentials for install script
-# 3. Run install script as ${USER} 
+# 3. Run install script as ${USER}
 # Restart cron service
 rm -rf "${HOUSEKEEPING_USER_DIR}" # cleanup
 mkdir "${HOUSEKEEPING_USER_DIR}"
@@ -139,3 +150,24 @@ chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${NGINX_ROOT}" "${USER}"
 systemctl restart cron.service
 
+# install reboot; run as ${USER}
+# 1. Remove and re-create user directory for reboot
+# 2. Copy files into user directory and set credentials for install script
+# 3. Run install script as ${USER}
+# 4. Install daily reboot
+# Restart cron service
+rm -rf "${REBOOT_USER_DIR}" # cleanup
+mkdir -p "${REBOOT_USER_DIR}"
+cp -r "${REBOOT_INSTALL_DIR}" "$(dirname ${REBOOT_USER_DIR})"
+chown -R ${USER}:${USER} "${REBOOT_USER_DIR}"
+chmod 744 "${REBOOT_INSTALL_SCRIPT}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${REBOOT_INSTALL_SCRIPT}" "${USER}"
+# Install daily reboot at 1:30am
+(
+    crontab -l
+    echo "30 1 * * * /sbin/shutdown -r now"
+) | sort | uniq | crontab - || {
+    echo "Error adding cronjob. Code: $?"
+    exit 2
+}
+systemctl restart cron.service

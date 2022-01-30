@@ -33,6 +33,10 @@ Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
 
+Periodic processes to maintain the system:
+
+* [Scheduled cronjobs](cronjobs.md)
+
 ## Networking
 
 * [Scanner network](network.md) design and implementation
