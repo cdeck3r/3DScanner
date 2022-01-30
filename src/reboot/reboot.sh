@@ -87,4 +87,6 @@ log_echo "INFO" "Run scanodis twice"
 # 2. Finally, restart the camnode services on all camnodes.
 check_script "${RESTART_HOMIE_CAMNODE_SH}" || { exit 1; }
 log_echo "INFO" "Restart the camnode services on all camnodes"
-"${RESTART_HOMIE_CAMNODE_SH}"
+"${RESTART_HOMIE_CAMNODE_SH}" || { echo "Ignore error: $?"; }
+
+exit 0
