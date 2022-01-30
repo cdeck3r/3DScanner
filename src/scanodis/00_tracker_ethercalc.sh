@@ -19,7 +19,7 @@ publish_to_tracker() {
 
     TRACKER=$(get_tracker "TRACKER_ETHERCALC")
     if [ -z "${TRACKER}" ]; then
-        log_echo "ERROR" "Could not found my tracker from ini file: TRACKER_ETHERCALC"
+        log_echo "ERROR" "Could not find my tracker from ini file: TRACKER_ETHERCALC"
         return 1
     fi
 

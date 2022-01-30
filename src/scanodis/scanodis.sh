@@ -101,7 +101,7 @@ while IFS= read -r -d '' tracker; do
     # shellcheck disable=SC1091
     source "${tracker}"
     log_echo "INFO" "Run tracker: ${tracker}"
-    publish_to_tracker
+    publish_to_tracker || { log_echo "WARN" "Tracker returned with error: ${tracker}"; }
 done < <(find "${SCRIPT_DIR}" -type f -name '*_tracker_*.sh' -print0 | sort -z)
 
 # take care of my logs
