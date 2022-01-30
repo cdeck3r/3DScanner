@@ -61,7 +61,7 @@ su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
 # install housekeeping; run as ${USER}
 # 1. Remove and re-create user directory for housekeeping
 # 2. Copy files into user directory and set credentials for install script
-# 3. Run install script as ${USER} 
+# 3. Run install script as ${USER}
 # Restart cron service
 rm -rf "${HOUSEKEEPING_USER_DIR}" # cleanup
 mkdir "${HOUSEKEEPING_USER_DIR}"
