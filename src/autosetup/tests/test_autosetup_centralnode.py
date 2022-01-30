@@ -265,7 +265,15 @@ class TestAutosetupCentralnode:
         assert host.file('/home/pi/reboot/reboot.sh').exists
         assert host.file('/home/pi/reboot/reboot.sh').mode == 0o744
         assert (
+            host.run('grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf').succeeded
+        )
+        assert (
             host.run('crontab -l | grep reboot.sh')
             .stdout.rstrip()
             .startswith('@reboot /home/pi/reboot/reboot.sh')
+        )
+        assert (
+            host.run('crontab -l | grep reboot | grep logrotate')
+            .stdout.rstrip()
+            .startswith('30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_reboot.state')
         )

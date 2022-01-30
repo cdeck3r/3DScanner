@@ -102,7 +102,7 @@ systemctl restart nginx
 # install scanodis (scanner node discovery)
 chmod 755 "${SCANODIS_INSTALL_SCRIPT}"
 rm -rf "${SCANODIS_USER_DIR}" # cleanup
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCANODIS_INSTALL_SCRIPT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCANODIS_INSTALL_SCRIPT}" "${USER}" || { echo "Error when installing scanodis: $?"; exit 2; }
 systemctl restart cron.service
 
 # install homie service; run as ${USER}
@@ -114,7 +114,7 @@ su -c "cp -r ${HOMIE_APPARATUS_DIR} $(dirname ${HOMIE_APPARATUS_USER_DIR})" "${U
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}" || { echo "Error when installing homie service: $?"; exit 2; }
 
 # install script-server UI; run as ${USER}
 # 1. Download and cp script-server in "${SCRIPT_SERVER_USER_DIR}"
@@ -134,7 +134,7 @@ rm -rf /tmp/script-server.zip
 # enable the service start at each Raspi boot-up for the user ${USER}
 loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SCRIPT_SERVER_INSTALL_SCRIPT}"
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCRIPT_SERVER_INSTALL_SCRIPT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SCRIPT_SERVER_INSTALL_SCRIPT}" "${USER}" || { echo "Error when installing script-server: $?"; exit 2; }
 systemctl restart cron.service
 
 # install housekeeping; run as ${USER}
@@ -147,7 +147,7 @@ mkdir "${HOUSEKEEPING_USER_DIR}"
 cp -r "${HOUSEKEEPING_INSTALL_DIR}" "$(dirname ${HOUSEKEEPING_USER_DIR})"
 chown -R ${USER}:${USER} "${HOUSEKEEPING_USER_DIR}"
 chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${NGINX_ROOT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${NGINX_ROOT}" "${USER}" || { echo "Error when installing housekeeping: $?"; exit 2; }
 systemctl restart cron.service
 
 # install reboot; run as ${USER}
@@ -161,7 +161,7 @@ mkdir -p "${REBOOT_USER_DIR}"
 cp -r "${REBOOT_INSTALL_DIR}" "$(dirname ${REBOOT_USER_DIR})"
 chown -R ${USER}:${USER} "${REBOOT_USER_DIR}"
 chmod 744 "${REBOOT_INSTALL_SCRIPT}"
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${REBOOT_INSTALL_SCRIPT}" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${REBOOT_INSTALL_SCRIPT}" "${USER}" || { echo "Error when installing reboot script: $?"; exit 2; }
 # Install daily reboot at 1:30am
 (
     crontab -l
