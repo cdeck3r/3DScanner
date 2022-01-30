@@ -263,14 +263,14 @@ class TestAutosetupCentralnode:
     def test_autosetup_reboot(self, host):
         assert host.file('/home/pi/reboot').is_directory
         assert host.file('/home/pi/reboot/reboot.sh').exists
-        assert host.file('/home/pi/reboot/reboot.sh').mode == 0o744
+        assert host.file('/home/pi/reboot/reboot.sh').mode == 0o700
         assert (
             host.run('grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf').succeeded
         )
         assert (
             host.run('crontab -l | grep reboot.sh')
             .stdout.rstrip()
-            .startswith('@reboot /home/pi/reboot/reboot.sh')
+            .startswith('@reboot sleep 300 && /home/pi/reboot/reboot.sh')
         )
         assert (
             host.run('crontab -l | grep reboot | grep logrotate')
