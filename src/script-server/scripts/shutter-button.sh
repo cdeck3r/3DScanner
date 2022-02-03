@@ -171,7 +171,7 @@ is $((counter > 0)) 1 "Save all camera images"
 ((counter > 0)) && {
     # find download dir
     CURR_LATEST_IMG_DIR=$(latest_img_dir)
-    isnt "${PREV_LATEST_IMG_DIR}" "${CURR_LATEST_IMG_DIR}" "New image directory created"
+    isnt "${PREV_LATEST_IMG_DIR}" "${CURR_LATEST_IMG_DIR}" "New image directory found"
     # count images
     imgcnt=$(find "${CURR_LATEST_IMG_DIR}" -type f -printf '.' | wc -c)
     ok $? "Count number of images in ${CURR_LATEST_IMG_DIR}"
