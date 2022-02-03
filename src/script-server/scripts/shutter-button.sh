@@ -157,7 +157,7 @@ while ((--counter > 0)); do
     sleep 1
 done
 # counter shall not be 0 to indicate success
-ok $((counter > 0)) "Save all camera images"
+is $((counter > 0)) 1 "Save all camera images"
 ((counter > 0)) || fail "Waiting time exceeded"
 
 ## Post-hoc checks
@@ -175,7 +175,7 @@ ok $((counter > 0)) "Save all camera images"
     # count images
     imgcnt=$(find "${CURR_LATEST_IMG_DIR}" -type f -printf '.' | wc -c)
     ok $? "Count number of images in ${CURR_LATEST_IMG_DIR}"
-    ok $((imgcnt > 0)) "Recent images available: ${imgcnt}"
+    is $((imgcnt > 0)) 1 "Recent images available: ${imgcnt}"
 }
 
 # Summary
