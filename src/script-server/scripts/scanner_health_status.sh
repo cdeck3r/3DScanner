@@ -26,6 +26,7 @@ SCRIPT_NAME=$0
 # Vars
 MQTT_BROKER="" # set empty
 
+TOTAL_NODES=0 # default, later retrieved
 NUM_NODES_GREEN=45
 NUM_NODES_YELLOW=35
 
@@ -94,12 +95,24 @@ for camnode in "${READY_RES_ARRAY[@]}"; do
     is "$(echo "${camnode}" | cut -d_ -f2)" "ready" "$(echo "${camnode}" | tr '_' ' ')"
 done
 
+# retrieve TOTAL_NODES
+# shellcheck disable=SC2016
+# TOPIC='scanner/...'
+# TOTAL=
+# TOTAL_EXE=$(${TOTAL})
+# is $? 0 "Retrieve total number of installed camera nodes"
+# TOTAL_RES=
+
 # Summary evaluation of ready camnodes
 diag "${HR}"
 NUM_READY_NODES=$(echo "${READY_RES}" | grep -c ready)
 ((NUM_READY_NODES > 0)) || { fail "No camera nodes ready."; }
 if ((NUM_READY_NODES >= NUM_NODES_GREEN)); then
-    diag "${GREEN}[SUCCESS]${NC} - Camera nodes ready: ${NUM_READY_NODES}."
+    if ((NUM_READY_NODES == TOTAL_NODES)); then
+        diag "${GREEN}[SUCCESS]${NC} - All camera nodes ready: ${NUM_READY_NODES}."
+    else
+        diag "${CYAN}[SUCCESS]${NC} - Camera nodes ready (total: ${TOTAL_NODES}): ${NUM_READY_NODES}."
+    fi
 elif ((NUM_READY_NODES >= NUM_NODES_YELLOW)); then
     diag "${YELLOW}[WARNING]${NC} - Too few camera nodes ready: ${NUM_READY_NODES}."
 else
@@ -110,4 +123,3 @@ diag " "
 
 # Check for available disk space - perform housekeeping
 ./housekeeping.sh
-
