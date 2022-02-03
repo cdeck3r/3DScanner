@@ -27,6 +27,8 @@ SCRIPT_NAME=$0
 YIELD_TIME_SEC=4 #time to wait before starting to save images
 MAX_WAIT_SEC_SAVE_IMAGES=30
 ENABLE_HOUSEKEEPING=1 # performs image housekeeping before saving images
+# retrieve image directory from housekeeping cronjob
+WWW_IMG_DIR=$(crontab -l | grep housekeeping.sh | cut -d' ' -f 6- | cut -d'>' -f1 | cut -d' ' -f2 | grep -v tmp)
 
 MQTT_BROKER="" # set empty
 
@@ -54,6 +56,18 @@ source "${SCRIPT_DIR}/tap-functions.sh"
     exit 1
 }
 source "${SCRIPT_DIR}/funcs.sh"
+
+[ -z "${WWW_IMG_DIR}" ] && BAIL_OUT "Could not determine image directory."
+[ -d "${WWW_IMG_DIR}" ] || BAIL_OUT "Image directory does not exist: ${WWW_IMG_DIR}"
+
+latest_img_dir() {
+    local lid
+
+    # source: https://stackoverflow.com/a/64466737
+    lid=$(find "${WWW_IMG_DIR}" -mindepth 1 -maxdepth 1 -type d -printf "%T@\\t%p\\n" | sort -n | cut -f2- | tail -n1)
+
+    echo "${lid}"
+}
 
 #####################################################
 # Main program
@@ -107,11 +121,16 @@ diag "Give some time before starting to save all images"
 sleep ${YIELD_TIME_SEC}
 
 diag " "
-(( ENABLE_HOUSEKEEPING )) && { ./housekeeping.sh; diag " "; }
+((ENABLE_HOUSEKEEPING)) && {
+    ./housekeeping.sh
+    diag " "
+}
 
 diag "${HR}"
 diag "Saving all camera images"
 diag "${HR}"
+
+PREV_LATEST_IMG_DIR=$(latest_img_dir)
 
 TOPIC="scanner/apparatus/recent-images/save-all/set"
 MSG="run"
@@ -138,10 +157,29 @@ while ((--counter > 0)); do
     sleep 1
 done
 # counter shall not be 0 to indicate success
-isnt ${counter} 0 "Save all camera images"
+ok $((counter > 0)) "Save all camera images"
+((counter > 0)) || fail "Waiting time exceeded"
+
+## Post-hoc checks
+# 1. Check for recent image from each camnode
+# 2. print number of downloaded images
+
+## An image was taken recently, if it not older than 10min.
+## Only recent images got downloaded by node_recentimages.py
+## As a result, we only have recent images in the image directory.
+((imgcnt = 0))
+((counter > 0)) && {
+    # find download dir
+    CURR_LATEST_IMG_DIR=$(latest_img_dir)
+    isnt "${PREV_LATEST_IMG_DIR}" "${CURR_LATEST_IMG_DIR}" "New image directory created"
+    # count images
+    imgcnt=$(find "${CURR_LATEST_IMG_DIR}" -type f -printf '.' | wc -c)
+    ok $? "Count number of images in ${CURR_LATEST_IMG_DIR}"
+    ok $((imgcnt > 0)) "Recent images available: ${imgcnt}"
+}
 
 # Summary
 diag "${HR}"
 ((counter == 0)) && { diag "${RED}[FAIL]${NC} - Possible problem. Check output."; }
-((counter > 0)) && { diag "${GREEN}[SUCCESS]${NC} - Now download the images."; }
+((counter > 0)) && { diag "${GREEN}[SUCCESS]${NC} - ${imgcnt} images available."; }
 diag "${HR}"
