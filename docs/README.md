@@ -18,7 +18,8 @@
 **Target group: developers**
 
 * [Logging and housekeeping](logging_housekeeping.md)
-
+* [Scheduled cronjobs](cronjobs.md) for maintenance
+* Layer-5 Dynamic DNS
 
 ## Setup and Install Raspberry Pis
 
@@ -32,10 +33,6 @@
 Complete flow chart of the setup and installation process:
 
 * [Setup process](raspi_setup_process.md)
-
-Periodic processes to maintain the system:
-
-* [Scheduled cronjobs](cronjobs.md)
 
 ## Networking
 
