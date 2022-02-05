@@ -2,7 +2,7 @@
 set -e
 
 #
-# Dynamic DNS 
+# Dynamic DNS
 # It enables the end-user to retrieve the scanner's UI IP address
 #
 
@@ -40,10 +40,13 @@ assert_on_pc
 #####################################################
 
 # test for webserver serving the index.html
-[[ -f "${SETUP_SH}" ]] || { log_echo "ERROR" "Setup file not found: ${SETUP_SH}"; exit 1; }
+[[ -f "${SETUP_SH}" ]] || {
+    log_echo "ERROR" "Setup file not found: ${SETUP_SH}"
+    exit 1
+}
 PORT=$(grep "PORT=" "${SETUP_SH}" | cut -d'=' -f2)
-pgrep -f "nweb ${PORT}" > /dev/null || { 
-    log_echo "ERROR" "The webserver does not run. Please re-run setup."  
+pgrep -f "nweb ${PORT}" >/dev/null || {
+    log_echo "ERROR" "The webserver does not run. Please re-run setup."
     exit 1
 }
 
@@ -56,11 +59,10 @@ log_echo "INFO" "Extract IP address from logfile: ${LOGFILE}"
 
 # extract IP address and time
 SCANNER_IP=$(tail -n 1 "${LOGFILE}" | cut -d'=' -f2 | cut -d'%' -f1)
-[[ -z "${SCANNER_IP}" ]] || log_echo "INFO" "Found scanner IP: ${SCANNER_IP}" 
+[[ -z "${SCANNER_IP}" ]] || log_echo "INFO" "Found scanner IP: ${SCANNER_IP}"
 LOGFILE_MTIME_SEC=$(stat -c %Y "${LOGFILE}")
 LOGFILE_MTIME_DATE=$(date -d@"${LOGFILE_MTIME_SEC}" +"%Y-%m-%d %T %Z")
 [[ -z "${LOGFILE_MTIME_DATE}" ]] || log_echo "INFO" "Last modification time: ${LOGFILE_MTIME_DATE}"
-
 
 # write index.html
 cat <<EOF >"${INDEX_HTML}"

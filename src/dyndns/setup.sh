@@ -2,8 +2,8 @@
 
 set -e -u
 
-# 
-# Enables the webserver for serving the index.html 
+#
+# Enables the webserver for serving the index.html
 # containing the IP of the 3DScanner raspi
 # See: https://github.com/cdeck3r/3DScanner/docs/dyndns.md
 #
@@ -35,8 +35,14 @@ source "${SCRIPT_DIR}/funcs.sh"
 assert_on_pc
 
 # check webserver
-[[ -f "${SCRIPT_DIR}/nweb" ]] || { log_echo "ERROR" "Webserver does not exist: nweb"; exit 1; }
-[[ -x "${SCRIPT_DIR}/nweb" ]] || { log_echo "ERROR" "Webserver nweb is not executable"; exit 1; }
+[[ -f "${SCRIPT_DIR}/nweb" ]] || {
+    log_echo "ERROR" "Webserver does not exist: nweb"
+    exit 1
+}
+[[ -x "${SCRIPT_DIR}/nweb" ]] || {
+    log_echo "ERROR" "Webserver nweb is not executable"
+    exit 1
+}
 
 #####################################################
 # Main program
@@ -51,6 +57,7 @@ sudo ufw allow from "${SRC_IP}" to any port "${PORT}" proto tcp comment 'HSRT 3D
 log_echo "INFO" "Start webserver nweb on port ${PORT}"
 sudo ./nweb "${PORT}" .
 # list nweb processes
+# shellcheck disable=SC2009
 ps ax | grep nweb
 
 # Install cronjob
