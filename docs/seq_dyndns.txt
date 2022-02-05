@@ -1,0 +1,37 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+
+participant "3D Scanner" as 3ds
+participant "Public Webserver" as web
+actor "End-user\n Webbrowser" as user
+participant "Domain Forwarding Service" as dfs
+
+3ds -> web: GET Request
+
+web -> web: write scanner IP\n into logfile
+
+group cronjob 
+  web -> web: parse logfile\nextract IP
+  web -> web: create index.html\ncontaining IP
+end
+
+
+note over user
+URL known to end-user
+or short URL
+end note
+user -> dfs: GET Request
+activate user
+return URL to webserver
+user -> web: GET Request
+return index.html
+
+
+user -> user: automatic page\nrefresh to scanner IP
+user -> 3ds: GET Request
+return 3D Scanner UI
+
+deactivate user
+
+@enduml
