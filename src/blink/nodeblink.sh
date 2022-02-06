@@ -30,6 +30,8 @@ BLINK_SH="${SCRIPT_DIR}/blink.sh"
 USER=pi
 NODELIST="/home/${USER}/log/nodelist.log"
 PING_ENABLED=1
+# camnode example: 192.168.178.131
+
 
 #####################################################
 # Include Helper functions
@@ -138,7 +140,7 @@ assert_on_raspi
 ALLOWED_PATTERN=$(grep "ALLOWED_PATTERN=" "${BLINK_SH}" | cut -d'=' -f2)
 
 check_user || {
-    log_echo "ERROR" "User mismatch. Script must run as user: ${USER}. Abort."
+    echo "User mismatch. Script must run as user: ${USER}. Abort."
     usage
     exit 1
 }
@@ -146,7 +148,7 @@ check_user || {
 [[ "${NODEIP}" == "all" ]] || {
     # validate IP address
     valid_ip "${NODEIP}" || {
-        log_echo "ERROR" "IP address is not valid: ${NODEIP}"
+        echo "IP address is not valid: ${NODEIP}"
         usage
         exit 1
     }
@@ -157,7 +159,7 @@ check_user || {
 TOOLS=('ping' 'ssh')
 for t in "${TOOLS[@]}"; do
     command -v "${t}" >/dev/null || {
-        echo "Could not find tool: $t"
+        log_echo "ERROR" "Could not find tool: $t"
         exit 1
     }
 done
@@ -175,7 +177,7 @@ if [[ "${NODEIP}" == "all" ]]; then
     }
 
     log_echo "INFO" "Read node list: ${NODELIST}"
-    NODE_RES=$(sort -u "${NODELIST}" | cut -d' ' -f1)
+    NODE_RES=$(sort -u "${NODELIST}" | cut -d$'\t' -f2)
     mapfile -t NODE_RES_ARRAY < <(echo "${NODE_RES}")
     log_echo "INFO" "Will ping all nodes. Total number: ${#NODE_RES_ARRAY[@]}"
     for ip in "${NODE_RES_ARRAY[@]}"; do

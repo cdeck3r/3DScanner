@@ -33,6 +33,14 @@ ALLOWED_PATTERN="none rc-feedback kbd-scrolllock kbd-numlock kbd-capslock kbd-ka
 # Include Helper functions
 #####################################################
 
+[ -f "${SCRIPT_DIR}/funcs.sh" ] || {
+    echo "Could find required file: funcs.sh"
+    echo "Abort."
+    exit 1
+}
+# shellcheck disable=SC1090
+source "${SCRIPT_DIR}/funcs.sh"
+
 usage() {
     echo "Usage: ${SCRIPT_NAME} [pattern]"
     echo ""
@@ -40,17 +48,30 @@ usage() {
     echo "${ALLOWED_PATTERN}"
 }
 
+# verfies the script runs as ${USER}
+check_user() {
+    local CURR_USER
+
+    CURR_USER=$(id --user --name)
+    if [ "${CURR_USER}" != "${USER}" ]; then
+        return 1
+    fi
+
+    return 0
+}
+
 #####################################################
 # Main program
 #####################################################
 
 ### Basic checks ###
+assert_on_raspi
 
 # check NODE var
 if [ -z "$PATTERN" ]; then
-    echo "No blink pattern provided."
+    log_echo "WARN" "No blink pattern provided."
     [ -f "${LED0}" ] && {
-        echo "Set to default [mmc0]."
+        log_echo "INFO"  "Set to default [mmc0]."
         echo mmc0 | sudo tee "${LED0}"
     }
     usage
@@ -58,7 +79,7 @@ if [ -z "$PATTERN" ]; then
 fi
 
 [ -f "${LED0}" ] && {
-    echo "Set pattern: "
+    log_echo "INFO" "Set pattern: ${PATTERN}"
     echo "${PATTERN}" | sudo tee "${LED0}"
 }
 
