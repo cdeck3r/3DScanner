@@ -1,4 +1,6 @@
 #!/bin/bash
+
+set -e
 trap cleanup EXIT
 
 #
@@ -22,7 +24,8 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # variables
-NODE=$1 # default
+NODEIP=${1:-1.2.3.4}
+NODETYPE=$2
 PI_USER=pi
 KEYFILE_DIR=/tmp/autosetup
 KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
@@ -30,6 +33,24 @@ KEYFILE_ZIP="${SCRIPT_DIR}"/allkeys.zip
 #####################################################
 # Include Helper functions
 #####################################################
+
+usage() {
+    echo "Usage: ${SCRIPT_NAME} <IP> <CENTRALNODE|CAMNODE>"
+}
+
+valid_ip() {
+    local ip=$1
+    local re
+
+    re='^(0*(1?[0-9]{1,2}|2([0-4][0-9]|5[0-5]))\.){3}'
+    re+='0*(1?[0-9]{1,2}|2([‌​0-4][0-9]|5[0-5]))$'
+
+    if [[ $ip =~ $re ]]; then
+        return 0
+    else
+        return 1
+    fi
+}
 
 ssh_cmd() {
     local keyfile=$1
@@ -152,9 +173,21 @@ test_hostname() {
 
 ### Basic checks ###
 
-# check NODE var
-if [ -z "$NODE" ]; then
-    echo "No node provided. Abort."
+[ "$#" -eq 2 ] || {
+    echo "Too few arguments."
+    usage
+    exit 1
+}
+# validate IP address
+valid_ip "${NODEIP}" || {
+    echo "IP address is not valid: ${NODEIP}"
+    usage
+    exit 1
+}
+# check NODETYPE var
+if ! [[ "${NODETYPE}" =~ ^(CENTRALNODE|CAMNODE)$ ]]; then
+    echo "Invalid nodetype provided."
+    usage
     exit 1
 fi
 
@@ -168,20 +201,25 @@ for t in "${TOOLS[@]}"; do
 done
 
 echo ""
-echo "########### ping ${NODE} ###########"
-can_ping "${NODE}"
+echo "########### ping ${NODEIP} ###########"
+can_ping "${NODEIP}"
 echo "#################################################"
 echo ""
 
 ### /Basic checks ###
 
-NODETYPE=$(echo "${NODE}" | cut -d'-' -f1 | tr '[:lower:]' '[:upper:]')
 keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 
 # simple hostname test
-#test_hostname "${NODE}" "${keyfile}"
+#test_hostname "${NODEIP}" "${keyfile}"
 
-rm_booter_done "${NODE}" "${keyfile}"
-shutdown_reboot "${NODE}" "${keyfile}" || { echo "Error ignored: $?"; }
+rm_booter_done "${NODEIP}" "${keyfile}" || {
+    echo "Error when deleting booter.done on ${NODEIP}."
+    exit 2
+}
+shutdown_reboot "${NODEIP}" "${keyfile}" || {
+    echo "Error issuing reboot on ${NODEIP}."
+    exit 2
+}
 
 cleanup
