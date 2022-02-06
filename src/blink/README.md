@@ -28,6 +28,6 @@ nodeblink.sh all timer
 The next example shows an explicit definition of the `nodeblink.sh all timer` command.
 
 ```bash
-sort -u /home/pi/log/nodelist.log | cut -d' ' -f1 | xargs -n 1 -I addr ./nodeblink.sh addr timer
+sort -u /home/pi/log/nodelist.log | cut -d$'\t' -f2 | xargs -n 1 -I addr ./nodeblink.sh addr timer
 ```
 
