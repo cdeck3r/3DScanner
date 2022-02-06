@@ -30,8 +30,6 @@ BLINK_SH="${SCRIPT_DIR}/blink.sh"
 USER=pi
 NODELIST="/home/${USER}/log/nodelist.log"
 PING_ENABLED=1
-# camnode example: 192.168.178.131
-
 
 #####################################################
 # Include Helper functions
@@ -156,7 +154,7 @@ check_user || {
 [[ -z "${BLINK_PATTERN}" ]] && { BLINK_PATTERN=""; }
 
 # check tools
-TOOLS=('ping' 'ssh')
+TOOLS=('ping' 'ssh' 'cut' 'sort')
 for t in "${TOOLS[@]}"; do
     command -v "${t}" >/dev/null || {
         log_echo "ERROR" "Could not find tool: $t"

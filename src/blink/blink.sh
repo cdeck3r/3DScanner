@@ -67,7 +67,7 @@ check_user() {
 ### Basic checks ###
 assert_on_raspi
 
-# check NODE var
+# if no pattern given, set mmc0 as default
 if [ -z "$PATTERN" ]; then
     log_echo "WARN" "No blink pattern provided."
     [ -f "${LED0}" ] && {
@@ -77,12 +77,14 @@ if [ -z "$PATTERN" ]; then
     exit 0
 fi
 
-echo "${ALLOWED_PATTERN}" | grep "${PATTERN}" || {
+# exit if invalid pattern given
+echo "${ALLOWED_PATTERN}" | grep "${PATTERN}" >/dev/null || {
     echo "Pattern not valid: ${PATTERN}"
     usage
     exit 1
 }
 
+# set given pattern
 [ -f "${LED0}" ] && {
     log_echo "INFO" "Set pattern: ${PATTERN}"
     echo "${PATTERN}" | sudo tee "${LED0}"
