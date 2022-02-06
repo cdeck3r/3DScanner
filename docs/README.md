@@ -19,7 +19,7 @@
 
 * [Logging and housekeeping](logging_housekeeping.md)
 * [Scheduled cronjobs](cronjobs.md) for maintenance
-* [Layer-5 Dynamic DNS](dyndns.md) to access the scanner UI
+* [HTTP based Dynamic DNS](dyndns.md) to access the scanner UI
 
 ## Setup and Install Raspberry Pis
 
