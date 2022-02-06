@@ -120,7 +120,7 @@ blink_node() {
     local blink_pattern=$2
     local blink_cmd
 
-    blink_cmd="${SCRIPT_DIR}/blink.sh ${blink_pattern}"
+    blink_cmd="${BLINK_SH} ${blink_pattern}"
     ssh_cmd "${nodeip}" "${blink_cmd}"
 }
 
@@ -130,6 +130,11 @@ blink_node() {
 
 ### Basic checks ###
 assert_on_raspi
+# check we are on CENTRALNODE
+hostname | grep centralnode > /dev/null || {
+    echo "${SCRIPT_NAME} must run on CENTRALNODE. Abort"
+    exit 1
+}
 # check for blink program
 [[ -f "${BLINK_SH}" ]] || {
     log_echo "ERROR" "Could not find file: ${BLINK_SH}"
