@@ -4,7 +4,7 @@ set -e
 #
 # Led the act LED blink
 # - see LED0 variable
-# 
+#
 # Author: cdeck3r
 #
 
@@ -61,3 +61,5 @@ fi
     echo "Set pattern: "
     echo "${PATTERN}" | sudo tee "${LED0}"
 }
+
+exit 0
