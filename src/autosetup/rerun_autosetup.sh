@@ -210,9 +210,7 @@ echo ""
 
 keyfile=$(setup_ssh_keyfile "${KEYFILE_ZIP}" "${NODETYPE}")
 
-# simple hostname test
-#test_hostname "${NODEIP}" "${keyfile}"
-
+echo "Restart ${NODETYPE} with ${NODEIP}"
 rm_booter_done "${NODEIP}" "${keyfile}" || {
     echo "Error when deleting booter.done on ${NODEIP}."
     exit 2
@@ -221,5 +219,6 @@ shutdown_reboot "${NODEIP}" "${keyfile}" || {
     echo "Error issuing reboot on ${NODEIP}."
     exit 2
 }
+echo "Successfully restarted ${NODETYPE} with ${NODEIP}"
 
 cleanup
