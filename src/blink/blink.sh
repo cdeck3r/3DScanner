@@ -71,12 +71,17 @@ assert_on_raspi
 if [ -z "$PATTERN" ]; then
     log_echo "WARN" "No blink pattern provided."
     [ -f "${LED0}" ] && {
-        log_echo "INFO"  "Set to default [mmc0]."
+        log_echo "INFO" "Set to default [mmc0]."
         echo mmc0 | sudo tee "${LED0}"
     }
+    exit 0
+fi
+
+echo "${ALLOWED_PATTERN}" | grep "${PATTERN}" || {
+    echo "Pattern not valid: ${PATTERN}"
     usage
     exit 1
-fi
+}
 
 [ -f "${LED0}" ] && {
     log_echo "INFO" "Set pattern: ${PATTERN}"

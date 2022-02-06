@@ -187,6 +187,6 @@ if [[ "${NODEIP}" == "all" ]]; then
 
 else
     can_ping "${NODEIP}"
-    log_echo "INFO" "Send blink pattern to node ${ip}"
+    log_echo "INFO" "Send blink pattern to node ${NODEIP}"
     blink_node "${NODEIP}" "${BLINK_PATTERN}" || { log_echo "ERROR" "Problem when sending blink pattern to node: ${ip}"; }
 fi
