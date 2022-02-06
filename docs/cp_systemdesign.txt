@@ -5,19 +5,23 @@ skinparam componentStyle uml2
 actor "User" as user
 interface "topics" as topics
 interface "Camera" as cam
-interface "http" as http
+boundary "http" as http
 
-node "CentralNode" {
+node "CENTRALNODE" {
+ control "UI controller" as ui
  file "Image files" as img
  [MQTT Broker] - topics 
- [Node-RED dashboard] <.. http : access
- img ..> http : download
+ img -- http
+ ui -- http
 }
 
-user - http
 
-node "CamNode" {
- [MQTT Client] --> topics : publish
+user .r.> http: access
+
+node "CAMNODE" {
+ [MQTT Client] ..> topics : publish
  [Take picture] - cam : use
 }
+
+
 @enduml
