@@ -1,0 +1,39 @@
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+skinparam linetype polyline
+'skinparam linetype ortho
+
+interface "<<allow>>\nCENTRALNODE subnet\nPort 5000" as register
+interface "<<allow>>\nCENTRALNODE subnet\nPort 80" as query
+
+node "Public Webserver" as web {
+  node "Firewall"
+  node nweb
+  node "dyndns"
+  file index.html
+ 
+  Firewall -u- register
+  Firewall -u- query
+
+  Firewall - nweb
+  nweb - dyndns
+  dyndns ..> index.html:create
+  nweb ..> index.html:query
+}
+
+cloud "CENTRALNODE subnet" {
+  actor "User" as user
+  boundary "http" as http
+  node "CENTRALNODE" {
+   [scanodis] 
+   control webserver
+   [scanodis] -[hidden]r- webserver
+   webserver -l- http
+  }
+}
+
+[scanodis] --( register: register IP
+user --( query:query
+user -l- http:access
+@enduml
