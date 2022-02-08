@@ -68,6 +68,10 @@ check_script() {
 # Main program
 #####################################################
 
+# basic checks
+assert_on_raspi
+assert_on_centralnode
+
 check_user || {
     log_echo "ERROR" "User mismatch. Script must run as user: ${USER}. Abort."
     exit 1

@@ -103,6 +103,6 @@ else
 fi
 
 # finally, run reboot script
-${REBOOT_SCRIPT} 
+${REBOOT_SCRIPT}
 
 exit 0
