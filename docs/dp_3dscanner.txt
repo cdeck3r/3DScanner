@@ -1,0 +1,62 @@
+'
+' Diagram of the 3DScanner
+' from a user's perspective
+'
+' Helps the user to understand relevant terms
+'
+'
+@startuml
+skinparam monochrome true
+skinparam componentStyle uml2
+skinparam linetype polyline
+skinparam linetype ortho
+left to right direction
+
+cloud "External Network" {
+  actor "User" as euser
+}
+
+cloud "University Network" {
+
+  actor "User" as iuser
+
+  node "3DScanner" {
+
+    node cennode <<Raspberry Pi>> [
+      <b>CENTRALNODE</b>
+      ===
+      Central control node
+      * Sync all cameras
+      * Monitor all cameras
+      * Stores all images
+
+      There is only <i>one</i>.
+    ]
+    node camnode <<Raspberry Pi>> [
+    <b>CAMNODE</b>
+    ===
+    Camera node
+    * Take a single image
+    * Upload image to centralnode
+  
+    There are <i>many</i>.
+    ]
+  
+  cennode "1" o----> "0 .. *" camnode:"local\nnetwork"
+
+  component Camera
+  camnode "1" *--> "1" Camera
+  
+  boundary "Web-based\nUser Interface" as ui  
+}
+
+cennode -u- ui
+iuser -- ui
+node VPN
+}
+
+
+euser -- VPN
+VPN -u- ui 
+
+@enduml
