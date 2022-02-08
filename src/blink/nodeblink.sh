@@ -131,10 +131,8 @@ blink_node() {
 ### Basic checks ###
 assert_on_raspi
 # check we are on CENTRALNODE
-hostname | grep centralnode > /dev/null || {
-    echo "${SCRIPT_NAME} must run on CENTRALNODE. Abort"
-    exit 1
-}
+assert_on_centralnode
+
 # check for blink program
 [[ -f "${BLINK_SH}" ]] || {
     log_echo "ERROR" "Could not find file: ${BLINK_SH}"
@@ -143,8 +141,7 @@ hostname | grep centralnode > /dev/null || {
 ALLOWED_PATTERN=$(grep "ALLOWED_PATTERN=" "${BLINK_SH}" | cut -d'=' -f2)
 
 check_user || {
-    echo "User mismatch. Script must run as user: ${USER}. Abort."
-    usage
+    log_echo "ERROR" "User mismatch. Script must run as user: ${USER}. Abort."
     exit 1
 }
 # validate IP

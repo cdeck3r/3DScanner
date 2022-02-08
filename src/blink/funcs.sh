@@ -27,6 +27,34 @@ assert_on_raspi() {
     fi
 }
 
+# return true, if argument is substring in hostname
+is_hostname() {
+    local name=$1
+
+    # no name provided, return false
+    [[ -z "${name}" ]] && {
+        log_echo "ERROR" "Argument empty in is_hostname()"
+        return 1
+    }
+
+    # test for hostname
+    command -v "hostname" >/dev/null || {
+        log_echo "ERROR" "Could not find tool: hostname"
+        return 1
+    }
+    hostname | grep -i "${name}" >/dev/null && return 0
+
+    return 1
+}
+
+# no args
+assert_on_centralnode() {
+    is_hostname "centralnode" || {
+        log_echo "ERROR" "Script must run on CENTRALNODE. Abort"
+        exit 1
+    }
+}
+
 #
 # assert docker
 # we expect the script to execute within the docker container
