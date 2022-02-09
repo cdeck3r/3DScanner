@@ -44,7 +44,12 @@ PING_ENABLED=1
 source "${SCRIPT_DIR}/funcs.sh"
 
 usage() {
-    echo "Usage: ${SCRIPT_NAME} <IP> [blink pattern]"
+    echo "Usage: ${SCRIPT_NAME} <IP|all> [pattern]"
+    echo ""
+    echo "Arguments:"
+    echo "IP      - IPv4 address or"
+    echo "        - \"all\" to let all known camnodes blink"
+    echo "pattern - blink pattern"
     echo ""
     echo "Allowed pattern:"
     echo "${ALLOWED_PATTERN}"

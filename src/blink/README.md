@@ -13,7 +13,7 @@ Relevant scripts:
 Usage (run from CENTRALNODE):
 
 ```bash
-nodeblink.sh <IP address> [blink pattern]
+nodeblink.sh <IP address> [pattern]
 ```
 
 Examples of typical use cases:
