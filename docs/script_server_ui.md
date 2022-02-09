@@ -8,7 +8,7 @@ Access the UI: http://CENTRALNODE/ui
 
 ## Scripts and Configuration
 
-Each UI function links to a bash script. script-server runs these scripts through a website. The project stores all scripts in [src/script-server/scripts`](../src/script-server/scripts). Each script comes with a configuration from [`src/script-server/conf/runners`](../src/script-server/conf/runners)
+Each UI function links to a bash script. script-server runs these scripts through a website. The project stores all scripts in [`src/script-server/scripts`](../src/script-server/scripts). Each script comes with a configuration from [`src/script-server/conf/runners`](../src/script-server/conf/runners)
 
 When the script runs it utilizes the [Test Anything Protocol (TAP)](https://en.wikipedia.org/wiki/Test_Anything_Protocol) for its output. It allows individual tests (TAP producers) to communicate test results in a language-agnostic way. 
 

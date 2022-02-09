@@ -21,7 +21,7 @@
 * [Logging and housekeeping](logging_housekeeping.md)
 * [Scheduled cronjobs](cronjobs.md) for maintenance
 * [HTTP based Dynamic DNS](dyndns.md) to access the scanner UI
-* [Web-based User Interface](script-server_ui.md) with script-server
+* [Web-based User Interface](script_server_ui.md) with script-server
 
 ## Setup and Install Raspberry Pis
 
