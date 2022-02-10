@@ -7,7 +7,7 @@
 1. Get the customized image and node-specific `autosetup.zip` file 
 1. Flash the image and copy the `autosetup.zip` file into the SD card's root directory
 1. Insert the SD card into the Raspberry and power it on for booting
-1. Point your browser to the URL you got from the developers and run the [user interface](user_manual.md#user-interface-documentation)
+1. Point your browser to the URL http://CENTRALNODE/ui (the developer will tell you) and run the [user interface](user_manual.md)
 
 
 ## Operation 
@@ -20,7 +20,7 @@
 
 * [Logging and housekeeping](logging_housekeeping.md)
 * [Scheduled cronjobs](cronjobs.md) for maintenance
-* [HTTP based Dynamic DNS](dyndns.md) to access the scanner UI
+* [HTTP-enabled Dynamic DNS](dyndns.md) to access the scanner UI
 * [Web-based User Interface](script_server_ui.md) with script-server
 
 ## Setup and Install Raspberry Pis

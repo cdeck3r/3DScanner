@@ -1,5 +1,8 @@
 # End-user Manual
 
+An end-user (or simply user) may access the scanner's user interface via http://CENTRALNODE/ui. The term CENTRALNODE is a placeholder for the hostname or an IP address. An end-user may also use a named URL, i.e. an URL containing a fix descriptive name, e.g. http://example.com/3dscanner, instead of the rather cryptic hostname or IP address. The developer creates the named URL when using the [dynamic DNS approach to access the scanner UI](dyndns.md).
+
+
 ## System Overview
 
 The scanner is installed at the Reutlingen University and accessible for a user from within the university's network. A user may also dial into the university network via VPN. The following diagram is an abstract model of the 3DScanner from an end-user's perspective. It shall help to understand relevant terms. 
@@ -9,10 +12,14 @@ The scanner is installed at the Reutlingen University and accessible for a user 
 
 ## User Interface Documentation
 
-The most relevant functions
+The user interface depicted in the image below displays two groups of functions divided by a separator. The functions most relevant for the end-user are found in the top group:
 
-* Shutter button
-* Health check
+* **Push to fire all scanner cameras:** click and execute this function to fire all scanner cameras and download the images from http://CENTRALNODE/ (same URL as the user interface, but without the `/ui` at the end)
+* **Scanner health status:** It checks the connection to the scanner and counts ready cameras nodes and other relevant status information. You may run this to check for your information before starting a series of taking images with the scanner.
 
-__image:ui.png__
+Other functions in the group below the separator are primarily to monitor and maintain technical aspects of the scanner. Use with caution and only when asked to do so by developer. Later software revisions may hide these functions.
+
+![web-based user interface](scannerui.png)
+
+
 
