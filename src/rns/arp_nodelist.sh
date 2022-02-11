@@ -41,7 +41,7 @@ command -v arp-scan >/dev/null || {
     exit 1
 }
 
-MY_IP=$(hostname -I | cut -d' ' -f1)
+#MY_IP=$(hostname -I | cut -d' ' -f1)
 MY_MAC=$(cat /sys/class/net/eth0/address)
 #
 ARP_SCAN="sudo arp-scan --localnet --plain -t 100 -r 1"
