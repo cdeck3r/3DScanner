@@ -39,6 +39,16 @@ JOBFILE_PATH="${JOBFILE_DIR}/${JOBFILE}"
 # Include Helper functions
 #####################################################
 
+# no args
+assert_on_raspi() {
+    # check we are on Raspi
+    MACHINE=$(uname -m)
+    if [[ "$MACHINE" != arm* ]]; then
+        echo "ERROR: We are not on an arm plattform: ${MACHINE}"
+        exit 1
+    fi
+}
+
 # enables the picamera on camnode
 # reboots afterwards
 enable_camera() {
@@ -236,6 +246,8 @@ clone_repo() {
 #####################################################
 # Main program
 #####################################################
+
+assert_on_raspi
 
 # check for NODETYPE file
 if [ -f "${SCRIPT_DIR}"/NODETYPE ]; then
