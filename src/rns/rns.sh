@@ -144,13 +144,13 @@ test_ssh_login() {
     # assume USE_SSHPASS=1
     ssh_login=$(ssh_cmd)
     ssh_hostname="${ssh_login} -t ${PI_USER}@${node} hostname"
-    ${ssh_hostname} && return 0
+    ${ssh_hostname} > /dev/null && return 0
 
     # test with USE_SSHPASS=0
     USE_SSHPASS=0
     ssh_login=$(ssh_cmd)
     ssh_hostname="${ssh_login} -t ${PI_USER}@${node} hostname"
-    ${ssh_hostname} || return 1
+    ${ssh_hostname} > /dev/null || return 1
 }
 
 #
