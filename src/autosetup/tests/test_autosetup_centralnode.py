@@ -267,6 +267,9 @@ class TestAutosetupCentralnode:
         assert (
             host.run('grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf').succeeded
         )
+
+    def test_autosetup_reboot_logrotate(self, host):
+        assert host.file('/home/pi/reboot/logrotate.conf').exists
         assert (
             host.run('crontab -l | grep reboot.sh')
             .stdout.rstrip()
