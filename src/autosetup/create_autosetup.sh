@@ -36,11 +36,23 @@ FORCE=$1
 # Include Helper functions
 #####################################################
 
-# no helper functions
+#
+# assert docker
+# we expect the script to execute within the docker container
+assert_in_docker() {
+    # Src: https://stackoverflow.com/a/20012536
+    grep -Eq '/(lxc|docker)/[[:xdigit:]]{64}' /proc/1/cgroup || {
+        echo "ERROR: Please run this script in docker container"
+        exit 1
+    }
+}
+
 
 #####################################################
 # Main program
 #####################################################
+
+assert_in_docker # only works in DEV system
 
 # safety check
 # do not delete / overwrite existing .zip files accidentially

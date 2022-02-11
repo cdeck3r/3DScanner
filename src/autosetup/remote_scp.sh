@@ -51,6 +51,17 @@ usage() {
     echo "Remote src/dest format: <user>@<ip>:<file path>"
 }
 
+#
+# assert docker
+# we expect the script to execute within the docker container
+assert_in_docker() {
+    # Src: https://stackoverflow.com/a/20012536
+    grep -Eq '/(lxc|docker)/[[:xdigit:]]{64}' /proc/1/cgroup || {
+        echo "ERROR: Please run this script in docker container"
+        exit 1
+    }
+}
+
 ssh_login() {
     local SSH_PASS
     local SSH_LOGIN
@@ -170,6 +181,7 @@ function valid_ip() {
 #####################################################
 
 ### Basic checks ###
+assert_in_docker # only works in DEV system
 
 # check NODE var
 if [ -z "$NODE" ]; then

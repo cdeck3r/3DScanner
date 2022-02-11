@@ -38,6 +38,17 @@ usage() {
     echo "Usage: ${SCRIPT_NAME} <IP> <CENTRALNODE|CAMNODE>"
 }
 
+#
+# assert docker
+# we expect the script to execute within the docker container
+assert_in_docker() {
+    # Src: https://stackoverflow.com/a/20012536
+    grep -Eq '/(lxc|docker)/[[:xdigit:]]{64}' /proc/1/cgroup || {
+        echo "ERROR: Please run this script in docker container"
+        exit 1
+    }
+}
+
 valid_ip() {
     local ip=$1
     local re
@@ -172,6 +183,7 @@ test_hostname() {
 #####################################################
 
 ### Basic checks ###
+assert_in_docker # only works in DEV system
 
 [ "$#" -eq 2 ] || {
     echo "Too few arguments."
