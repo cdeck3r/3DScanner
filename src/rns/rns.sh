@@ -229,7 +229,7 @@ test_ssh_login "${NODE_ADDR}" || {
     log_echo "ERROR" "ssh login test failed with USE_SSHPASS=${USE_SSHPASS} for node: ${NODE_ADDR}"
     exit 1
 }
-log_echo "INFO" "ssh login test successful with USE_SSHPASS = ${USE_SSHPASS} for node: ${NODE_ADDR}"
+log_echo "INFO" "ssh login test successful with USE_SSHPASS=${USE_SSHPASS} for node: ${NODE_ADDR}"
 
 ## TODO: encapsulate in a separate function
 if ! [[ -z "${FILE_DIR}" ]]; then
