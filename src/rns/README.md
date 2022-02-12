@@ -56,4 +56,6 @@ If the `<addr file>` is the [scanodis](../scanodis) nodelist logfile, the comman
 sort -u nodelist.log | cat -b | cut -d$'\t' -f1,3 | xargs -n2 bash -c './rns.sh $1 $(($0*10)) /some/directory'
 ```
 
+There is the `rns_nodelist.sh` script to run the last command on CENTRALNODE. By default it performs a dry run. Run it with no parameters to see its usage.
+
 **Note:** One may run `rns` directly from the cloned repository in `/boot/autosetup/3DScanner` as regular user. 
