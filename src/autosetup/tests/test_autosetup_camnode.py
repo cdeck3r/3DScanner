@@ -140,3 +140,7 @@ class TestAutosetupCamnode:
             .stdout.rstrip()
             .startswith('30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_housekeeping.state')
         )
+
+    def test_autosetup_watchdog_active(self, host):
+        assert host.run('journalctl --no-pager -k | grep -q "Set hardware watchdog to"').succeeded
+    
