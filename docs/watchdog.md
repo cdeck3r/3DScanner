@@ -1,8 +1,8 @@
 # Watchdog
 
-All nodes utilize a hardware watchdog. If the systems unexpectedly stalls, the watchdog will issue a reboot. It is configured via the systemd's `system.conf` file. After an additional reboot, it is active. The system manager keeps the watchdog device `/dev/watchdog` open. An access via will result `sudo wdctl` in an error indicating effectively an active watchdog. 
+All nodes utilize a hardware watchdog. If the systems unexpectedly stalls, the watchdog will issue a reboot. It is configured via the systemd's `system.conf` file. After an additional reboot, it is active. The system manager keeps the watchdog device `/dev/watchdog` open. An access via `sudo wdctl` will result in an error indicating effectively an active watchdog. 
 
-There is only a minimum on configuration parameters used. The nodes use the plain hardware watchdog. No additional watchdog package is installed to allow the definition of other ressources, e.g. files, network reachability, to part of the watchdog. 
+There is only a minimum configuration parameters used. The nodes use the plain hardware watchdog. No additional watchdog package is installed to allow the definition of other ressources, e.g. files, network reachability, to part of the watchdog. 
 
 
 ## Rationale 
@@ -25,8 +25,11 @@ As a result of nodes not completely rebooting after a software update, the watch
 * Monitoring of uptime to detect sporadic reboots
 * Direct (local) observation of nodes to discover a possible reboot loop
 
+## Install Watchdog
 
-## Check Watchdog 
+The watchdog gets installed in the `install_commons.sh` script during the [setup process](raspi_setup_process.md).
+
+## Check Watchdog Running
 
 Run the command below to test the watchdog is active. The output of the last line tells you about the watchdog's runtime.
 
@@ -38,8 +41,7 @@ $ journalctl --no-pager -k | grep watchdog
 ... systemd[1]: Set hardware watchdog to 10s.
 ```
 
-## Install Watchdog
 
-The watchdog gets installed in the `install_commons.sh` script during the [setup process](raspi_setup_process.md).
+## Other Ressources
 
-
+There is [good article](https://pysselilivet.blogspot.com/2021/10/raspberry-pi-watchdog-made-simple.html) about the watchdog on the Raspberry Pi. It explains the configuration via `system.conf`.
