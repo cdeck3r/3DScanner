@@ -21,7 +21,6 @@ CONF="/etc/systemd/system.conf"
 
 # returns true, if watchdog is configured in ${CONF}
 is_wd_configured() {
-    [[ -f "${CONF}" ]] || return 1
     grep -q "^RuntimeWatchdogSec=" "${CONF}" && return 0
     return 1
 }
@@ -40,7 +39,7 @@ is_wd_active() {
 # 1. check for configfile and watchdog running
 # 2. if not, modify conf file
 # 3. reload systemctl daemons and reboot system
-{ ! is_wd_configured && ! is_wd_active; } && {
+{ [[ -f "${CONF}" ]] && ! is_wd_configured && ! is_wd_active; } && {
     echo "WARN: Hardware watchdog is NOT active. Will setup watchdog now."
 
     # RuntimeWatchdogSec=10
