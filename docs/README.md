@@ -22,6 +22,7 @@
 * [Scheduled cronjobs](cronjobs.md) for maintenance
 * [HTTP-enabled Dynamic DNS](dyndns.md) to access the scanner UI
 * [Web-based User Interface](script_server_ui.md) with script-server
+* [Watchdog](watchdog.md) when the system unexpectedly stops operating
 
 ## Setup and Install Raspberry Pis
 
