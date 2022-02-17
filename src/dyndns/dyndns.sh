@@ -58,7 +58,7 @@ pgrep -f "nweb ${PORT}" >/dev/null || {
 log_echo "INFO" "Extract IP address from logfile: ${LOGFILE}"
 
 # extract IP address and time
-SCANNER_IP=$(tail -n 1 "${LOGFILE}" | cut -d'=' -f2 | cut -d'%' -f1)
+SCANNER_IP=$(tail -n 1 "${LOGFILE}" | grep "3Dscanner" | cut -d'=' -f3 | cut -d'%' -f1)
 [[ -z "${SCANNER_IP}" ]] || log_echo "INFO" "Found scanner IP: ${SCANNER_IP}"
 LOGFILE_MTIME_SEC=$(stat -c %Y "${LOGFILE}")
 LOGFILE_MTIME_DATE=$(date -d@"${LOGFILE_MTIME_SEC}" +"%Y-%m-%d %T %Z")
