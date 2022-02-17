@@ -1,6 +1,6 @@
 mqtt:
-#    MQTT_BROKER: "centralnode-dca632b407ff.local"
-    MQTT_BROKER: "centralnode-b827ebf1aa0f.local"
+    # new raspi3 centralnode 
+    MQTT_BROKER: "centralnode-b827eb9c072e.local"
     MQTT_PORT: 1883
 
 homie:
