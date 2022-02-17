@@ -22,4 +22,9 @@ These are the cronjobs running on the CENTRALNODE.
 
 These are the cronjobs running on each CAMNODE.
 
-tbd.
+| Time    | User | Script                                                            |
+|---------|------|-------------------------------------------------------------------|
+| 2:30am  | pi   | Run [housekeeping](../src/housekeeping) logrotate                 |
+| 3am     | pi   | Run [housekeeping](../src/housekeeping) for `/home/pi/www-images` |
+| @reboot | root | Run `avahi-resolve-name-conflict.sh`                              |
+
