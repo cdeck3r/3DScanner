@@ -33,6 +33,33 @@ SETUP_SH="${SCRIPT_DIR}/setup.sh"
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/funcs.sh"
+
+# source: https://www.linuxjournal.com/content/validating-ip-address-bash-script
+#
+# Test an IP address for validity:
+# Usage:
+#      valid_ip IP_ADDRESS
+#      if [[ $? -eq 0 ]]; then echo good; else echo bad; fi
+#   OR
+#      if valid_ip IP_ADDRESS; then echo good; else echo bad; fi
+function valid_ip() {
+    local ip=$1
+    local stat=1
+
+    if [[ $ip =~ ^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$ ]]; then
+        OIFS=$IFS
+        IFS='.'
+        # shellcheck disable=SC2206
+        ip=($ip)
+        IFS=$OIFS
+        [[ ${ip[0]} -le 255 && ${ip[1]} -le 255 && \
+        ${ip[2]} -le 255 && ${ip[3]} -le 255 ]]
+        stat=$?
+    fi
+    return $stat
+}
+
+
 assert_on_pc
 
 #####################################################
@@ -58,8 +85,10 @@ pgrep -f "nweb ${PORT}" >/dev/null || {
 log_echo "INFO" "Extract IP address from logfile: ${LOGFILE}"
 
 # extract IP address and time
+# Note: we expect an IPv4 address and abort otherwise
 SCANNER_IP=$(tail -n 1 "${LOGFILE}" | grep "3Dscanner" | cut -d'=' -f3 | cut -d'%' -f1)
-[[ -z "${SCANNER_IP}" ]] || log_echo "INFO" "Found scanner IP: ${SCANNER_IP}"
+valid_ip "${SCANNER_IP}" || { log_echo "ERROR" "No valid IPv4 address found: ${SCANNER_IP}"; exit 2; }
+log_echo "INFO" "Found scanner IP: ${SCANNER_IP}"
 LOGFILE_MTIME_SEC=$(stat -c %Y "${LOGFILE}")
 LOGFILE_MTIME_DATE=$(date -d@"${LOGFILE_MTIME_SEC}" +"%Y-%m-%d %T %Z")
 [[ -z "${LOGFILE_MTIME_DATE}" ]] || log_echo "INFO" "Last modification time: ${LOGFILE_MTIME_DATE}"
