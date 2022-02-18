@@ -8,8 +8,9 @@ actor "End-user\n Webbrowser" as user
 participant "Domain Forwarding Service" as dfs
 
 3ds -> web: GET Request
+note left: ""scanodis.sh""
 
-web -> web: write scanner IP\n into logfile
+web -> web: register scanner IP\n in logfile
 
 group cronjob 
   web -> web: parse logfile\nextract IP
@@ -23,7 +24,7 @@ or short URL
 end note
 user -> dfs: GET Request
 activate user
-return URL to webserver
+return public webserver URL
 user -> web: GET Request
 return index.html
 
