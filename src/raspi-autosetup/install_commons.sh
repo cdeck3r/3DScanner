@@ -31,6 +31,14 @@ is_wd_active() {
     return 1
 }
 
+# returns true, if systemd service is active
+is_active() {
+    local service=$1
+
+    systemctl is-active "${service}" > /dev/null
+    return $?
+}
+
 #####################################################
 # Main program
 #####################################################
@@ -52,6 +60,29 @@ is_wd_active() {
     echo "INFO: System reloads daemons and reboots to make watchdog effective."
     systemctl daemon-reload || { echo "Error ignored $?"; } # otherwise we exit and repeat
     shutdown -r now
+}
+
+# switch of devices to reduce power consumption
+rfkill block wifi
+rfkill block bluetooth
+
+# iterate through bluetooth services and disable them
+declare -a SYSTEMD_SERVICES=("wpa_supplicant" "bluetooth" "hciuart" )
+for serv in "${SYSTEMD_SERVICES[@]}"; do
+    is_active "${serv}" && {
+        systemctl stop "${serv}" || { echo "Ignore error when stopping service: ${serv}"; }
+        systemctl disable "${serv}" || { echo "Ignore error when disabling service: ${serv}"; }
+    }
+done 
+systemctl daemon-reload
+
+# run only on RPI4; switch off USB
+cat /proc/device-tree/model | grep -q "Raspberry Pi 4" && {
+    lspci | grep -q "USB" && { 
+        echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    }
+    #activate again
+    #echo 1 >/sys/bus/pci/rescan
 }
 
 # ignore wrong date
