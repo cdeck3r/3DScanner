@@ -67,8 +67,6 @@ class Node_Software(Node_Base):
             capture_output=True,
             universal_newlines=True,
         )
-        # execute process
-        process
 
     def sw_repo_revision(self):
         """Read the repo's revision"""

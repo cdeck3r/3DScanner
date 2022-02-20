@@ -100,8 +100,10 @@ class ImageFile(object):
 
     @property
     def mtime(self):
-        modTimesinceEpoc = os.path.getmtime(self.file)
-        return time.strftime('%Y-%m-%dT%H:%M:%S.000', time.localtime(modTimesinceEpoc))
+        #modTimesinceEpoc = os.path.getmtime(self.file)
+        #return time.strftime('%Y-%m-%dT%H:%M:%S.000', time.localtime(modTimesinceEpoc))
+        modTime = datetime.fromtimestamp(os.stat(self.file).st_mtime)
+        return modTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
 
     @property
     def json(self):
