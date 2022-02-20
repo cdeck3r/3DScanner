@@ -75,7 +75,7 @@ class Node_RecentImages(Node_Base):
         scanner/apparatus/recent-images/image-count
         """
         self.last_saved = Property_DateTime(
-            node=self, id='last-saved', name='Most recent image date', data_format='%Y-%m-%dT%H:%M:%S.000', value=datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.000')
+            node=self, id='last-saved', name='Most recent image date', data_format='%Y-%m-%dT%H:%M:%S.000', value=datetime.datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.000')
         )
 
         self.image_count = Property_Integer(
