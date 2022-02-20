@@ -144,3 +144,12 @@ class TestAutosetupCamnode:
     def test_autosetup_watchdog_active(self, host):
         assert host.run('journalctl --no-pager -k | grep -q "Set hardware watchdog to"').succeeded
     
+    def test_autosetup_power(self, host):
+        # we test that power-consuming devices are switched off
+        # e.g. wifi and bluetooth services, bluetooth devices, USB is off
+        assert host.run('systemctl is-active wpa_supplicant').stdout.rstrip().startswith('inactive')
+        assert host.run('systemctl is-active bluetooth').stdout.rstrip().startswith('inactive')
+        assert host.run('systemctl is-active hciuart').stdout.rstrip().startswith('inactive')
+        assert host.run('sudo rfkill list | grep -iq bluetooth').failed
+        assert host.run('lspci | grep -q "USB"').failed
+
