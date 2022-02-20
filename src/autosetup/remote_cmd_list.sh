@@ -22,7 +22,28 @@ SCRIPT_NAME=$0
 
 # variables
 REMOTE_SHELL="${SCRIPT_DIR}/remote_bash.sh"
+
+#
+# Various commands
+#
+# Find under-voltage messages
 REMOTE_CMD="hostname && journalctl --no-pager | grep voltage | tail -1"
+# Display uptime
+REMOTE_CMD="hostname && uptime"
+# Is watchdog active
+REMOTE_CMD="hostname && dmesg | grep watch | tail -1"
+# Retrieve complete journal log
+REMOTE_CMD="hostname && journalctl --no-pager"
+# Is HDMI active
+REMOTE_CMD="hostname && /opt/vc/bin/tvservice -s"
+# Reduce power consumption
+# Switch Wifi / bluetooth off, stop and disable wifi / bluetooth services, power off USB
+REMOTE_CMD="sudo -- bash -c 'rfkill block wifi; rfkill block bluetooth; systemctl stop wpa_supplicant; systemctl stop bluetooth; systemctl stop hciuart; systemctl disable wpa_supplicant; systemctl disable bluetooth; systemctl disable hciuart; systemctl daemon-reload; lspci | grep -q USB && { echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove; }'"
+# List RF devices state, PCI devices (e.g. USB), state of wifi/bluetooth services
+REMOTE_CMD="sudo rfkill list; lspci; systemctl is-active wpa_supplicant ; systemctl is-active bluetooth ; systemctl is-active hciuart"
+# Re-activate Bluetooth, Services, and USB
+REMOTE_CMD="sudo -- bash -c 'systemctl enable hciuart; systemctl enable bluetooth; systemctl enable wpa_supplicant; systemctl start hciuart; systemctl start bluetooth; systemctl start wpa_supplicant; echo 1 >/sys/bus/pci/rescan; rfkill unblock bluetooth'"
+
 # arpscan.txt
 IP_LIST=$1
 
