@@ -24,7 +24,7 @@ Base topic: `scanner/`
 
 | Device           | Attribute       | Sub-Attribute | Notes                       |
 |------------------|-----------------|---------------|-----------------------------|
-| ...node-`<hwaddr>` | $name           |               | displays camnode-`<hwaddr>`   |
+| ...node-`<hwaddr>` | $name         |               | displays camnode-`<hwaddr>` |
 |                  | $implementation |               | ex. Raspberry Pi, or x86_64 |
 |                  | $fw             | name          | Linux distro name           |
 |                  | $fw             | version       | kernel version              |
@@ -38,12 +38,12 @@ Base topic: `scanner/`
 
 | Device           | Node       | Property       | Notes                                          |
 |------------------|------------|----------------|------------------------------------------------|
-| camnode-`<hwaddr>` | camera     | shutter-button | push the button to take a picture               |
-|                  |      | shutter-timer | time in ms to wait before taking a picture               |
+| camnode-`<hwaddr>` | camera   | shutter-button | push the button to take a picture              |
+|                  |            | shutter-timer  | time in ms to wait before taking a picture     |
 |                  | software   | repo-revision  | SHA revision of the repository's master branch |
 |                  |            | local-revision | SHA revision of the local's repo master branch |
-|                  | recent-image | filename           | most recent image taken by the camera                                                |
-|                  |            | datetime       |                                                |
+|                  | recent-image | filename     | most recent image taken by the camera          |
+|                  |            | datetime       | Image modification time YYYY-MM-DDTHH:MM:SS.ssssss |
 |                  |            | file           | camnode published images as json formatted base64 encoded file        |
 
 
