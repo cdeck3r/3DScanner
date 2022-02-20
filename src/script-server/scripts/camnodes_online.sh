@@ -90,8 +90,12 @@ curr_t_sec=$(date +"%s")
 for ts in "${LAST_UPDATE_TS_ARRAY[@]}"; do
     t=$(echo "${ts}" | tr "_" " ")
     # need to swap month and day, because
-    # 06/07/2021 17:38:27 is considered as "Jun 7, 2021 17:38:27"
-    t_swap=$(date -d "${t}" +"%d/%m/%Y %H:%M:%S")
+    # 12/02/2021 17:38:27 is considered as "Dec 2, 2021 17:38:27", but it is
+    # Feb 12, 2021 ...
+    day=$(echo "${ts}" | cut -d'/' -f1)
+    month=$(echo "${ts}" | cut -d'/' -f2)
+    rest=$(echo "${ts}" | cut -d'/' -f3-)
+    t_swap="${month}/${day}/${rest}"
     # convert in seconds since epoch
     t_sec=$(date -d "${t_swap}" +"%s")
     ((t_sec <= t_sec_threshold)) && { ((LATE_UPDATE_NODES += 1)); }
