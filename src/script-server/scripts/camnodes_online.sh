@@ -92,9 +92,9 @@ for ts in "${LAST_UPDATE_TS_ARRAY[@]}"; do
     # need to swap month and day, because
     # 12/02/2021 17:38:27 is considered as "Dec 2, 2021 17:38:27", but it is
     # Feb 12, 2021 ...
-    day=$(echo "${ts}" | cut -d'/' -f1)
-    month=$(echo "${ts}" | cut -d'/' -f2)
-    rest=$(echo "${ts}" | cut -d'/' -f3-)
+    day=$(echo "${t}" | cut -d'/' -f1)
+    month=$(echo "${t}" | cut -d'/' -f2)
+    rest=$(echo "${t}" | cut -d'/' -f3-)
     t_swap="${month}/${day}/${rest}"
     # convert in seconds since epoch
     t_sec=$(date -d "${t_swap}" +"%s")
