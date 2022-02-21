@@ -27,7 +27,7 @@ REMOTE_SHELL="${SCRIPT_DIR}/remote_bash.sh"
 # Various commands
 #
 # Find under-voltage messages
-REMOTE_CMD="hostname && journalctl --no-pager | grep voltage | tail -1"
+REMOTE_CMD="hostname && journalctl --no-pager | grep -i voltage | tail -1"
 # Display uptime
 REMOTE_CMD="hostname && uptime"
 # Is watchdog active
@@ -43,7 +43,8 @@ REMOTE_CMD="sudo -- bash -c 'rfkill block wifi; rfkill block bluetooth; systemct
 REMOTE_CMD="sudo rfkill list; lspci; systemctl is-active wpa_supplicant ; systemctl is-active bluetooth ; systemctl is-active hciuart"
 # Re-activate Bluetooth, Services, and USB
 REMOTE_CMD="sudo -- bash -c 'systemctl enable hciuart; systemctl enable bluetooth; systemctl enable wpa_supplicant; systemctl start hciuart; systemctl start bluetooth; systemctl start wpa_supplicant; echo 1 >/sys/bus/pci/rescan; rfkill unblock bluetooth'"
-
+# Get various vcgencmd data
+REMOTE_CMD="hostname && vcgencmd get_camera; vcgencmd get_throttled ; vcgencmd measure_temp;  vcgencmd measure_temp pmic; vcgencmd measure_volts core; vcgencmd measure_volts sdram_c; vcgencmd measure_volts sdram_i; vcgencmd measure_volts sdram_p; vcgencmd get_config total_mem; vcgencmd get_mem arm; vcgencmd get_mem gpu; vcgencmd mem_oom; vcgencmd display_power -1 0; vcgencmd display_power -1 1; vcgencmd display_power -1 2; vcgencmd display_power -1 3; vcgencmd display_power -1 7"
 # arpscan.txt
 IP_LIST=$1
 
