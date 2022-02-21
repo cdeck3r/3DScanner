@@ -13,10 +13,10 @@ import pytest
 
 @pytest.mark.usefixtures("camnode_ssh_config")
 class TestAutosetupCamnode:
-    @pytest.mark.parametrize('nodetype', ['camnode'])
-    def test_hostname(self, pytestconfig, host, nodetype):
-        hostname = pytestconfig.getini(nodetype.lower())
-        assert host.run("hostname").stdout.rstrip() == hostname
+    @pytest.mark.parametrize('hostname', ['camnode_hostname'])
+    def test_hostname(self, pytestconfig, host, hostname):
+        hname = pytestconfig.getini(hostname.lower())
+        assert host.run("hostname").stdout.rstrip() == hname
 
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists

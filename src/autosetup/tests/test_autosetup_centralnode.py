@@ -13,13 +13,10 @@ import pytest
 
 @pytest.mark.usefixtures("centralnode_ssh_config")
 class TestAutosetupCentralnode:
-    @pytest.mark.parametrize('nodetype', ['centralnode'])
-    def test_hostname(self, pytestconfig, host, nodetype):
-        hostname = pytestconfig.getini(nodetype.lower())
-        assert (
-            host.run("hostname").stdout.rstrip()
-            == hostname[0 : len(nodetype + '-') + 12]
-        )
+    @pytest.mark.parametrize('hostname', ['centralnode_hostname'])
+    def test_hostname(self, pytestconfig, host, hostname):
+        hname = pytestconfig.getini(hostname.lower())
+        assert host.run("hostname").stdout.rstrip() == hname
 
     def test_booter_done(self, host):
         assert host.file('/boot/booter.done').exists
