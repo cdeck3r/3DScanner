@@ -10,7 +10,7 @@ The 3DScanner software components produce constantly log information and may sto
 A few software components write logfiles in form of proprietary formats the default log directory. They all run on the centralnode. Currently, there is no need for the log directory on the camnodes. The software parts are:
 
 * [scanodis](scanodis.md)
-* [script-server UI](script-server_ui.md)
+* [script-server UI](script_server_ui.md)
 * image [housekeeping](#image-housekeeping)
 
 Each performs its own logrotation using the following convention:

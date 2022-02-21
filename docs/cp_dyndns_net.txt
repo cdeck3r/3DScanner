@@ -4,8 +4,8 @@ skinparam componentStyle uml2
 skinparam linetype polyline
 'skinparam linetype ortho
 
-interface "<<allow>>\nCENTRALNODE subnet\nPort 5000" as register
-interface "<<allow>>\nCENTRALNODE subnet\nPort 80" as query
+interface "<<allow>>\nScanner subnet\nPort 5000" as register
+interface "<<allow>>\nScanner subnet\nPort 80" as query
 
 node "Public Webserver" as web {
   node "Firewall"
@@ -22,7 +22,7 @@ node "Public Webserver" as web {
   nweb ..> index.html:query
 }
 
-cloud "CENTRALNODE subnet" {
+cloud "Scanner subnet" {
   actor "User" as user
   boundary "http" as http
   node "CENTRALNODE" {
