@@ -4,7 +4,9 @@
 # Author: cdeck3r
 #
 import subprocess
+
 import pytest
+
 
 @pytest.mark.usefixtures("camnode_ssh_config")
 class TestHomieCamnode:

@@ -31,10 +31,12 @@ class TestHomieServiceCamnode:
         )
         assert host.run(list_unit_files).stdout.rstrip() == '1'
         service_enabled = (
-            'XDG_RUNTIME_DIR=/run/user/$(id -u) systemctl --user --no-pager --no-legend is-enabled ' + servicefile
+            'XDG_RUNTIME_DIR=/run/user/$(id -u) systemctl --user --no-pager --no-legend is-enabled '
+            + servicefile
         )
         assert host.run(service_enabled).stdout.rstrip() == 'enabled'
         service_state = (
-            'XDG_RUNTIME_DIR=/run/user/$(id -u) systemctl --user --no-pager --no-legend is-active ' + servicefile
+            'XDG_RUNTIME_DIR=/run/user/$(id -u) systemctl --user --no-pager --no-legend is-active '
+            + servicefile
         )
         assert host.run(service_state).stdout.rstrip() == 'active'

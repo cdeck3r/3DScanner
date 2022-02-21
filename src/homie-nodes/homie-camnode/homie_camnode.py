@@ -154,7 +154,7 @@ def start_homie_camnode():
             name=device_name,
             device_id=device_name,
             homie_settings=homie_settings,
-            mqtt_settings=mqtt_settings,            
+            mqtt_settings=mqtt_settings,
             device_settings=device_settings,
         )
         dev.start()

@@ -5,7 +5,6 @@
 #
 
 import subprocess
-
 import time
 from datetime import datetime
 
@@ -37,9 +36,7 @@ class TestHomieApparatusCameras:
 
     @pytest.mark.parametrize('waiting_time', [2])
     def test_homie_apparatus_shutter_button(self, pytestconfig, waiting_time):
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/last-button-push'
-        )
+        msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/last-button-push')
         # convert msg in number
         last_button_push = datetime.fromisoformat(msg).timestamp()
 
@@ -51,8 +48,5 @@ class TestHomieApparatusCameras:
             'push',
         )
         time.sleep(waiting_time)
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/last-button-push'
-        )
-        assert datetime.fromisoformat(msg).timestamp() > last_button_push 
-
+        msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/last-button-push')
+        assert datetime.fromisoformat(msg).timestamp() > last_button_push

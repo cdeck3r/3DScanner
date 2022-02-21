@@ -4,9 +4,9 @@ import time
 from datetime import datetime
 
 from homie.node.node_base import Node_Base
+from homie.node.property.property_datetime import Property_DateTime
 from homie.node.property.property_enum import Property_Enum
 from homie.node.property.property_integer import Property_Integer
-from homie.node.property.property_datetime import Property_DateTime
 
 logger = logging.getLogger(__name__)
 
@@ -58,10 +58,13 @@ class Node_Cameras(Node_Base):
             value='release',
         )
         self.add_property(self.button)
-        
+
         # datetime when shutter button was pushed last
         self.last_button_push = Property_DateTime(
-            node=self, id='last-button-push', name='Last shutter button pushed', data_format='%Y-%m-%dT%H:%M:%S.%f',
+            node=self,
+            id='last-button-push',
+            name='Last shutter button pushed',
+            data_format='%Y-%m-%dT%H:%M:%S.%f',
             value=datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.%f'),
         )
         self.add_property(self.last_button_push)
@@ -95,14 +98,13 @@ class Node_Cameras(Node_Base):
             value=0,
         )
         self.add_property(self.timer)
-        
+
     def __str__(self):
         return str(self.__class__.__name__)
 
     def take_picture(self):
         """Just updates the last-button-push property"""
         self.last_button_push.value = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')
-
 
     def shutter_button(self, button_action):
         """Received new button action from some external publisher"""

@@ -41,8 +41,14 @@ class Node_Image(Node_Base):
         self.device_name = device.name
 
         self.filename = Property_String(node=self, id='filename', name='Filename')
-        self.datetime = Property_DateTime(node=self, id='datetime', name='File Date', data_format='%Y-%m-%dT%H:%M:%S.%f', value=datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.%f') )
-        
+        self.datetime = Property_DateTime(
+            node=self,
+            id='datetime',
+            name='File Date',
+            data_format='%Y-%m-%dT%H:%M:%S.%f',
+            value=datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.%f'),
+        )
+
         file_meta = {}
         file_meta['encoding'] = {}
         file_meta['encoding']['name'] = 'file encoding'
@@ -100,8 +106,8 @@ class ImageFile(object):
 
     @property
     def mtime(self):
-        #modTimesinceEpoc = os.path.getmtime(self.file)
-        #return time.strftime('%Y-%m-%dT%H:%M:%S.000', time.localtime(modTimesinceEpoc))
+        # modTimesinceEpoc = os.path.getmtime(self.file)
+        # return time.strftime('%Y-%m-%dT%H:%M:%S.000', time.localtime(modTimesinceEpoc))
         modTime = datetime.fromtimestamp(os.stat(self.file).st_mtime)
         return modTime.strftime('%Y-%m-%dT%H:%M:%S.%f')
 

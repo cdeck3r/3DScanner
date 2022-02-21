@@ -4,11 +4,12 @@
 # Author: cdeck3r
 #
 import subprocess
+
 import pytest
+
 
 @pytest.mark.usefixtures("centralnode_ssh_config")
 class TestHomieApparatus:
-
     def test_homie_apparatus_config(self, host):
         assert host.file('/home/pi/homie-apparatus/homie_apparatus.yml').exists
 
@@ -16,7 +17,6 @@ class TestHomieApparatus:
         # see definition in homie-apparatus/homie_apparatus.yml
         assert host.file('/home/pi/www-images').is_directory
         assert host.file('/home/pi/tmp').is_directory
-
 
     def mqtt_sub(self, pytestconfig, topic, wait=2):
         broker = pytestconfig.getini('mqttbroker')
@@ -61,30 +61,23 @@ class TestHomieApparatus:
     def test_homie_apparatus_cameras(self, pytestconfig):
         msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/$name')
         assert msg == 'All cameras'
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/$properties'
-        )
+        msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/$properties')
         msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/$type')
         assert msg == 'camera'
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/$properties'
-        )
-        
-        for p in ['shutter-button','last-button-push','online','online-percent']:
+        msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/$properties')
+
+        for p in ['shutter-button', 'last-button-push', 'online', 'online-percent']:
             assert p in msg
-        
+
         for p in ['online', 'online-percent']:
             msg = self.mqtt_sub(
-                pytestconfig, 'scanner/apparatus/cameras/'+p+'/$settable'
+                pytestconfig, 'scanner/apparatus/cameras/' + p + '/$settable'
             )
             assert msg == 'false'
             msg = self.mqtt_sub(
-                pytestconfig, 'scanner/apparatus/cameras/'+p+'/$datatype'
+                pytestconfig, 'scanner/apparatus/cameras/' + p + '/$datatype'
             )
             assert msg == 'integer'
-            
-        msg = self.mqtt_sub(
-            pytestconfig, 'scanner/apparatus/cameras/online'
-        )
-        assert int(msg) >= 1
 
+        msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/online')
+        assert int(msg) >= 1

@@ -27,6 +27,7 @@ class Node_RecentImages(Node_Base):
     scanner/apparatus/recent-images/last-saved
     scanner/apparatus/recent-images/image-count
     """
+
     # allowed function states
     RUN_STATES = "run,idle"
 
@@ -53,7 +54,9 @@ class Node_RecentImages(Node_Base):
         os.makedirs(self.img_dir, mode=0o755, exist_ok=True)
         assert os.path.isdir(self.img_dir)
         # temp directory to store retrieved images in json format
-        self.img_tmp_dir = os.path.expanduser(self.device.device_settings['img_tmp_dir'])
+        self.img_tmp_dir = os.path.expanduser(
+            self.device.device_settings['img_tmp_dir']
+        )
         os.makedirs(self.img_tmp_dir, mode=0o755, exist_ok=True)
         assert os.path.isdir(self.img_tmp_dir)
 
@@ -75,7 +78,13 @@ class Node_RecentImages(Node_Base):
         scanner/apparatus/recent-images/image-count
         """
         self.last_saved = Property_DateTime(
-            node=self, id='last-saved', name='Most recent image date', data_format='%Y-%m-%dT%H:%M:%S.000', value=datetime.datetime.fromisoformat('1970-01-01').strftime('%Y-%m-%dT%H:%M:%S.000')
+            node=self,
+            id='last-saved',
+            name='Most recent image date',
+            data_format='%Y-%m-%dT%H:%M:%S.000',
+            value=datetime.datetime.fromisoformat('1970-01-01').strftime(
+                '%Y-%m-%dT%H:%M:%S.000'
+            ),
         )
 
         self.image_count = Property_Integer(

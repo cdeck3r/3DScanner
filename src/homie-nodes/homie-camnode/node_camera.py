@@ -87,7 +87,10 @@ class Node_Camera(Node_Base):
         self.add_property(self.timer)
 
         # camera subscribes on scanner/apparatus/cameras/shutter-button
-        self.device.add_subscription(topic='scanner/apparatus/cameras/shutter-button', handler=self.scanner_shutter_button)
+        self.device.add_subscription(
+            topic='scanner/apparatus/cameras/shutter-button',
+            handler=self.scanner_shutter_button,
+        )
 
     def __str__(self):
         return str(self.__class__.__name__)
@@ -163,7 +166,7 @@ class Node_Camera(Node_Base):
         time.sleep(self.timer.value / 1000)  # unit is ms
         self.take_picture()
         self.button.value = 'release'
-        
+
     def scanner_shutter_button(self, topic, button_action):
         """Handler for message on scanner/apparatus/cameras/shutter-button"""
         logger.info('Scanner shutter button hit: {}'.format(button_action))
