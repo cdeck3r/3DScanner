@@ -145,15 +145,15 @@ class TestAutosetupCentralnode:
     def test_autosetup_avahi_utils_installed(self, host):
         assert host.package('avahi-utils').is_installed
 
-    @pytest.mark.parametrize('nodetype', ['camnode'])
-    def test_avahi_find_camnode(self, pytestconfig, host, nodetype):
-        camnode_name = pytestconfig.getini(nodetype.lower())
-        cmd = "avahi-resolve -n -4 " + camnode_name
+    @pytest.mark.parametrize('nodename', ['camnode_hostname'])
+    def test_avahi_find_camnode(self, pytestconfig, host, nodename):
+        camnode_name = pytestconfig.getini(nodename.lower())
+        cmd = "avahi-resolve -n -4 " + camnode_name + ".local"
         assert host.run(cmd).succeeded
 
-    @pytest.mark.parametrize('nodetype', ['camnode'])
-    def test_avahi_browse_camnode(self, pytestconfig, host, nodetype):
-        camnode_name = pytestconfig.getini(nodetype.lower())
+    @pytest.mark.parametrize('nodename', ['camnode_hostname'])
+    def test_avahi_browse_camnode(self, pytestconfig, host, nodename):
+        camnode_name = pytestconfig.getini(nodename.lower())
         cmd = (
             r"avahi-browse -atr | grep hostname | tr '[:space:] ' '\n' | grep local | sort | uniq | sed 's/\[\(.\+\)\]/\1/g'"
             + " | grep "
