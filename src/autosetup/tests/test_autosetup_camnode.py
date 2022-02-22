@@ -180,3 +180,11 @@ class TestAutosetupCamnode:
         # we test that power-consuming devices are switched off
         # USB is off
         assert host.run('sudo lspci | grep -q "USB"').succeeded
+
+    def test_autosetup_scaling_governor_powersave(self, host):
+        # scaling governor shall be powersave
+        assert (
+            host.run('cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor')
+            .stdout.rstrip()
+            .startswith('powersave')
+        )

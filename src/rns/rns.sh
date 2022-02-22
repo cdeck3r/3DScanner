@@ -114,6 +114,15 @@ rm_booter_done() {
     ${ssh_rm_booter_done}
 }
 
+set_powersave() {
+    local node=$1
+    local ssh_login
+
+    ssh_login=$(ssh_cmd)
+    ssh_set_powersave="${ssh_login} -t ${PI_USER}@${node} echo powersave | sudo tee /sys/devices/system/cpu/cpufreq/policy0/scaling_governor >/dev/null"
+    ${ssh_set_powersave}
+}
+
 copy_file() {
     local file=$1
     local node=$2
@@ -250,7 +259,7 @@ fi
 
 # restart the autosetup process
 log_echo "INFO" "Re-run the autosetup process for node ${NODE_ADDR} in ${DELAY} minutes"
-(rm_booter_done "${NODE_ADDR}" && shutdown_reboot "${NODE_ADDR}" "${DELAY}") || {
+{ set_powersave "${NODE_ADDR}" && rm_booter_done "${NODE_ADDR}" && shutdown_reboot "${NODE_ADDR}" "${DELAY}"; } || {
     log_echo "ERROR" "Could start the autosetup process for node ${NODE_ADDR}"
     exit 2
 }

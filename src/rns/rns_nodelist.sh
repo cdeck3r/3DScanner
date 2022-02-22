@@ -3,7 +3,7 @@ set -e
 
 #
 # rns for nodelist - remote node setup (rns) for all nodes in nodelist.log
-# 
+#
 # This script consumes the nodelist.log on the centralnode and runs
 # the rns.sh script on all nodes from this list.
 #
@@ -32,10 +32,10 @@ SCRIPT_NAME=$0
 ## cmd line args parsed in the main program
 
 ## others
-DELAY=10                 #default: time in minutes between two node's reboot
-PI_USER_PASS="raspberry" #default
-PING_ENABLED=0           #default
-ARMED='false'            #default, i.e. it perfoms a dry run, override with -a option
+DELAY=10                             #default: time in minutes between two node's reboot
+PI_USER_PASS="raspberry"             #default
+PING_ENABLED=0                       #default
+ARMED='false'                        #default, i.e. it perfoms a dry run, override with -a option
 NODELIST="/home/pi/log/nodelist.log" # exists on centralnode
 
 #####################################################

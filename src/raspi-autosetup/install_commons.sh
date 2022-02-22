@@ -35,7 +35,7 @@ is_wd_active() {
 is_active() {
     local service=$1
 
-    systemctl is-active "${service}" > /dev/null
+    systemctl is-active "${service}" >/dev/null
     return $?
 }
 
@@ -67,19 +67,19 @@ rfkill block wifi
 rfkill block bluetooth
 
 # iterate through bluetooth services and disable them
-declare -a SYSTEMD_SERVICES=("wpa_supplicant" "bluetooth" "hciuart" )
+declare -a SYSTEMD_SERVICES=("wpa_supplicant" "bluetooth" "hciuart")
 for serv in "${SYSTEMD_SERVICES[@]}"; do
     is_active "${serv}" && {
         systemctl stop "${serv}" || { echo "Ignore error when stopping service: ${serv}"; }
         systemctl disable "${serv}" || { echo "Ignore error when disabling service: ${serv}"; }
     }
-done 
+done
 systemctl daemon-reload
 
 # run only on RPI4; switch off USB
 cat /proc/device-tree/model | grep -q "Raspberry Pi 4" && {
-    lspci | grep -q "USB" && { 
-        echo 1 > /sys/bus/pci/devices/0000\:01\:00.0/remove
+    lspci | grep -q "USB" && {
+        echo 1 >/sys/bus/pci/devices/0000\:01\:00.0/remove
     }
     #activate again
     #echo 1 >/sys/bus/pci/rescan

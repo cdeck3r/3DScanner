@@ -27,6 +27,31 @@ HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
 HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
 HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
 
+RASPI_CONF="/etc/init.d/raspi-config"
+
+#####################################################
+# Include Helper functions
+#####################################################
+
+# returns true, if the raspi-config overwrites scaling governor
+conf_overwrites_governor() {
+    grep -q "#echo \"ondemand\"" "${RASPI_CONF}" && return 1
+    return 0
+}
+
+#####################################################
+# Main program
+#####################################################
+
+# Avoid scaling governor overwrite, keep it as it is
+# 1. check for raspi-config
+# 2. modify file, if necessary
+{ [[ -f "${RASPI_CONF}" ]] && conf_overwrites_governor; } && {
+    echo "WARN: raspi-config overwrites the scaling governor"
+    # comment out the setting of scaling governor
+    sed "s/echo \"ondemand\"/\#echo \"ondemand\"/" -i "${RASPI_CONF}"
+}
+
 # ignore wrong date
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 
