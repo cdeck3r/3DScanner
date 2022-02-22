@@ -1,5 +1,5 @@
 {
-  "name": "Lists all online camnodes",
+  "name": "List all online cameras",
   "script_path": "camnodes_online.sh",
   "working_directory": "scripts",
   "description": "Provides a list of camera nodes and their update time",
