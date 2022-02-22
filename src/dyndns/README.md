@@ -4,6 +4,8 @@ The dynamic DNS approach registers the IP address in a public location for the e
 
 The [documentation](../../docs/dyndns.md) reports about the details.
 
+The setup process puts all logfiles under logrotation in the log sub-directory of the script's install path.
+
 Relevant scripts:
 
 * [dyndns.sh](dyndns.sh) The script runs on a public webserver to extract the data from the logfile.
