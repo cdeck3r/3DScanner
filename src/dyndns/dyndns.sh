@@ -59,7 +59,6 @@ function valid_ip() {
     return $stat
 }
 
-
 assert_on_pc
 
 #####################################################
@@ -87,7 +86,10 @@ log_echo "INFO" "Extract IP address from logfile: ${LOGFILE}"
 # extract IP address and time
 # Note: we expect an IPv4 address and abort otherwise
 SCANNER_IP=$(tail -n 1 "${LOGFILE}" | grep "3Dscanner" | cut -d'=' -f3 | cut -d'%' -f1)
-valid_ip "${SCANNER_IP}" || { log_echo "ERROR" "No valid IPv4 address found: ${SCANNER_IP}"; exit 2; }
+valid_ip "${SCANNER_IP}" || {
+    log_echo "ERROR" "No valid IPv4 address found: ${SCANNER_IP}"
+    exit 2
+}
 log_echo "INFO" "Found scanner IP: ${SCANNER_IP}"
 LOGFILE_MTIME_SEC=$(stat -c %Y "${LOGFILE}")
 LOGFILE_MTIME_DATE=$(date -d@"${LOGFILE_MTIME_SEC}" +"%Y-%m-%d %T %Z")

@@ -24,7 +24,17 @@ SCRIPT_NAME=$0
 
 # variables
 PORT=80
-SRC_IP="134.103.0.0/16"
+SRC_IP="134.103.0.0/16" # scanner network
+
+# Logging
+LOG_DIR="${SCRIPT_DIR}/log"
+LOG_FILE="${LOG_DIR}/dyndns.log"
+NWEB_LOG="${SCRIPT_DIR}/nweb.log"
+
+# logrotate
+LOGROTATE_CONF="${SCRIPT_DIR}/logrotate.conf"
+LOGROTATE_STATE="${LOG_DIR}/logrotate_dyndns.state"
+LOGROTATE_LOG="${LOG_DIR}/logrotate_dyndns.log"
 
 #####################################################
 # Include Helper functions
@@ -34,6 +44,11 @@ SRC_IP="134.103.0.0/16"
 source "${SCRIPT_DIR}/funcs.sh"
 assert_on_pc
 
+# check dyndns script
+[[ -x "${SCRIPT_DIR}/dyndns.sh" ]] || {
+    log_echo "ERROR" "Dyndns script not executable: ${SCRIPT_DIR}/dyndns.sh"
+    exit 1
+}
 # check webserver
 [[ -f "${SCRIPT_DIR}/nweb" ]] || {
     log_echo "ERROR" "Webserver does not exist: nweb"
@@ -42,6 +57,20 @@ assert_on_pc
 [[ -x "${SCRIPT_DIR}/nweb" ]] || {
     log_echo "ERROR" "Webserver nweb is not executable"
     exit 1
+}
+# check log stuff
+[[ -f "${LOGROTATE_CONF}" ]] || {
+    log_echo "ERROR" "Required file not found: ${LOGROTATE_CONF}"
+    exit 1
+}
+# create log directory, if not exist
+[[ -d "${LOG_DIR}" ]] || {
+    log_echo "WARN" "Log directory does not exist: ${LOG_DIR}"
+    log_echo "INFO" "Will create log directory: ${LOG_DIR}"
+    mkdir -p "${LOG_DIR}" || {
+        log_echo "ERROR" "Could not create log directory: ${LOG_DIR}"
+        exit 2
+    }
 }
 
 #####################################################
@@ -55,17 +84,34 @@ log_echo "INFO" "Open firewall. Allow from ${SRC_IP} to local port ${PORT}"
 sudo ufw allow from "${SRC_IP}" to any port "${PORT}" proto tcp comment 'HSRT 3DScanner End-user Access'
 # start webserver
 log_echo "INFO" "Start webserver nweb on port ${PORT}"
-sudo ./nweb "${PORT}" .
+sudo "${SCRIPT_DIR}"/nweb "${PORT}" .
 # list nweb processes
 # shellcheck disable=SC2009
 ps ax | grep nweb
 
+# Configure logrotate.conf
+# replace olddir, add logfiles
+grep -q "^olddir" "${LOGROTATE_CONF}" || {
+    log_echo "INFO" "Will add olddir directive in file: ${LOGROTATE_CONF}"
+    echo "olddir ${LOG_DIR}"
+}
+sed "s|^olddir.*|olddir $LOG_DIR|" -i "${LOGROTATE_CONF}"
+grep -q "${LOG_FILE}" "${LOGROTATE_CONF}" || {
+    log_echo "INFO" "Add logfile to logrotate.conf: ${LOG_FILE}"
+    echo "${LOG_FILE} {}" >>"${LOGROTATE_CONF}"
+}
+grep -q "${NWEB_LOG}" "${LOGROTATE_CONF}" || {
+    log_echo "INFO" "Add logfile to logrotate.conf: ${NWEB_LOG}"
+    echo "${NWEB_LOG} {}" >>"${LOGROTATE_CONF}"
+}
+
 # Install cronjob
 log_echo "INFO" "Install cronjob for ${SCRIPT_NAME}"
-crontab -l | grep -v 'dyndns.sh' | crontab - || { log_echo "ERROR" "Ignore error: $?"; }
+crontab -l | grep -v 'dyndns' | crontab - || { log_echo "ERROR" "Ignore error: $?"; }
 (
     crontab -l
-    echo "*/5 * * * * ${SCRIPT_DIR}/dyndns.sh >> ${SCRIPT_DIR}/dyndns.log"
+    echo "*/5 * * * * ${SCRIPT_DIR}/dyndns.sh >> ${LOG_FILE}"
+    echo "0 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -l ${LOGROTATE_LOG} ${LOGROTATE_CONF} >/dev/null 2>&1"
 ) | sort | uniq | crontab - || {
     log_echo "ERROR" "Error adding cronjob. Code: $?"
     exit 2
