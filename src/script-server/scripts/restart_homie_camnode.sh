@@ -102,7 +102,7 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
         #(( $? == 0 ))
     done
     # counter shall not be 0 to indicate success, otherwise inc err_cnt
-    isnt ${trial_cnt} 0 "Restart ${camnode}"
+    isnt ${trial_cnt} 0 "Restart service on ${camnode}"
     ((trial_cnt == 0)) && { ((err_cnt += 1)); }
 
     # set scaling governor to "ondemand"
@@ -111,7 +111,7 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     ssh_curr_scaling_governor="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${CURR_SCALING_GOVERNOR_CMD}"
     CURR_SCALING_GOVERNOR=$(${ssh_curr_scaling_governor})
     ok $? "Reading current power management from ${camnode}"
-    is "${CURR_SCALING_GOVERNOR}" "powersave"
+    is "${CURR_SCALING_GOVERNOR}" "powersave" "Current power management on ${camnode}: ${CURR_SCALING_GOVERNOR}"
     test "${SET_SCALING_GOVERNOR_DISABLE}" == true
     skip $? "Modify power management is disabled for ${camnode}" || {
         ssh_set_scaling_ondemand="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${SET_SCALING_ONDEMAND}"
