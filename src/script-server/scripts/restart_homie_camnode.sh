@@ -28,6 +28,7 @@ SCRIPT_NAME=$0
 PI_USER=pi
 NODELIST_LOG="/home/${PI_USER}/log/nodelist.log"
 FAILED_RESTART_YELLOW=5 # WARNING threshold for failed restart
+SET_SCALING_GOVERNOR_DISABLE=true
 
 [ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
     echo "Could find required config file: common_vars.conf"
@@ -76,7 +77,7 @@ diag "Collect camnodes from nodelist"
 diag "${HR}"
 
 [ -f "${NODELIST_LOG}" ] || { BAIL_OUT "File not found: ${NODELIST_LOG}"; }
-mapfile -t CAMNODE_IP_ARRAY < <(cat "${NODELIST_LOG}" |sort|uniq|cut -d$'\t' -f2)
+mapfile -t CAMNODE_IP_ARRAY < <(cat "${NODELIST_LOG}" | sort | uniq | cut -d$'\t' -f2)
 is $? 0 "Read IP addresses from nodelist"
 isnt "${#CAMNODE_IP_ARRAY[@]}" 0 "IP addresses available"
 
@@ -89,6 +90,7 @@ diag "${HR}"
 SSH_LOGIN="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
 REMOTE_USER_ID="id -u ${PI_USER}"
 RESTART_CMD="XDG_RUNTIME_DIR=/run/user/$(${REMOTE_USER_ID}) systemctl --user restart homie_camnode.service"
+SET_SCALING_ONDEMAND="echo ondemand | sudo tee /sys/devices/system/cpu/cpufreq/policy0/scaling_governor >/dev/null"
 
 for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     diag "Try to restart ${camnode}..."
@@ -102,6 +104,16 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     # counter shall not be 0 to indicate success, otherwise inc err_cnt
     isnt ${trial_cnt} 0 "Restart ${camnode}"
     ((trial_cnt == 0)) && { ((err_cnt += 1)); }
+
+    # set scaling governor to "ondemand"
+    diag "Set power management for ${camnode}..."
+    CURR_SCALING_GOVERNOR=$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor)
+    ok $? "Reading current power management"
+    is "${CURR_SCALING_GOVERNOR}" "powersave"
+    skip [ "${SET_SCALING_GOVERNOR_DISABLE}" == true ] "Modify power management is disabled for ${camnode}" || {
+        ssh_set_scaling_ondemand="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${SET_SCALING_ONDEMAND}"
+        okx "${ssh_set_scaling_ondemand}"
+    }
 
 done
 
