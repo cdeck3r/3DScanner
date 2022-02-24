@@ -110,7 +110,8 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     CURR_SCALING_GOVERNOR=$(cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor)
     ok $? "Reading current power management"
     is "${CURR_SCALING_GOVERNOR}" "powersave"
-    skip [ "${SET_SCALING_GOVERNOR_DISABLE}" == true ] "Modify power management is disabled for ${camnode}" || {
+    test "${SET_SCALING_GOVERNOR_DISABLE}" == true
+    skip $? "Modify power management is disabled for ${camnode}" || {
         ssh_set_scaling_ondemand="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${SET_SCALING_ONDEMAND}"
         okx "${ssh_set_scaling_ondemand}"
     }
