@@ -19,9 +19,11 @@ import testinfra
 
 
 def pytest_addoption(parser):
-    parser.addini('camnode', 'camnode hostname for testing')
-    parser.addini('centralnode', 'centralnode hostname for testing')
-    parser.addini('mqttbroker', 'name of MQTT broker')
+    parser.addini('camnode', 'camnode address for testing')
+    parser.addini('camnode_hostname', 'camnode hostname for testing')
+    parser.addini('centralnode', 'centralnode address for testing')
+    parser.addini('centralnode_hostname', 'centralnode hostname for testing')
+    parser.addini('mqttbroker', 'mqttbroker address')
     parser.addoption('--force', action='store_true')
 
 

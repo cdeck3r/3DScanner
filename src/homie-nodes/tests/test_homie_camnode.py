@@ -91,5 +91,5 @@ class TestHomieCamnode:
         )
         assert msg == 'b64file'
 
-    def test_homie_camnode(self, host):
+    def test_homie_camnode_configfile(self, host):
         assert host.file('/home/pi/homie-camnode/homie_camnode.yml').exists
