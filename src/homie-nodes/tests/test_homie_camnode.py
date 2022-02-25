@@ -22,18 +22,18 @@ class TestHomieCamnode:
 
     # use MQTT subscribe to run the following test cases
     def test_homie_camnode_state(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '$state')
         assert msg == 'ready'
 
     def test_homie_camnode_version(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$homie')
         assert msg == '4.0.0'
 
     # @pytest.mark.skip(reason='DEV: homie device runs in dev system, not on Raspi')
     def test_homie_camnode_attributes(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$name')
         assert msg == camnode
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$implementation')
@@ -44,14 +44,14 @@ class TestHomieCamnode:
         assert len(msg) > 0
 
     def test_homie_camnode_camera(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$name')
         assert msg == 'Camera'
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$properties')
         assert msg == 'shutter-button,shutter-timer'
 
     def test_homie_camnode_software(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/software/$name')
         assert msg == 'Software'
         msg = self.mqtt_sub(
@@ -60,7 +60,7 @@ class TestHomieCamnode:
         assert msg == 'repo-revision,local-revision'
 
     def test_homie_camnode_recent_image(self, pytestconfig):
-        camnode = pytestconfig.getini('camnode')
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/recent-image/$name')
         assert msg == 'Recent Image'
         msg = self.mqtt_sub(
