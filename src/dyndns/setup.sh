@@ -111,7 +111,7 @@ crontab -l | grep -v 'dyndns' | crontab - || { log_echo "ERROR" "Ignore error: $
 (
     crontab -l
     echo "*/5 * * * * ${SCRIPT_DIR}/dyndns.sh >> ${LOG_FILE}"
-    echo "0 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -d ${LOGROTATE_CONF} >${LOGROTATE_LOG} 2>&1"
+    echo "0 2 * * * /usr/sbin/logrotate -v -s ${LOGROTATE_STATE} ${LOGROTATE_CONF} >${LOGROTATE_LOG} 2>&1"
 ) | sort | uniq | crontab - || {
     log_echo "ERROR" "Error adding cronjob. Code: $?"
     exit 2
