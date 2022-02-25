@@ -123,6 +123,32 @@ set_powersave() {
     ${ssh_set_powersave}
 }
 
+disable_homie_camnode() {
+    local node=$1
+    local ssh_login
+    local remote_user_id
+    local disable_cmd
+
+    remote_user_id="id -u ${PI_USER}"
+    disable_cmd="export XDG_RUNTIME_DIR=/run/user/$(${remote_user_id}) && systemctl --user stop homie_camnode.service && systemctl --user disable homie_camnode.service"
+
+    ssh_login=$(ssh_cmd)
+    ssh_disable_homie_camnode="${ssh_login} -t ${PI_USER}@${node} ${disable_cmd}"
+    ${ssh_disable_homie_camnode}
+}
+
+switch_off_LED() {
+    local node=$1
+    local ssh_login
+    local switch_off_cmd
+
+    switch_off_cmd="/boot/autosetup/3DScanner/src/blink/blink.sh none"
+
+    ssh_login=$(ssh_cmd)
+    ssh_switch_off_LED="${ssh_login} -t ${PI_USER}@${node} ${switch_off_cmd}"
+    ${ssh_switch_off_LED}
+}
+
 copy_file() {
     local file=$1
     local node=$2
@@ -259,7 +285,7 @@ fi
 
 # restart the autosetup process
 log_echo "INFO" "Re-run the autosetup process for node ${NODE_ADDR} in ${DELAY} minutes"
-{ set_powersave "${NODE_ADDR}" && rm_booter_done "${NODE_ADDR}" && shutdown_reboot "${NODE_ADDR}" "${DELAY}"; } || {
+{ disable_homie_camnode "${NODE_ADDR}" && switch_off_LED "${NODE_ADDR}" && set_powersave "${NODE_ADDR}" && rm_booter_done "${NODE_ADDR}" && shutdown_reboot "${NODE_ADDR}" "${DELAY}"; } || {
     log_echo "ERROR" "Could start the autosetup process for node ${NODE_ADDR}"
     exit 2
 }
