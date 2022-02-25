@@ -55,6 +55,26 @@ source "${SCRIPT_DIR}/tap-functions.sh"
 }
 source "${SCRIPT_DIR}/funcs.sh"
 
+# returns the current scaling_governor 
+# setting from given node
+read_scaling_governor() {
+    local node=$1
+    local ssh_login
+    local curr_scaling_governor
+    local curr_scaling_governor_cmd
+    
+    curr_scaling_governor="unknown"
+    ssh_login="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
+    curr_scaling_governor_cmd="cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor"
+
+    ssh_curr_scaling_governor="${ssh_login} -t ${PI_USER}@${node} ${curr_scaling_governor_cmd}"
+    curr_scaling_governor=$(${ssh_curr_scaling_governor})
+    ok $? "Reading current power management from ${node}"
+
+    echo curr_scaling_governor
+}
+
+
 #####################################################
 # Main program
 #####################################################
@@ -90,6 +110,7 @@ diag "${HR}"
 SSH_LOGIN="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
 REMOTE_USER_ID="id -u ${PI_USER}"
 RESTART_CMD="XDG_RUNTIME_DIR=/run/user/$(${REMOTE_USER_ID}) systemctl --user restart homie_camnode.service"
+
 SET_SCALING_ONDEMAND="echo ondemand | sudo tee /sys/devices/system/cpu/cpufreq/policy0/scaling_governor >/dev/null"
 
 for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
@@ -106,16 +127,19 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     ((trial_cnt == 0)) && { ((err_cnt += 1)); }
 
     # set scaling governor to "ondemand"
-    diag "Set power management for ${camnode}..."
-    CURR_SCALING_GOVERNOR_CMD="cat /sys/devices/system/cpu/cpufreq/policy0/scaling_governor"
-    ssh_curr_scaling_governor="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${CURR_SCALING_GOVERNOR_CMD}"
-    CURR_SCALING_GOVERNOR=$(${ssh_curr_scaling_governor})
-    ok $? "Reading current power management from ${camnode}"
+    diag "Test and set power management for ${camnode}..."
+    
+    # 1. Read current scaling_governor
+    # 2. Test scaling for "powersave"
+    # 3. Set scaling_governor to "ondemand"
+    CURR_SCALING_GOVERNOR=$(read_scaling_governor "${camnode}")
     is "${CURR_SCALING_GOVERNOR}" "powersave" "Current power management on ${camnode}: ${CURR_SCALING_GOVERNOR}"
+
     test "${SET_SCALING_GOVERNOR_DISABLE}" == true
     skip $? "Modify power management is disabled for ${camnode}" || {
         ssh_set_scaling_ondemand="${SSH_LOGIN} -t ${PI_USER}@${camnode} ${SET_SCALING_ONDEMAND}"
-        okx "${ssh_set_scaling_ondemand}"
+        ${ssh_set_scaling_ondemand}
+        ok $? "Set power management for ${camnode}: ondemand"
     }
 
 done
