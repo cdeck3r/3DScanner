@@ -286,7 +286,18 @@ fi
 
 # restart the autosetup process
 log_echo "INFO" "Re-run the autosetup process for node ${NODE_ADDR} in ${DELAY} minutes"
-{ disable_homie_camnode "${NODE_ADDR}" && switch_off_LED "${NODE_ADDR}" && set_powersave "${NODE_ADDR}" && rm_booter_done "${NODE_ADDR}" && shutdown_reboot "${NODE_ADDR}" "${DELAY}"; } || {
+{
+    log_echo "INFO" "Disable homie service on node: ${NODE_ADDR}" &&
+        disable_homie_camnode "${NODE_ADDR}" &&
+        log_echo "INFO" "Switch off green LED on node: ${NODE_ADDR}" &&
+        switch_off_LED "${NODE_ADDR}" &&
+        log_echo "INFO" "Set powersave on node: ${NODE_ADDR}" &&
+        set_powersave "${NODE_ADDR}" &&
+        log_echo "INFO" "Delete booter.done on node: ${NODE_ADDR}" &&
+        rm_booter_done "${NODE_ADDR}" &&
+        log_echo "INFO" "Enqueue reboot on node: ${NODE_ADDR}" &&
+        shutdown_reboot "${NODE_ADDR}" "${DELAY}"
+} || {
     log_echo "ERROR" "Could start the autosetup process for node ${NODE_ADDR}"
     exit 2
 }
