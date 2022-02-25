@@ -29,6 +29,7 @@ PI_USER=pi
 NODELIST_LOG="/home/${PI_USER}/log/nodelist.log"
 FAILED_RESTART_YELLOW=5 # WARNING threshold for failed restart
 SET_SCALING_GOVERNOR_DISABLE=true
+CURR_SCALING_GOVERNOR="unknown"
 
 [ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
     echo "Could find required config file: common_vars.conf"
@@ -71,7 +72,7 @@ read_scaling_governor() {
     curr_scaling_governor=$(${ssh_curr_scaling_governor})
     ok $? "Reading current power management from ${node}"
 
-    echo curr_scaling_governor
+    CURR_SCALING_GOVERNOR="${curr_scaling_governor}"
 }
 
 
@@ -132,7 +133,7 @@ for camnode in "${CAMNODE_IP_ARRAY[@]}"; do
     # 1. Read current scaling_governor
     # 2. Test scaling for "powersave"
     # 3. Set scaling_governor to "ondemand"
-    CURR_SCALING_GOVERNOR=$(read_scaling_governor "${camnode}")
+    read_scaling_governor "${camnode}" # will set global var CURR_SCALING_GOVERNOR
     is "${CURR_SCALING_GOVERNOR}" "powersave" "Current power management on ${camnode}: ${CURR_SCALING_GOVERNOR}"
 
     test "${SET_SCALING_GOVERNOR_DISABLE}" == true
