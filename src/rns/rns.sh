@@ -129,8 +129,9 @@ disable_homie_camnode() {
     local remote_user_id
     local disable_cmd
 
+    # if on centralnode, do nothing, otherwise disable homie_camnode service
     remote_user_id="id -u ${PI_USER}"
-    disable_cmd="export XDG_RUNTIME_DIR=/run/user/$(${remote_user_id}) && systemctl --user stop homie_camnode.service && systemctl --user disable homie_camnode.service"
+    disable_cmd="hostname | grep -qi centralnode || export XDG_RUNTIME_DIR=/run/user/$(${remote_user_id}) && systemctl --user stop homie_camnode.service && systemctl --user disable homie_camnode.service"
 
     ssh_login=$(ssh_cmd)
     ssh_disable_homie_camnode="${ssh_login} -t ${PI_USER}@${node} ${disable_cmd}"
