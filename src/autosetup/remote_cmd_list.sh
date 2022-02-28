@@ -22,7 +22,7 @@ SCRIPT_NAME=$0
 
 # variables
 REMOTE_SHELL="${SCRIPT_DIR}/remote_bash.sh"
-
+  
 #
 # Various commands
 #
