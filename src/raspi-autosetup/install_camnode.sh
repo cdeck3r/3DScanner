@@ -86,12 +86,12 @@ su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
 # install housekeeping; run as ${USER}
 # 1. Remove and re-create user directory for housekeeping
 # 2. Copy files into user directory and set credentials for install script
-# 3. Run install script as ${USER}
+# 3. Create image directory and run install script both as ${USER}
 # Restart cron service
 rm -rf "${HOUSEKEEPING_USER_DIR}" # cleanup
 mkdir "${HOUSEKEEPING_USER_DIR}"
 cp -r "${HOUSEKEEPING_INSTALL_DIR}" "$(dirname ${HOUSEKEEPING_USER_DIR})"
 chown -R ${USER}:${USER} "${HOUSEKEEPING_USER_DIR}"
 chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
-su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${HOUSEKEEPING_INSTALL_SCRIPT} ${USER_HOME}/images" "${USER}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} mkdir -p ${USER_HOME}/images && ${HOUSEKEEPING_INSTALL_SCRIPT} ${USER_HOME}/images" "${USER}"
 systemctl restart cron.service

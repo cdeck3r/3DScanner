@@ -131,7 +131,7 @@ disable_homie_camnode() {
 
     # if on centralnode, do nothing, otherwise disable homie_camnode service
     remote_user_id="id -u ${PI_USER}"
-    disable_cmd="hostname | grep -qi centralnode || export XDG_RUNTIME_DIR=/run/user/$(${remote_user_id}) && systemctl --user stop homie_camnode.service && systemctl --user disable homie_camnode.service"
+    disable_cmd="hostname | grep -qi centralnode || export XDG_RUNTIME_DIR=/run/user/$(${remote_user_id}) && systemctl --user is-active homie_camnode.service; if [ $? -eq 0 ]; then systemctl --user stop homie_camnode.service && systemctl --user disable homie_camnode.service; else echo 'homie_camnode.service not found.'; fi"
 
     ssh_login=$(ssh_cmd)
     ssh_disable_homie_camnode="${ssh_login} -t ${PI_USER}@${node} ${disable_cmd}"
@@ -143,7 +143,7 @@ switch_off_LED() {
     local ssh_login
     local switch_off_cmd
 
-    switch_off_cmd="/boot/autosetup/3DScanner/src/blink/blink.sh none"
+    switch_off_cmd="if [ -f /boot/autosetup/3DScanner/src/blink/blink.sh ]; then /boot/autosetup/3DScanner/src/blink/blink.sh none; else 'blink.sh not found'; fi"
 
     ssh_login=$(ssh_cmd)
     ssh_switch_off_LED="${ssh_login} -t ${PI_USER}@${node} ${switch_off_cmd}"

@@ -229,7 +229,7 @@ deactivate_user_login() {
 install_sys_sw() {
     # src: https://github.com/nmcclain/raspberian-firstboot/blob/master/examples/apt_packages/firstboot.sh
     # update apt cache, ingore "Release file... is not valid yet." error
-    apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
+    apt-get update --allow-releaseinfo-change -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
     apt-get install -y git
 }
 
