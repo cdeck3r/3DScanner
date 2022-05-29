@@ -39,7 +39,7 @@ usage() {
 }
 
 
-while getopts "abcdefghijk" opt; do
+while getopts "abcdefghijkl" opt; do
   case "${opt}" in
     a)
         # Find under-voltage messages
