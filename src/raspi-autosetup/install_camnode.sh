@@ -27,6 +27,7 @@ HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
 HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
 HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
 
+# for changing scaling governor 
 RASPI_CONF="/etc/init.d/raspi-config"
 
 #####################################################
