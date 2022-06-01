@@ -19,7 +19,31 @@ The user interface depicted in the image below displays two groups of functions 
 
 Other functions in the group below the separator are primarily to monitor and maintain technical aspects of the scanner. Use with caution and only when asked to do so by developer. Later software revisions may hide these functions.
 
-![web-based user interface](scannerui.png)
+![web-based user interface](images/scannerui.png)
 
+### Shoot Images
 
+tbd.
+
+### Scanner Health Status
+
+tbd.
+
+### Compute Image Statistics
+
+Use this after the taking images with the scanner. See image count and delay between shutter button and image.
+
+tbd.
+
+### List all Online Cameras
+
+Provides a list of camera nodes and their update time
+
+tbd.
+
+### Restart camera service
+
+Restarts the camera service on each camera node. This is necessary to fully rebuild a camnode's connection after the centralnode had restarted. Usually the CENTRALNODE takes care, but there might be situation where you have to do it manually. See [troubleshooting](troubleshooting.md).
+
+tbd.
 
