@@ -7,6 +7,11 @@ An end-user (or simply user) may access the scanner's user interface via http://
 
 The scanner is installed at the Reutlingen University and accessible for a user from within the university's network. A user may also dial into the university network via VPN. The following diagram is an abstract model of the 3DScanner from an end-user's perspective. It shall help to understand relevant terms. 
 
+There are two types of nodes (computer science term for Raspberry Pi computers)
+
+* CENTRALNODE: a Raspberry Pi computer providing the web-based UI and controlling all camera nodes for scanner operation. It also provides access to all images
+* CAMNODE / camera node: many Raspberry Pi computers with cameras taking images of the object to be scanned and send them to the CENTRALNODE
+
 ![ Abstract model of the 3DScanner for the user](http://www.plantuml.com/plantuml/png/9Scn3K8n30N0LM21k4X7pGOCW89jyICI9xAV1UE3H7N5dRlnID7qSJg07HSYR-_ox3ZoaQ7Eow26mciIY_AhEjNhZPkPEiqM-26BWsJVgyG_2Zxu0W00)
 
 
