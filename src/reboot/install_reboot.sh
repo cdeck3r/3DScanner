@@ -29,7 +29,8 @@ USER=pi
 USER_HOME="/home/${USER}"
 LOG_DIR="${USER_HOME}/log"
 LOG_FILE="${LOG_DIR}/reboot.log"
-REBOOT_SCRIPT="${SCRIPT_DIR}/reboot.sh"
+REBOOT_SCRIPT_CENTRALNODE="${SCRIPT_DIR}/reboot_centralnode.sh"
+REBOOT_SCRIPT_CAMNODES="${SCRIPT_DIR}/reboot_camnodes.sh"
 
 # logrotate
 LOGROTATE_CONF="${SCRIPT_DIR}/logrotate.conf"
@@ -52,6 +53,17 @@ check_user() {
     return 0
 }
 
+# check for reboot script and make executable
+check_script() {
+    local script=$1
+
+    [ -f "${script}" ] || {
+        echo "File does not exist: ${script}"
+        exit 2
+    }
+    chmod 700 "${script}"
+}
+
 #####################################################
 # Main program
 #####################################################
@@ -61,19 +73,20 @@ check_user || {
     exit 1
 }
 
+# check and make executable
+check_script "${REBOOT_SCRIPT_CENTRALNODE}"
+check_script "${REBOOT_SCRIPT_CAMNODES}"
+
 # remove reboot from crontab
 crontab -l | grep -v 'reboot' | crontab - || { echo "Ignore error: $?"; }
 
-[ -f "${REBOOT_SCRIPT}" ] || {
-    echo "File does not exist: ${REBOOT_SCRIPT}"
-    exit 2
-}
-chmod 700 "${REBOOT_SCRIPT}"
-
-# .. and install cronjob - run after each reboot (sleep 5min)
+# .. and install cronjobs 
+# - run after each reboot (sleep 5min)
+# - run every Sunday at 2:30am
 (
     crontab -l
-    echo "@reboot sleep 300 && ${REBOOT_SCRIPT} >> ${LOG_FILE} 2>&1"
+    echo "@reboot sleep 300 && ${REBOOT_SCRIPT_CENTRALNODE} >> ${LOG_FILE} 2>&1"
+    echo "30 2 * * SUN ${REBOOT_SCRIPT_CAMNODES} >> ${LOG_FILE} 2>&1"
 ) | sort | uniq | crontab - || {
     echo "Error adding cronjob. Code: $?"
     exit 2
@@ -91,7 +104,7 @@ grep "${LOG_FILE}" "${LOGROTATE_CONF}" >/dev/null || {
 if [ -f "${LOGROTATE_CONF}" ]; then
     (
         crontab -l
-        echo "30 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -l ${LOGROTATE_LOG} ${LOGROTATE_CONF} >/dev/null 2>&1"
+        echo "0 2 * * * /usr/sbin/logrotate -s ${LOGROTATE_STATE} -l ${LOGROTATE_LOG} ${LOGROTATE_CONF} >/dev/null 2>&1"
     ) | sort | uniq | crontab - || {
         echo "Error adding cronjob. Code: $?"
         exit 2
@@ -103,6 +116,6 @@ else
 fi
 
 # finally, run reboot script
-${REBOOT_SCRIPT}
+${REBOOT_SCRIPT_CENTRALNODE}
 
 exit 0
