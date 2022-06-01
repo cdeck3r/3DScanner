@@ -145,6 +145,16 @@ reboot_node_in_minutes() {
 # end of function export
 set +a
 
+# outputs a json array containing all camnodes from NODELIST
+nodelist_as_json() {
+    local nodelist_json
+
+    # log nodelist as json
+    # src: https://stackoverflow.com/questions/44780761/converting-csv-to-json-in-bash/65100738#65100738
+    nodelist_json=$( (echo "Hostname,IP" && sort -u "${NODELIST}" | tr '\t' ',') | python3 -c 'import csv, json, sys; print(json.dumps([dict(r) for r in csv.DictReader(sys.stdin)]))')
+    echo "${nodelist_json}"
+}
+
 #####################################################
 # Main program
 #####################################################
@@ -173,7 +183,8 @@ if ((NODELIST_NODE_COUNT < 1)); then
     exit 2
 fi
 
-# TODO: log nodelist as json
+# log nodelist as json
+log_echo "INFO" "$(nodelist_as_json)"
 
 # call bash function 'reboot_node_in_minutes' for each node from NODELIST
 sort -u "${NODELIST}" | cat -b | cut -d$'\t' -f1,3 | xargs -n2 bash -c 'reboot_node_in_minutes "$@"' _
@@ -195,7 +206,7 @@ log_echo "INFO" "Run scanodis twice"
 # log count
 NODELIST_NODE_COUNT=$(sort -u "${NODELIST}" | wc -l)
 log_echo "INFO" "AFTER REBOOT - number of camnodes: ${NODELIST_NODE_COUNT}"
+log_echo "INFO" "$(nodelist_as_json)"
 
-# TODO: log nodelist as json
 
 exit 0
