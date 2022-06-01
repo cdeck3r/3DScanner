@@ -261,26 +261,40 @@ class TestAutosetupCentralnode:
             )
         )
 
-    def test_autosetup_reboot(self, host):
+    @pytest.mark.parametrize('nodetype', ['centralnode', 'camnodes'])
+    def test_autosetup_reboot(self, host, nodetype):
+        script_name = 'reboot' + '_' + nodetype + '.sh'
         assert host.file('/home/pi/reboot').is_directory
-        assert host.file('/home/pi/reboot/reboot.sh').exists
-        assert host.file('/home/pi/reboot/reboot.sh').mode == 0o700
-        assert host.run(
-            'grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf'
-        ).succeeded
+        assert host.file('/home/pi/reboot/'+script_name).exists
+        assert host.file('/home/pi/reboot/'+script_name).mode == 0o700
+
+
+    @pytest.mark.parametrize('nodetype', ['centralnode', 'camnodes'])
+    def test_autosetup_reboot_cronjob(self, host, nodetype):
+        script_name = 'reboot' + '_' + nodetype + '.sh'
+        
+        if nodetype == 'centralnode':
+            cronjob_start = '@reboot sleep 300 &&'
+        elif nodetype == 'camnodes':        
+            cronjob_start = '30 2 * * *'
+        
+        assert (
+            host.run('crontab -l | grep ' + script_name)
+            .stdout.rstrip()
+            .startswith(cronjob_start + ' /home/pi/reboot/' + script_name)
+        )
 
     def test_autosetup_reboot_logrotate(self, host):
         assert host.file('/home/pi/reboot/logrotate.conf').exists
+        assert host.run(
+            'grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf'
+        ).succeeded
+        
         assert (
-            host.run('crontab -l | grep reboot.sh')
-            .stdout.rstrip()
-            .startswith('@reboot sleep 300 && /home/pi/reboot/reboot.sh')
-        )
-        assert (
-            host.run('crontab -l | grep reboot | grep logrotate')
+            host.run('crontab -l | grep logrotate_reboot')
             .stdout.rstrip()
             .startswith(
-                '30 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_reboot.state'
+                '0 2 * * * /usr/sbin/logrotate -s /home/pi/log/logrotate_reboot.state'
             )
         )
 
