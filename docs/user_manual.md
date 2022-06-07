@@ -2,8 +2,15 @@
 
 An end-user (or simply user) may access the scanner's user interface via http://CENTRALNODE/ui. The term CENTRALNODE is a placeholder for the hostname or an IP address. An end-user may also use a named URL, i.e. an URL containing a fix descriptive name, e.g. http://example.com/3dscanner, instead of the rather cryptic hostname or IP address. The developer creates the named URL when using the [dynamic DNS approach to access the scanner UI](dyndns.md).
 
-[[TOC]]
+**Table of contents**
 
+* [System Overview](#system-overview)
+* [User Interface Documentation](#user-interface-documentation)
+  * [Shot Images](#shot-images)
+  * [Scanner Health Status](#scanner-health-status)
+  * [Compute Image Statistics](#compute-image-statistics)
+  * [List all Online Cameras](#list-all-online-cameras)
+  * [Restart camera service](#restart-camera-service)
 
 ## System Overview
 
