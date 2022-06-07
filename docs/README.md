@@ -15,6 +15,7 @@
 **Target group: end-users**
 
 * [UI manual](user_manual.md) 
+* [Troubleshooting guide](troubleshooting.md)
 
 **Target group: developers**
 
