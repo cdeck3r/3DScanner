@@ -2,7 +2,7 @@
 
 This documentation provides some guidelines to correct the scanner in case of non-desireable behavior. Please read the [user manual](user_manual.md) beforehand. 
 
-## Health Status
+## Health status
 
 This section describes a series of actions to analyze and document the scanner's current status. If you experience an undesireable behavior, please run the following checks. 
 
@@ -52,7 +52,7 @@ If you still experience an undesireable behavior, restart the CENTRALNODE Raspbe
 1. Hit [`Restart camera node service`](user_manual.md#restart-camera-service) and try again
 1. Future feature: Identify the failed camera node, restart the failed camera node by pulling out the USB plug, wait 1 min and re-connect it, wait 5min and try again.
 
-## Uplink Disconnect
+## Uplink disconnect
 
 **Observation:** The uplink to the Internet is disconnected.
 
@@ -71,7 +71,7 @@ If you still experience an undesireable behavior, restart the CENTRALNODE Raspbe
         1. hit [`Restart camera node service`](user_manual.md#restart-camera-service)
         1. ... try again.
 
-## Accidential Disconnect
+## Accidential disconnect
 
 **Observation:** By accident, the you have 
 
