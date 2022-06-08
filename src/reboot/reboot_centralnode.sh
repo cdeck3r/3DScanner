@@ -27,6 +27,7 @@ USER_HOME="/home/${USER}"
 LOG_DIR="${USER_HOME}/log"
 SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh"
 RESTART_HOMIE_CAMNODE_SH="${USER_HOME}/script-server/scripts/restart_homie_camnode.sh"
+VARS="${USER_HOME}/script-server/scripts/common_vars.conf"
 
 #####################################################
 # Include Helper functions
@@ -34,6 +35,8 @@ RESTART_HOMIE_CAMNODE_SH="${USER_HOME}/script-server/scripts/restart_homie_camno
 
 # shellcheck disable=SC1090
 source "${SCRIPT_DIR}/funcs.sh"
+# shellcheck disable=SC1090
+source "${VARS}"
 
 # verfies the script runs as ${USER}
 check_user() {
@@ -64,6 +67,15 @@ check_script() {
     return 0
 }
 
+check_mqtt() {
+    # min req.
+    [[ -n "${MQTT_BROKER}" ]] || { log_echo "ERROR" "Variable MQTT_BROKER not set"; return 1; }
+    
+    command -v "mosquitto_sub" >/dev/null 2>&1 || { log_echo "ERROR" "Tool not found: mosquitto_sub"; return 1; }
+    
+    return 0
+}
+
 #####################################################
 # Main program
 #####################################################
@@ -77,6 +89,7 @@ check_user || {
     exit 1
 }
 
+
 # just be sure
 mkdir -p "${LOG_DIR}"
 
@@ -88,7 +101,13 @@ log_echo "INFO" "Run scanodis twice"
 "${SCANODIS_SH}" || { log_echo "WARN" "scanodis returned an error. Check log."; }
 "${SCANODIS_SH}" || { log_echo "WARN" "scanodis returned an error. Check log."; }
 
-# 2. Finally, restart the camnode services on all camnodes.
+# 2. Optional: Clear up all retained messages from mosquitto
+# Source: https://mosquitto.org/man/mosquitto_sub-1.html
+check_mqtt && { 
+    mosquitto_sub -h "${MQTT_BROKER}" -t '#' --remove-retained --retained-only || { log_echo "WARN" "Error deleting retained messages from MQTT broker. Ignored."; }
+}
+
+# 3. Finally, restart the camnode services on all camnodes.
 check_script "${RESTART_HOMIE_CAMNODE_SH}" || { exit 1; }
 log_echo "INFO" "Restart the camnode services on all camnodes"
 "${RESTART_HOMIE_CAMNODE_SH}" || { echo "Ignore error: $?"; }
