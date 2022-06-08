@@ -98,7 +98,7 @@ log_echo "INFO" "Start webserver nweb on port ${PORT}"
 ps ax | grep nweb
 
 # update cronjob to handle reboot
-crontab -l | grep -v 'nweb' | crontab - || { log_echo "ERROR" "Ignore error: $?"; }
+crontab -l | grep -v "${SCRIPT_DIR}/nweb" | crontab - || { log_echo "ERROR" "Ignore error: $?"; }
 (
     crontab -l
     echo "@reboot sleep 300 && ufw allow from ${SRC_IP} to any port ${PORT} proto tcp comment 'HSRT 3DScanner End-user Access' && ${SCRIPT_DIR}/nweb ${PORT} ${SCRIPT_DIR}"
