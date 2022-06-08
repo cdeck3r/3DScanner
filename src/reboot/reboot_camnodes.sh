@@ -106,6 +106,7 @@ stop_homie_camnode() {
 
     ssh_login=$(ssh_cmd)
     ssh_stop_homie_camnode="${ssh_login} -t ${USER}@${node} ${stop_cmd}"
+    # shellcheck disable=SC2090
     ${ssh_stop_homie_camnode}
 }
 
@@ -118,15 +119,16 @@ switch_off_LED() {
 
     ssh_login=$(ssh_cmd)
     ssh_switch_off_LED="${ssh_login} -t ${USER}@${node} ${switch_off_cmd}"
+    # shellcheck disable=SC2090
     ${ssh_switch_off_LED}
 }
 
 reboot_node_in_minutes() {
     local node_num=$1
-    local node_addr=$2    
+    local node_addr=$2
     local delay
-    
-    delay=$((${node_num}*${REBOOT_DELAY}))
+
+    delay=$((node_num * REBOOT_DELAY))
     log_echo "INFO" "Reboot node ${node_addr} in ${delay} minutes"
     {
         log_echo "INFO" "Stop homie service on node: ${node_addr}" &&
@@ -178,7 +180,7 @@ log_echo "INFO" "Start rebooting all camnodes."
 # log count
 NODELIST_NODE_COUNT=$(sort -u "${NODELIST}" | wc -l)
 log_echo "INFO" "BEFORE REBOOT - number of camnodes: ${NODELIST_NODE_COUNT}"
-if ((NODELIST_NODE_COUNT < 1)); then 
+if ((NODELIST_NODE_COUNT < 1)); then
     log_echo "ERROR" "Too few camnodes: ${NODELIST_NODE_COUNT} - Abort."
     exit 2
 fi
@@ -191,9 +193,9 @@ sort -u "${NODELIST}" | cat -b | cut -d$'\t' -f1,3 | xargs -n2 bash -c 'reboot_n
 
 exit 0
 
-# run after NODELIST_NODE_COUNT * REBOOT_DELAY 
+# run after NODELIST_NODE_COUNT * REBOOT_DELAY
 # plus another REBOOT_DELAY to give time for the last reboot
-POST_REBOOT_TIME=$(( (NODELIST_NODE_COUNT + 1) * REBOOT_DELAY ))
+POST_REBOOT_TIME=$(((NODELIST_NODE_COUNT + 1) * REBOOT_DELAY))
 log_echo "INFO" "Next activitiy starts in ${POST_REBOOT_TIME} minutes"
 sleep "${POST_REBOOT_TIME}"m
 
@@ -207,6 +209,5 @@ log_echo "INFO" "Run scanodis twice"
 NODELIST_NODE_COUNT=$(sort -u "${NODELIST}" | wc -l)
 log_echo "INFO" "AFTER REBOOT - number of camnodes: ${NODELIST_NODE_COUNT}"
 log_echo "INFO" "$(nodelist_as_json)"
-
 
 exit 0

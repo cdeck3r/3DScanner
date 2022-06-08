@@ -69,10 +69,16 @@ check_script() {
 
 check_mqtt() {
     # min req.
-    [[ -n "${MQTT_BROKER}" ]] || { log_echo "ERROR" "Variable MQTT_BROKER not set"; return 1; }
-    
-    command -v "mosquitto_sub" >/dev/null 2>&1 || { log_echo "ERROR" "Tool not found: mosquitto_sub"; return 1; }
-    
+    [[ -n "${MQTT_BROKER}" ]] || {
+        log_echo "ERROR" "Variable MQTT_BROKER not set"
+        return 1
+    }
+
+    command -v "mosquitto_sub" >/dev/null 2>&1 || {
+        log_echo "ERROR" "Tool not found: mosquitto_sub"
+        return 1
+    }
+
     return 0
 }
 
@@ -89,7 +95,6 @@ check_user || {
     exit 1
 }
 
-
 # just be sure
 mkdir -p "${LOG_DIR}"
 
@@ -103,7 +108,7 @@ log_echo "INFO" "Run scanodis twice"
 
 # 2. Optional: Clear up all retained messages from mosquitto
 # Source: https://mosquitto.org/man/mosquitto_sub-1.html
-check_mqtt && { 
+check_mqtt && {
     mosquitto_sub -h "${MQTT_BROKER}" -t '#' --remove-retained --retained-only || { log_echo "WARN" "Error deleting retained messages from MQTT broker. Ignored."; }
 }
 

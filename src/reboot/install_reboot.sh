@@ -80,7 +80,7 @@ check_script "${REBOOT_SCRIPT_CAMNODES}"
 # remove reboot from crontab
 crontab -l | grep -v 'reboot' | crontab - || { echo "Ignore error: $?"; }
 
-# .. and install cronjobs 
+# .. and install cronjobs
 # - run after each reboot (sleep 5min)
 # - run every Sunday at 2:30am
 (
