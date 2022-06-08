@@ -77,17 +77,37 @@ assert_on_pc
 # Main program
 #####################################################
 
+sudo -s -- <<EOF 
+source "${SCRIPT_DIR}/funcs.sh"
+
 # kill exiting process
-sudo pkill -f "nweb ${PORT}" || { log_echo "WARN" "Process nweb on port ${PORT} not found"; }
+pkill -f "nweb ${PORT}" || { 
+    log_echo "WARN" "Process nweb on port ${PORT} not found"
+}
+
 # open firewall
 log_echo "INFO" "Open firewall. Allow from ${SRC_IP} to local port ${PORT}"
-sudo ufw allow from "${SRC_IP}" to any port "${PORT}" proto tcp comment 'HSRT 3DScanner End-user Access'
+ufw allow from "${SRC_IP}" to any port "${PORT}" proto tcp comment 'HSRT 3DScanner End-user Access'
+
 # start webserver
 log_echo "INFO" "Start webserver nweb on port ${PORT}"
-sudo "${SCRIPT_DIR}"/nweb "${PORT}" .
+"${SCRIPT_DIR}"/nweb "${PORT}" .
+
 # list nweb processes
 # shellcheck disable=SC2009
 ps ax | grep nweb
+
+# update cronjob to handle reboot
+crontab -l | grep -v 'nweb' | crontab - || { log_echo "ERROR" "Ignore error: $?"; }
+(
+    crontab -l
+    echo "@reboot sleep 300 && ufw allow from ${SRC_IP} to any port ${PORT} proto tcp comment 'HSRT 3DScanner End-user Access' && ${SCRIPT_DIR}/nweb ${PORT} ${SCRIPT_DIR}"
+) | sort | uniq | crontab - || {
+    log_echo "ERROR" "Error adding cronjob. Code: $?"
+    exit 2
+}
+
+EOF
 
 # Configure logrotate.conf
 # replace olddir, add logfiles
