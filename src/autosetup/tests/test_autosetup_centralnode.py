@@ -276,7 +276,7 @@ class TestAutosetupCentralnode:
         if nodetype == 'centralnode':
             cronjob_start = '@reboot sleep 300 &&'
         elif nodetype == 'camnodes':        
-            cronjob_start = '30 2 * * *'
+            cronjob_start = '30 2 * * SUN'
         
         assert (
             host.run('crontab -l | grep ' + script_name)
