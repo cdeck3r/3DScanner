@@ -115,7 +115,8 @@ log_echo "INFO" "Run scanodis twice"
 # 2. Optional: Clear up all retained messages from mosquitto
 # Source: https://stackoverflow.com/a/69067244
 check_mqtt && {
-    mosquitto_sub -h "${MQTT_BROKER}" -t "#" -v --retained-only | while read -r line; do mosquitto_pub -h "${MQTT_BROKER}" -t "${line%% *}" -r -n; done || { log_echo "WARN" "Error deleting retained messages from MQTT broker. Ignored."; }
+    log_echo "INFO" "Delete all retained messages from MQTT broker."
+    mosquitto_sub -h "${MQTT_BROKER}" -t "#" -v --retained-only | while read -r line; do mosquitto_pub -h "${MQTT_BROKER}" -t "${line%% *}" -r -n; done || { log_echo "WARN" "Error deleting retained messages from MQTT broker."; }
 }
 
 # 3. Finally, restart the camnode services on all camnodes.
