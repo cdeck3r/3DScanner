@@ -74,10 +74,16 @@ check_mqtt() {
         return 1
     }
 
-    command -v "mosquitto_sub" >/dev/null 2>&1 || {
-        log_echo "ERROR" "Tool not found: mosquitto_sub"
-        return 1
-    }
+    # check for required tools avail from shell
+    TOOLS=('mosquitto_sub' 'mosquitto_pub')
+    for t in "${TOOLS[@]}"; do
+        # check for installed program
+        # Source: https://stackoverflow.com/a/677212
+        command -v "${t}" >/dev/null 2>&1 || {
+            log_echo "ERROR" "Tool not found: $t"
+            return 1
+        }
+    done
 
     return 0
 }
@@ -107,9 +113,9 @@ log_echo "INFO" "Run scanodis twice"
 "${SCANODIS_SH}" || { log_echo "WARN" "scanodis returned an error. Check log."; }
 
 # 2. Optional: Clear up all retained messages from mosquitto
-# Source: https://mosquitto.org/man/mosquitto_sub-1.html
+# Source: https://stackoverflow.com/a/69067244
 check_mqtt && {
-    mosquitto_sub -h "${MQTT_BROKER}" -t '#' --remove-retained --retained-only || { log_echo "WARN" "Error deleting retained messages from MQTT broker. Ignored."; }
+    mosquitto_sub -h "${MQTT_BROKER}" -t "#" -v --retained-only | while read -r line; do mosquitto_pub -h "${MQTT_BROKER}" -t "${line%% *}" -r -n; done || { log_echo "WARN" "Error deleting retained messages from MQTT broker. Ignored."; }
 }
 
 # 3. Finally, restart the camnode services on all camnodes.
