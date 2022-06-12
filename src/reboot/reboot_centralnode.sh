@@ -3,7 +3,7 @@ set -e
 
 #
 # CENTRALNODE reboot
-# Runs jobs after the reboot
+# Runs jobs after the CENTRALNODE reboot
 #
 
 # Params: none

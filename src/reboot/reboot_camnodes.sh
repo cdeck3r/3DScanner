@@ -3,7 +3,7 @@ set -e
 
 #
 # CAMNODES reboot
-# Reboots all camnodes
+# The CENTRALNODE will reboot all camnodes using this script
 #
 
 # Params: none

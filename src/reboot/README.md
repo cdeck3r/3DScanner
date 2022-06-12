@@ -25,9 +25,9 @@ Furthermore, it registers the CENTRALNODE, so that the end-user is informed on t
 
 **CAMNODES**
 
-We reboot CAMNODES one at a time with a 5min delay in between. It shall prevent an  strong intermediate power surge causing a voltage level drop, which potentiall let Raspberry Pis crash. One CAMNODE reboot at a time minimizes the impact on the scanner's overall power supply.
+We reboot CAMNODES one at a time with a 5min delay in between. It shall prevent a strong intermediate power surge causing a voltage level drop, which potentiall let Raspberry Pis crash. One CAMNODE reboots at a time, which minimizes the impact on the scanner's overall power supply.
 
-1. Implements Weekly reboot of all CAMNODES.
+1. Implements weekly reboot of all CAMNODES.
 1. Before reboot log the number of nodes from `nodelist.log`.
 1. For each camnode from `nodelist.log`
     1. Stop `homie_camnode.service`
@@ -40,6 +40,6 @@ With approx. 50 camnodes installed, the staggered reboot takes about 250min (mor
 
 ## Scripts
 
-* `reboot_centralnode.sh`: runs [scanodis](../scanodis/) after reboot
-* `reboot_camnodes.sh`: schedules reboots on each camnode; one at a time with a 5min delay in between
+* `reboot_centralnode.sh`: runs [scanodis](../scanodis/) after CENTRALNODE reboot
+* `reboot_camnodes.sh`: runs on CENTRALNODE, it schedules reboots on each camnode; one at a time with a 5min delay in between
 * `install_reboot.sh`: install all script cronjobs and logrotation for `logrotate.conf` 
