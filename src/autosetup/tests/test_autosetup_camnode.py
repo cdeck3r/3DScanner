@@ -120,6 +120,14 @@ class TestAutosetupCamnode:
             .startswith('@reboot sleep 60 && /root/' + jobfile)
         )
 
+    def test_usb_power_off_cronjob(self, host):
+        assert host.run("sudo crontab -l | grep -q 'echo 1 >/sys/bus/pci/devices/0000\:01\:00.0/remove'").succeeded
+        assert (
+            host.run("sudo crontab -l | grep '/sys/bus/pci/devices/0000\:01\:00.0/remove'")
+            .stdout.rstrip()
+            .startswith('@reboot sleep 300')
+        )
+
     def test_autosetup_images_housekeeping(self, host):
         assert host.file('/home/pi/images').is_directory
         assert host.file('/home/pi/housekeeping').is_directory

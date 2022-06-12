@@ -54,12 +54,14 @@ conf_overwrites_governor() {
 }
 
 # run only on RPI4; switch off USB
+echo "Deactivate USB bus"
 DEACTIVATE_USB_CMD="cat /proc/device-tree/model | grep -q 'Raspberry Pi 4' && { lspci | grep -q 'USB' && { echo 1 >/sys/bus/pci/devices/0000\:01\:00.0/remove; } }"
-${DEACTIVATE_USB_CMD} > /dev/null
+eval "${DEACTIVATE_USB_CMD}" > /dev/null || { echo "Error when deactivating USB bus"; }
 
 #activate again
 #echo 1 >/sys/bus/pci/rescan
 
+echo "Add cronjob to deactivate USB at reboot"
 # remove USB deactivation from crontab
 crontab -l | grep -v 'lspci' | crontab - || { echo "Ignore error: $?"; }
 # .. and install cronjob: run after each reboot (sleep 5min)
