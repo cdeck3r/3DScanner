@@ -192,8 +192,6 @@ log_echo "INFO" "$(nodelist_as_json)"
 # call bash function 'reboot_node_in_minutes' for each node from NODELIST
 sort -u "${NODELIST}" | cat -b | cut -d$'\t' -f1,3 | xargs -n2 bash -c 'reboot_node_in_minutes "$@"' _
 
-exit 0
-
 # run after NODELIST_NODE_COUNT * REBOOT_DELAY
 # plus another REBOOT_DELAY to give time for the last reboot
 POST_REBOOT_TIME=$(((NODELIST_NODE_COUNT + 1) * REBOOT_DELAY))
