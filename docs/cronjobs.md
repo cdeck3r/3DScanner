@@ -29,4 +29,4 @@ These are the cronjobs running on each CAMNODE. If not otherwise state, these ar
 | 2:30am  | pi   | Run [housekeeping](../src/housekeeping) logrotate                 |
 | 3am     | pi   | Run [housekeeping](../src/housekeeping) for `/home/pi/images`     |
 | @reboot | root | Run `avahi-resolve-name-conflict.sh`                              |
-
+| @reboot | root | Run deactivate USB bus to save power                              |

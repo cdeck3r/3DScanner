@@ -178,8 +178,9 @@ class TestAutosetupCamnode:
     @pytest.mark.xfail
     def test_autosetup_power_usb_active(self, host):
         # we test that power-consuming devices are switched off
-        # USB is off
-        assert host.run('sudo lspci | grep -q "USB"').succeeded
+        # see: https://bensherlock.co.uk/2019/04/17/raspberry-pi-3-model-b-usb-power-enable-disable/
+        # Expected: USB is off, i.e. no root_hub found
+        assert host.run('lsusb -t | grep -q "root_hub"').succeeded
 
     def test_autosetup_scaling_governor_powersave(self, host):
         # scaling governor shall be powersave

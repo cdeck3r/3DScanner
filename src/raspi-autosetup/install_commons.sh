@@ -76,15 +76,6 @@ for serv in "${SYSTEMD_SERVICES[@]}"; do
 done
 systemctl daemon-reload
 
-# run only on RPI4; switch off USB
-cat /proc/device-tree/model | grep -q "Raspberry Pi 4" && {
-    lspci | grep -q "USB" && {
-        echo 1 >/sys/bus/pci/devices/0000\:01\:00.0/remove
-    }
-    #activate again
-    #echo 1 >/sys/bus/pci/rescan
-}
-
 # ignore wrong date
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 

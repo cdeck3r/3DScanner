@@ -53,6 +53,24 @@ conf_overwrites_governor() {
     sed "s/echo \"ondemand\"/\#echo \"ondemand\"/" -i "${RASPI_CONF}"
 }
 
+# run only on RPI4; switch off USB
+DEACTIVATE_USB_CMD="cat /proc/device-tree/model | grep -q 'Raspberry Pi 4' && { lspci | grep -q 'USB' && { echo 1 >/sys/bus/pci/devices/0000\:01\:00.0/remove; } }"
+${DEACTIVATE_USB_CMD} > /dev/null
+
+#activate again
+#echo 1 >/sys/bus/pci/rescan
+
+# remove USB deactivation from crontab
+crontab -l | grep -v 'lspci' | crontab - || { echo "Ignore error: $?"; }
+# .. and install cronjob: run after each reboot (sleep 5min)
+(
+    crontab -l
+    echo "@reboot sleep 300 && ${DEACTIVATE_USB_CMD} > /dev/null"
+) | sort | uniq | crontab - || {
+    echo "Error adding cronjob. Code: $?"
+    exit 2
+}
+
 # ignore wrong date
 apt-get update -o Acquire::Check-Valid-Until=false -o Acquire::Check-Date=false
 
