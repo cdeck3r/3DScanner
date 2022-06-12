@@ -23,9 +23,10 @@ SCRIPT_NAME=$0
 
 # variables
 USER="pi"
-USER_HOME="/home/${USER}"
-SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh"
-REBOOT_DELAY=5 # 5min between each reboot
+USER_HOME="/home/${USER}"                       # default: /home/pi
+SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh" # exists on centralnode
+NODELIST="${USER_HOME}/log/nodelist.log"        # exists on centralnode
+REBOOT_DELAY=5                                  # default: 5min delay between two node's reboot
 export REBOOT_DELAY
 
 #####################################################
