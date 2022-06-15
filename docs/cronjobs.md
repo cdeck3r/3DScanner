@@ -8,7 +8,7 @@ These are the cronjobs running on the CENTRALNODE. If not otherwise state, these
 
 | Time    | User | Script                                                            |
 |---------|------|-------------------------------------------------------------------|
-| hourly  | pi   | Run [scanodis](../src/scanodis)`                                  |
+| hourly  | pi   | Run [scanodis](../src/scanodis)                                  |
 | 1:30am  | root | `shutdown -r now`                                                 |
 | 2am     | pi   | Run [script-server](../src/script-server) logrotate               |
 | 2am     | pi   | Run [reboot](../src/reboot) logrotate                             |
