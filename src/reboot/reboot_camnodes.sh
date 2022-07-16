@@ -28,7 +28,7 @@ SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh" # exists on centralnode
 NODELIST="${USER_HOME}/log/nodelist.log"        # exists on centralnode
 REBOOT_DELAY=5                                  # default: 5min delay between two node's reboot
 export REBOOT_DELAY
-
+export USER
 #####################################################
 # Include Helper functions
 #####################################################
@@ -72,6 +72,8 @@ check_script() {
 # begin of function export
 set -a
 ssh_cmd() {
+    local SSH_CMD
+    
     SSH_CMD="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -q"
     echo "${SSH_CMD}"
 }
