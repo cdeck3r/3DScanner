@@ -87,8 +87,7 @@ crontab -l | grep -v 'reboot' | crontab - || { echo "Ignore error: $?"; }
 (
     crontab -l
     echo "@reboot sleep 300 && ${REBOOT_SCRIPT_CENTRALNODE} >> ${LOG_FILE} 2>&1"
-    #echo "30 2 * * SUN ${REBOOT_SCRIPT_CAMNODES} >> ${LOG_FILE} 2>&1"
-    echo "0 15 * * * ${REBOOT_SCRIPT_CAMNODES} >> ${LOG_FILE} 2>&1"
+    echo "30 2 * * SUN ${REBOOT_SCRIPT_CAMNODES} >> ${LOG_FILE} 2>&1"
 ) | sort | uniq | crontab - || {
     echo "Error adding cronjob. Code: $?"
     exit 2
