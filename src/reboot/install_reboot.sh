@@ -78,7 +78,8 @@ check_script "${REBOOT_SCRIPT_CENTRALNODE}"
 check_script "${REBOOT_SCRIPT_CAMNODES}"
 
 # remove reboot cronjobs from crontab
-crontab -l | grep -v "${REBOOT_SCRIPT_CENTRALNODE}" | grep -v "${REBOOT_SCRIPT_CAMNODES}" | crontab - || { echo "Ignore error: $?"; }
+# works because scripts in '../reboot/..' directory
+crontab -l | grep -v 'reboot' | crontab - || { echo "Ignore error: $?"; }
 
 # .. and install cronjobs
 # - run after each reboot (sleep 5min)
