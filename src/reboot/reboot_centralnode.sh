@@ -24,7 +24,7 @@ SCRIPT_NAME=$0
 # variables
 USER="pi"
 USER_HOME="/home/${USER}"
-USER_ID="id -u ${USER}"
+USER_ID=$(id -u "${USER}")
 LOG_DIR="${USER_HOME}/log"
 SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh"
 RESTART_HOMIE_CAMNODE_SH="${USER_HOME}/script-server/scripts/restart_homie_camnode.sh"
