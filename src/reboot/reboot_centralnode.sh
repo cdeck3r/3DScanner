@@ -24,6 +24,7 @@ SCRIPT_NAME=$0
 # variables
 USER="pi"
 USER_HOME="/home/${USER}"
+USER_ID="id -u ${USER}"
 LOG_DIR="${USER_HOME}/log"
 SCANODIS_SH="${USER_HOME}/scanodis/scanodis.sh"
 RESTART_HOMIE_CAMNODE_SH="${USER_HOME}/script-server/scripts/restart_homie_camnode.sh"
@@ -117,6 +118,9 @@ log_echo "INFO" "Run scanodis twice"
 check_mqtt && {
     log_echo "INFO" "Delete all retained messages from MQTT broker."
     mosquitto_sub -h "${MQTT_BROKER}" -t "#" -v --retained-only | while read -r line; do mosquitto_pub -h "${MQTT_BROKER}" -t "${line%% *}" -r -n; done || { log_echo "WARN" "Error deleting retained messages from MQTT broker."; }
+    
+    # we need to restart the homie_apparatus service
+    XDG_RUNTIME_DIR=/run/user/"${USER_ID}" systemctl --user restart homie_apparatus.service || { log_echo "ERROR" "Error restarting homie_apparatus.service."; }
 }
 
 # 3. Finally, restart the camnode services on all camnodes.
