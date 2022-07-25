@@ -121,9 +121,13 @@ class TestAutosetupCamnode:
         )
 
     def test_usb_power_off_cronjob(self, host):
-        assert host.run(r'sudo crontab -l | grep "echo 1 >/sys/bus/pci/devices/0000\\\:01\\\:00.0/remove"').succeeded
+        assert host.run(
+            r'sudo crontab -l | grep "echo 1 >/sys/bus/pci/devices/0000\\\:01\\\:00.0/remove"'
+        ).succeeded
         assert (
-            host.run(r'sudo crontab -l | grep "/sys/bus/pci/devices/0000\\\:01\\\:00.0/remove"')
+            host.run(
+                r'sudo crontab -l | grep "/sys/bus/pci/devices/0000\\\:01\\\:00.0/remove"'
+            )
             .stdout.rstrip()
             .startswith('@reboot sleep 300')
         )
