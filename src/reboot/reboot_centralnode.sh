@@ -106,6 +106,7 @@ check_user || {
 mkdir -p "${LOG_DIR}"
 
 log_echo "INFO" "Start jobs after reboot"
+log_echo "INFO" "My IP address is $(hostname -I)"
 
 # 1. After reboot run scanodis twice to get a fresh `nodelist.log`.
 check_script "${SCANODIS_SH}" || { exit 1; }
@@ -120,7 +121,11 @@ check_mqtt && {
     mosquitto_sub -h "${MQTT_BROKER}" -t "#" -v --retained-only | while read -r line; do mosquitto_pub -h "${MQTT_BROKER}" -t "${line%% *}" -r -n; done || { log_echo "WARN" "Error deleting retained messages from MQTT broker."; }
     
     # we need to restart the homie_apparatus service
+    log_echo "INFO" "Restart homie_apparatus service"
     XDG_RUNTIME_DIR=/run/user/"${USER_ID}" systemctl --user restart homie_apparatus.service || { log_echo "ERROR" "Error restarting homie_apparatus.service."; }
+    sleep 5 # give some time to restart before getting status
+    log_echo "INFO" "Log status of homie_apparatus service"
+    XDG_RUNTIME_DIR=/run/user/"${USER_ID}" systemctl --user status --no-pager homie_apparatus.service || { log_echo "ERROR" "Error getting status from homie_apparatus.service."; }
 }
 
 # 3. Finally, restart the camnode services on all camnodes.
