@@ -70,7 +70,7 @@ SKIP_CHECK=$(
 precheck "${SKIP_CHECK}"
 
 diag "${HR}"
-diag "Check for camera nodes"
+diag "Check for scanner's nodes"
 diag "${HR}"
 
 # shellcheck disable=SC2016
@@ -87,14 +87,6 @@ READY="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 READY_EXE=$(${READY})
 is $? 0 "Search for all ready nodes"
 
-# check scanner/apparatus $state
-diag "Check scanner apparatus ready"
-READY_RES=$(echo "${READY_EXE}" | grep apparatus)
-mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
-for node in "${READY_RES_ARRAY[@]}"; do
-    is "$(echo "${node}" | cut -d_ -f2)" "ready" "$(echo "${node}" | tr '_' ' ')"
-done
-
 # loop through each camnode and check its $state
 diag "List each ready camera node"
 READY_RES=$(echo "${READY_EXE}" | grep -v apparatus)
@@ -102,7 +94,6 @@ mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
 for camnode in "${READY_RES_ARRAY[@]}"; do
     is "$(echo "${camnode}" | cut -d_ -f2)" "ready" "$(echo "${camnode}" | tr '_' ' ')"
 done
-
 
 # retrieve TOTAL_NODES
 # shellcheck disable=SC2016
@@ -130,5 +121,21 @@ fi
 diag "${HR}"
 diag " "
 
+# check scanner/apparatus $state
+diag "Check scanner apparatus ready"
+READY_RES=$(echo "${READY_EXE}" | grep apparatus)
+mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
+for node in "${READY_RES_ARRAY[@]}"; do
+    is "$(echo "${node}" | cut -d_ -f2)" "ready" "$(echo "${node}" | tr '_' ' ')"
+done
+
+# Summary evaluation of apparatus node
+diag "${HR}"
+NUM_READY_APPARATUS=$(echo "${READY_RES}" | grep -c ready)
+if ((NUM_READY_APPARATUS == 1)); then
+    diag "${GREEN}[SUCCESS]${NC} - Scanner apparatus node ready."
+else
+    diag "${RED}[FAIL]${NC} - Scanner apparatus node lost. Scanner will not work!"
+fi
 # Check for available disk space - perform housekeeping
 ./housekeeping.sh
