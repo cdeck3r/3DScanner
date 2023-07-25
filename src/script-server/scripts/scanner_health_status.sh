@@ -85,15 +85,24 @@ NUM_NODES=$(echo "${LAST_UPDATE_EXE}" | grep -vc apparatus)
 TOPIC='scanner/+/$state'
 READY="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 READY_EXE=$(${READY})
-is $? 0 "Search for all ready camera nodes"
-READY_RES=$(echo "${READY_EXE}" | grep -v apparatus)
+is $? 0 "Search for all ready nodes"
+
+# check scanner/apparatus $state
+diag "Check scanner apparatus ready"
+READY_RES=$(echo "${READY_EXE}" | grep apparatus)
+mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
+for node in "${READY_RES_ARRAY[@]}"; do
+    is "$(echo "${node}" | cut -d_ -f2)" "ready" "$(echo "${node}" | tr '_' ' ')"
+done
 
 # loop through each camnode and check its $state
 diag "List each ready camera node"
+READY_RES=$(echo "${READY_EXE}" | grep -v apparatus)
 mapfile -t READY_RES_ARRAY < <(echo "${READY_RES}" | tr " " "_")
 for camnode in "${READY_RES_ARRAY[@]}"; do
     is "$(echo "${camnode}" | cut -d_ -f2)" "ready" "$(echo "${camnode}" | tr '_' ' ')"
 done
+
 
 # retrieve TOTAL_NODES
 # shellcheck disable=SC2016
