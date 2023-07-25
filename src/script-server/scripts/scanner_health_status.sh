@@ -137,5 +137,7 @@ if ((NUM_READY_APPARATUS == 1)); then
 else
     diag "${RED}[FAIL]${NC} - Scanner apparatus node lost. Scanner will not work!"
 fi
+diag "${HR}"
+diag " "
 # Check for available disk space - perform housekeeping
 ./housekeeping.sh
