@@ -27,6 +27,11 @@ HOUSEKEEPING_INSTALL_DIR="${REPO_DIR}/src/housekeeping"
 HOUSEKEEPING_USER_DIR="${USER_HOME}/housekeeping"
 HOUSEKEEPING_INSTALL_SCRIPT="${HOUSEKEEPING_USER_DIR}/install_housekeeping.sh"
 
+# variables for calibration
+CALIB_INSTALL_DIR="${REPO_DIR}/src/calibrate"
+CALIB_USER_DIR="${USER_HOME}/calibrate"
+CALIB_INSTALL_SCRIPT="${CALIB_USER_DIR}/install_calibrate.sh"
+
 # for changing scaling governor 
 RASPI_CONF="/etc/init.d/raspi-config"
 
@@ -104,7 +109,8 @@ loginctl enable-linger "${USER}" || { echo "Error ignored: $?"; }
 chmod 755 "${SERVICE_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${SERVICE_INSTALL_SCRIPT}" "${USER}"
 
-# install housekeeping; run as ${USER}
+# install housekeeping; see src/housekeeping/README.md
+# run as ${USER}
 # 1. Remove and re-create user directory for housekeeping
 # 2. Copy files into user directory and set credentials for install script
 # 3. Create image directory and run install script both as ${USER}
@@ -115,4 +121,22 @@ cp -r "${HOUSEKEEPING_INSTALL_DIR}" "$(dirname ${HOUSEKEEPING_USER_DIR})"
 chown -R ${USER}:${USER} "${HOUSEKEEPING_USER_DIR}"
 chmod 744 "${HOUSEKEEPING_INSTALL_SCRIPT}"
 su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} mkdir -p ${USER_HOME}/images && ${HOUSEKEEPING_INSTALL_SCRIPT} ${USER_HOME}/images" "${USER}"
+systemctl restart cron.service
+
+
+# install calibration scripts; see src/calibrate/README.md
+# run as ${USER}
+# 1. Remove and re-create user directory 
+# 2. Copy files into user directory and set credentials for install script
+# 3. Run install script as ${USER}
+# 4.Restart cron service
+rm -rf "${CALIB_USER_DIR}" # cleanup
+mkdir -p "${CALIB_USER_DIR}"
+cp -r "${CALIB_INSTALL_DIR}" "$(dirname ${CALIB_USER_DIR})"
+chown -R ${USER}:${USER} "${CALIB_USER_DIR}"
+chmod 744 "${CALIB_INSTALL_SCRIPT}"
+su -c "XDG_RUNTIME_DIR=/run/user/${USER_ID} ${CALIB_INSTALL_SCRIPT}" "${USER}" || {
+    echo "Error when installing calibration script: $?"
+    exit 2
+}
 systemctl restart cron.service
