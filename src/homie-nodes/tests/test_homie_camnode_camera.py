@@ -33,13 +33,40 @@ class TestHomieCamnodeCamera:
         # execute process
         return process.stdout.rstrip()
 
+    def test_homie_camnode_camera_settable(self, pytestconfig):
+        camnode = pytestconfig.getini('camnode_hostname')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/shutter-button/$settable')
+        assert msg == 'true'
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/shutter-timer/$settable')
+        assert msg == 'true'
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-x/$settable')
+        assert msg == 'true'
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-y/$settable')
+        assert msg == 'true'
+
     @pytest.mark.parametrize('update_waiting_time', [2])
-    def test_homie_camnode_timer(self, pytestconfig, update_waiting_time):
-        camnode = pytestconfig.getini('camnode')
+    def test_homie_camnode_camera_timer(self, pytestconfig, update_waiting_time):
+        camnode = pytestconfig.getini('camnode_hostname')
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/' + camnode + '/camera/shutter-timer'
         )
         assert msg == '0'
+        initial_timeout = msg
+        
+        # do not allow to set negative values
+        timeout = -1
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/' + camnode + '/camera/shutter-timer/set',
+            str(timeout),
+        )
+        # add update waiting time
+        time.sleep(update_waiting_time)
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/camera/shutter-timer'
+        )
+        assert msg == initial_timeout
+        
         # publish timeout value, and read-out
         timeout = 1000
         self.mqtt_pub(
@@ -66,3 +93,63 @@ class TestHomieCamnodeCamera:
             pytestconfig, 'scanner/' + camnode + '/camera/shutter-timer'
         )
         assert msg == str(timeout)
+
+    @pytest.mark.parametrize('update_waiting_time', [2])
+    def test_homie_camnode_camera_resolution(self, pytestconfig, update_waiting_time):
+        camnode = pytestconfig.getini('camnode_hostname')
+        x_res = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-x')
+        y_res = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-y')
+        
+        # do not allow to set neg. resolutions
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/' + camnode + '/camera/resolution-x/set',
+            str(-1),
+        )
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/camera/resolution-x'
+        )
+        assert msg == x_res
+
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/' + camnode + '/camera/resolution-y/set',
+            str(-1),
+        )
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/camera/resolution-y'
+        )
+        assert msg == y_res
+        
+        
+        # set new valid resolution (x,y)
+        x_res_new = min(int(x_res) + 100, 3280)
+        y_res_new = min(int(y_res) + 100, 2464)
+        
+        # set new resolution (x,y)
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/' + camnode + '/camera/resolution-x/set',
+            str(x_res_new),
+        )        
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/' + camnode + '/camera/resolution-y/set',
+            str(y_res_new),
+        )
+        # add update waiting time
+        time.sleep(update_waiting_time)
+        
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/camera/resolution-x'
+        )
+        assert msg == x_res_new
+        assert int(msg) == min(int(x_res) + 100, 3280)
+        
+        msg = self.mqtt_sub(
+            pytestconfig, 'scanner/' + camnode + '/camera/resolution-y'
+        )
+        assert msg == y_res_new
+        assert int(msg) == min(int(y_res) + 100, 2464)
+        
+        

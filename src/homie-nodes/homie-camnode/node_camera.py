@@ -61,8 +61,8 @@ class Node_Camera(Node_Base):
 
         self.device = device
         # camera resolution settings
-        self.x_res = self.device.device_settings['camera_x_res']
-        self.y_res = self.device.device_settings['camera_y_res']
+        self.x_res_default = self.device.device_settings['camera_x_res']
+        self.y_res_default = self.device.device_settings['camera_y_res']
 
         self.button_push_time = 0
         # button's default value is 'release'
@@ -88,6 +88,30 @@ class Node_Camera(Node_Base):
         )
         self.add_property(self.timer)
 
+        # Camera resolution 
+        self.res_x_prop = Property_Integer(
+            node=self,
+            id='resolution-x',
+            name='Resolution width',
+            unit='px',
+            data_format='0:3280',
+            set_value=self.resolution_x,
+            value=self.x_res_default, # local default value from config file
+        )
+        self.add_property(self.res_x_prop)
+
+        self.res_y_prop = Property_Integer(
+            node=self,
+            id='resolution-y',
+            name='Resolution height',
+            unit='px',
+            data_format='0:2464',
+            set_value=self.resolution_y,
+            value=self.y_res_default, # local default value from config file
+        )
+        self.add_property(self.res_y_prop)
+
+        
         #  a string representing the revision of the Pi’s camera module. 
         # ‘ov5647’ for the V1 module, and ‘imx219’ for the V2 module.
         self.revision = Property_String(
@@ -126,7 +150,7 @@ class Node_Camera(Node_Base):
             return
         # we expect to run on camnode
         # Ex. https://picamera.readthedocs.io/en/release-1.13/recipes1.html#capturing-to-a-file
-        camera.resolution = (self.x_res, self.y_res)
+        camera.resolution = (self.res_x_prop.value, self.res_y_prop.value)
         # Camera warm-up time
         time.sleep(2)
         image_file = self.image.new_file()
@@ -179,7 +203,16 @@ class Node_Camera(Node_Base):
         self.take_picture()
         self.button.value = 'release'
 
+    def resolution_x(self, x_res):
+        """Received new resolution at which image is captured (x dimension or width)"""
+        self.res_x_prop.value = x_res
+
+    def resolution_y(self, y_res):
+        """Received new resolution at which image is captured (y dimension or height)"""
+        self.res_y_prop.value = y_res
+
     def scanner_shutter_button(self, topic, button_action):
         """Handler for message on scanner/apparatus/cameras/shutter-button"""
         logger.info('Scanner shutter button hit: {}'.format(button_action))
         self.shutter_button(button_action)
+
