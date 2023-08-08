@@ -246,8 +246,8 @@ class Node_Camera(Node_Base):
         if action == 'reset':
             logger.info('Reset to default resolution')
             self.default_resolution_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
-            self.resolution_x(x_res_default)
-            self.resolution_y(y_res_default)
+            self.resolution_x(self.x_res_default)
+            self.resolution_y(self.y_res_default)
         else:
             logger.info('Setting not supported: {}'.format(action))
 
