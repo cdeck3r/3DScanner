@@ -233,12 +233,12 @@ class Node_Camera(Node_Base):
 
     def resolution_x(self, x_res):
         """Received new resolution at which image is captured (x dimension or width)"""
-        self.res_x_prop.value = x_res
+        self.res_x_prop.value = int(x_res)
         logger.info('New camera resolution (width): {}'.format(self.res_x_prop.value))
 
     def resolution_y(self, y_res):
         """Received new resolution at which image is captured (y dimension or height)"""
-        self.res_y_prop.value = y_res
+        self.res_y_prop.value = int(y_res)
         logger.info('New camera resolution (height): {}'.format(self.res_y_prop.value))
 
     def default_resolution(self, action):
@@ -259,9 +259,9 @@ class Node_Camera(Node_Base):
     def scanner_resolution_x(self, topic, x_res):
         """Handler for message on scanner/apparatus/cameras/resolution-x"""
         logger.info('Scanner cameras resolution (x width): {}'.format(x_res))
-        self.resolution_x(x_res)
+        self.resolution_x(int(x_res))
         
     def scanner_resolution_y(self, topic, y_res):
         """Handler for message on scanner/apparatus/cameras/resolution-y"""
         logger.info('Scanner cameras resolution (y height): {}'.format(y_res))
-        self.resolution_y(y_res)
+        self.resolution_y(int(y_res))

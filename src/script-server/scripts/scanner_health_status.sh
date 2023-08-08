@@ -139,5 +139,11 @@ else
 fi
 diag "${HR}"
 diag " "
+
+# Check Scanner resolution on all camnodes
+${SCRIPT_DIR}/check_scanner_resolution.sh
+diag " "
+
+diag "${HR}"
 # Check for available disk space - perform housekeeping
 ./housekeeping.sh

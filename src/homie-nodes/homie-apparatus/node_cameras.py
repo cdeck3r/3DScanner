@@ -193,12 +193,12 @@ class Node_Cameras(Node_Base):
 
     def resolution_x(self, x_res):
         """Received new resolution at which image is captured (x dimension or width)"""
-        self.res_x_prop.value = x_res
+        self.res_x_prop.value = int(x_res)
         logger.info('New scanner camera resolution (width): {}'.format(self.res_x_prop.value))
 
     def resolution_y(self, y_res):
         """Received new resolution at which image is captured (y dimension or height)"""
-        self.res_y_prop.value = y_res
+        self.res_y_prop.value = int(y_res)
         logger.info('New scanner camera resolution (height): {}'.format(self.res_y_prop.value))
 
     def default_resolution(self, action):
