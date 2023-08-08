@@ -42,7 +42,7 @@ Base topic: `scanner/`
 |                  |            | shutter-timer  | time in ms to wait before taking a picture     |
 |                  |            | resolution-x   | resolution width which image is captured       |
 |                  |            | resolution-y   | resolution height which image is captured      |
-|                  |            | def-resolution | (reset) default resolution from local config file |
+|                  |            | resolution-reset| reset to default resolution from local config file |
 |                  |            | revision       | revision of the Pi’s camera module             |
 |                  | software   | repo-revision  | SHA revision of the repository's master branch |
 |                  |            | local-revision | SHA revision of the local's repo master branch |

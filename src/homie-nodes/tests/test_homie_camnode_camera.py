@@ -157,9 +157,12 @@ class TestHomieCamnodeCamera:
         # reset to default values
         self.mqtt_pub(
             pytestconfig,
-            'scanner/' + camnode + '/camera/def-resolution/set',
+            'scanner/' + camnode + '/camera/resolution-reset/set',
             'reset',
         )
+        # add update waiting time
+        time.sleep(update_waiting_time)
+        
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/' + camnode + '/camera/resolution-x'
         )
