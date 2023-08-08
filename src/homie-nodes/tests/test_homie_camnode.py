@@ -51,7 +51,7 @@ class TestHomieCamnode:
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$name')
         assert msg == 'Camera'
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$properties')
-        assert all(p in msg for p in ['shutter-button','shutter-timer','resolution-x','resolution-y','resolution-reset','revision'] )
+        assert all(p in msg for p in ['shutter-button','shutter-timer','resolution-x','resolution-y','default-resolution','revision'] )
 
     def test_homie_camnode_software(self, pytestconfig):
         camnode = pytestconfig.getini('camnode_hostname')

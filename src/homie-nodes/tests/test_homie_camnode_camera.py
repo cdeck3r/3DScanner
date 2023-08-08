@@ -43,7 +43,7 @@ class TestHomieCamnodeCamera:
         assert msg == 'true'
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-y/$settable')
         assert msg == 'true'
-        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-reset/$settable')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/default-resolution/$settable')
         assert msg == 'true'
 
     @pytest.mark.parametrize('update_waiting_time', [2])
@@ -157,7 +157,7 @@ class TestHomieCamnodeCamera:
         # reset to default values
         self.mqtt_pub(
             pytestconfig,
-            'scanner/' + camnode + '/camera/resolution-reset/set',
+            'scanner/' + camnode + '/camera/default-resolution/set',
             'reset',
         )
         # add update waiting time

@@ -115,15 +115,15 @@ class Node_Camera(Node_Base):
 
         # default resolution from local config file
         # one can only reset _to_ the default resolution
-        self.resolution_reset_prop = Property_String(
+        self.default_resolution_prop = Property_String(
             node=self,
-            id="resolution-reset",
+            id="default-resolution",
             name="Default resolution reset",
             settable=True,
-            set_value=self.resolution_reset,
+            set_value=self.default_resolution,
             value='('+str(self.x_res_default)+', '+str(self.y_res_default)+')',
         )
-        self.add_property(self.resolution_reset_prop)
+        self.add_property(self.default_resolution_prop)
         
         #  a string representing the revision of the Pi’s camera module. 
         # ‘ov5647’ for the V1 module, and ‘imx219’ for the V2 module.
@@ -241,11 +241,11 @@ class Node_Camera(Node_Base):
         self.res_y_prop.value = y_res
         logger.info('New camera resolution (height): {}'.format(self.res_y_prop.value))
 
-    def resolution_reset(self, action):
+    def default_resolution(self, action):
         """Resets the resolution to the default from the local config file"""
         if action == 'reset':
             logger.info('Reset to default resolution')
-            self.resolution_reset_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
+            self.default_resolution_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
             self.resolution_x(x_res_default)
             self.resolution_y(y_res_default)
         else:
