@@ -27,6 +27,8 @@ class Node_Camera(Node_Base):
     scanner/camnode-hwaddr/camera/...
     scanner/camnode-hwaddr/camera/shutter-button
     scanner/camnode-hwaddr/camera/shutter-timer
+    scanner/camnode-hwaddr/camera/resolution-x
+    scanner/camnode-hwaddr/camera/resolution-y
     scanner/camnode-hwaddr/camera/revision
     """
 
@@ -206,10 +208,12 @@ class Node_Camera(Node_Base):
     def resolution_x(self, x_res):
         """Received new resolution at which image is captured (x dimension or width)"""
         self.res_x_prop.value = x_res
+        logger.info('New camera resolution (width): {}'.format(self.res_x_prop.value))
 
     def resolution_y(self, y_res):
         """Received new resolution at which image is captured (y dimension or height)"""
         self.res_y_prop.value = y_res
+        logger.info('New camera resolution (height): {}'.format(self.res_y_prop.value))
 
     def scanner_shutter_button(self, topic, button_action):
         """Handler for message on scanner/apparatus/cameras/shutter-button"""
