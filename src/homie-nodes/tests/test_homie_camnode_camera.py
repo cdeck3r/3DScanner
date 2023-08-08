@@ -143,13 +143,13 @@ class TestHomieCamnodeCamera:
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/' + camnode + '/camera/resolution-x'
         )
-        assert msg == x_res_new
+        assert msg == str(x_res_new)
         assert int(msg) == min(int(x_res) + 100, 3280)
         
         msg = self.mqtt_sub(
             pytestconfig, 'scanner/' + camnode + '/camera/resolution-y'
         )
-        assert msg == y_res_new
+        assert msg == str(y_res_new)
         assert int(msg) == min(int(y_res) + 100, 2464)
         
         
