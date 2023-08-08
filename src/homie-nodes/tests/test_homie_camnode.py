@@ -20,6 +20,9 @@ class TestHomieCamnode:
         # execute process
         return process.stdout.rstrip()
 
+    def test_homie_camnode_configfile(self, host):
+        assert host.file('/home/pi/homie-camnode/homie_camnode.yml').exists
+
     # use MQTT subscribe to run the following test cases
     def test_homie_camnode_state(self, pytestconfig):
         camnode = pytestconfig.getini('camnode_hostname')
@@ -48,7 +51,7 @@ class TestHomieCamnode:
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$name')
         assert msg == 'Camera'
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/$properties')
-        assert msg == 'shutter-button,shutter-timer'
+        assert msg == 'shutter-button,shutter-timer,revision'
 
     def test_homie_camnode_software(self, pytestconfig):
         camnode = pytestconfig.getini('camnode_hostname')
@@ -91,5 +94,3 @@ class TestHomieCamnode:
         )
         assert msg == 'b64file'
 
-    def test_homie_camnode_configfile(self, host):
-        assert host.file('/home/pi/homie-camnode/homie_camnode.yml').exists

@@ -40,6 +40,7 @@ Base topic: `scanner/`
 |------------------|------------|----------------|------------------------------------------------|
 | camnode-`<hwaddr>` | camera   | shutter-button | push the button to take a picture              |
 |                  |            | shutter-timer  | time in ms to wait before taking a picture     |
+|                  |            | revision       | revision of the Pi’s camera module             |
 |                  | software   | repo-revision  | SHA revision of the repository's master branch |
 |                  |            | local-revision | SHA revision of the local's repo master branch |
 |                  | recent-image | filename     | most recent image taken by the camera          |

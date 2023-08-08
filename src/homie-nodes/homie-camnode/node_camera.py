@@ -26,6 +26,7 @@ class Node_Camera(Node_Base):
     scanner/camnode-hwaddr/camera/...
     scanner/camnode-hwaddr/camera/shutter-button
     scanner/camnode-hwaddr/camera/shutter-timer
+    scanner/camnode-hwaddr/camera/revision
     """
 
     # states allowed for the camera's shutter button
@@ -85,6 +86,16 @@ class Node_Camera(Node_Base):
             value=0,
         )
         self.add_property(self.timer)
+
+        #  a string representing the revision of the Pi’s camera module. 
+        # ‘ov5647’ for the V1 module, and ‘imx219’ for the V2 module.
+        self.revision = Property_String(
+            node=self,
+            id='revision',
+            name='Revision',
+            value=camera.revision,
+        )
+        self.add_property(self.revision)
 
         # camera subscribes on scanner/apparatus/cameras/shutter-button
         self.device.add_subscription(
