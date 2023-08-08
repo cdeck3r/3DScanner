@@ -155,3 +155,51 @@ else
     diag "${RED}[FAIL]${NC} - Significant number of camnode services failed to restart: ${err_cnt} failed restarts"
 fi
 diag "${HR}"
+
+# Set all camnodes' resolution to the scanner's ones 
+diag "${HR}"
+diag "Set camnode resolution to match scanner" 
+diag "${HR}"
+# This is a two-step approach
+# 1. Read scanner's current resolution
+# 2. Set the same resolution again to propagate to all camnodes
+
+# Step 1 ###################
+# shellcheck disable=SC2016
+TOPIC='scanner/apparatus/cameras/resolution-x'
+RES_X="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
+SCANNER_RES_X=$(${RES_X} | cut -d' ' -f2)
+is $? 0 "Retrieve scanner's resolution width"
+
+TOPIC='scanner/apparatus/cameras/resolution-y'
+RES_Y="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
+SCANNER_RES_Y=$(${RES_Y} | cut -d' ' -f2)
+is $? 0 "Retrieve scanner's resolution height"
+
+((SCANNER_RES_X > 0)); ok $? "Scanner resolution width: ${SCANNER_RES_X}"
+((SCANNER_RES_Y > 0)); ok $? "Scanner resolution height: ${SCANNER_RES_Y}"
+
+# give some time
+sleep(2)
+
+# Step 2 ###################
+TOPIC_RES_X='scanner/apparatus/cameras/resolution-x/set'
+TOPIC_RES_Y='scanner/apparatus/cameras/resolution-y/set'
+
+MSG_RES_X="${SCANNER_RES_X}"
+MSG_RES_Y="${SCANNER_RES_Y}"
+RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_X} -m ${MSG_RES_X}"
+${RES_SET}
+is $? 0 "Resolution width set"
+RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_Y} -m ${MSG_RES_Y}"
+${RES_SET}
+is $? 0 "Resolution height set"
+
+diag "Give some time before starting to verify scanner resolution on all camnodes"
+sleep ${YIELD_TIME_SEC}
+diag " "
+
+# 
+# start other script to check for camnode resolution
+#
+${SCRIPT_DIR}/check_scanner_resolution.sh
