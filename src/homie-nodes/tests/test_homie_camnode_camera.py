@@ -43,7 +43,7 @@ class TestHomieCamnodeCamera:
         assert msg == 'true'
         msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-y/$settable')
         assert msg == 'true'
-        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/def-resolution/$settable')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/camera/resolution-reset/$settable')
         assert msg == 'true'
 
     @pytest.mark.parametrize('update_waiting_time', [2])

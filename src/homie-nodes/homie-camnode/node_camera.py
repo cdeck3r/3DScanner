@@ -245,7 +245,7 @@ class Node_Camera(Node_Base):
         """Resets the resolution to the default from the local config file"""
         if action == 'reset':
             logger.info('Reset to default resolution')
-            self.def_resolution_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
+            self.resolution_reset_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
             self.resolution_x(x_res_default)
             self.resolution_y(y_res_default)
         else:
