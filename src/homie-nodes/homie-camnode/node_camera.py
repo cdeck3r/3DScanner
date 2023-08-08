@@ -9,6 +9,7 @@ from datetime import datetime
 from homie.node.node_base import Node_Base
 from homie.node.property.property_enum import Property_Enum
 from homie.node.property.property_integer import Property_Integer
+from homie.node.property.property_string import Property_String
 
 logger = logging.getLogger(__name__)
 
