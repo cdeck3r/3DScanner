@@ -26,7 +26,7 @@ class TestHomieCamnode:
     # use MQTT subscribe to run the following test cases
     def test_homie_camnode_state(self, pytestconfig):
         camnode = pytestconfig.getini('camnode_hostname')
-        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '$state')
+        msg = self.mqtt_sub(pytestconfig, 'scanner/' + camnode + '/$state')
         assert msg == 'ready'
 
     def test_homie_camnode_version(self, pytestconfig):
