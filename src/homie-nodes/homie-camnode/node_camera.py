@@ -113,6 +113,16 @@ class Node_Camera(Node_Base):
         )
         self.add_property(self.res_y_prop)
 
+        # default resolution from local config file
+        # one can only reset _to_ the default resolution
+        self.def_resolution_prop = Property_String(
+            node=self,
+            id="def-resolution",
+            name="Default resolution",
+            set_value=self.def_resolution,
+            value='('+str(self.x_res_default)+', '+str(self.y_res_default)+')',
+        )
+        self.add_property(self.def_resolution_prop)
         
         #  a string representing the revision of the Pi’s camera module. 
         # ‘ov5647’ for the V1 module, and ‘imx219’ for the V2 module.
@@ -124,11 +134,26 @@ class Node_Camera(Node_Base):
         )
         self.add_property(self.revision)
 
-        # camera subscribes on scanner/apparatus/cameras/shutter-button
+        # camera subscribes to scanner/apparatus/cameras/shutter-button
         self.device.add_subscription(
             topic='scanner/apparatus/cameras/shutter-button',
             handler=self.scanner_shutter_button,
         )
+
+        # To retrieve central resolution updates
+        # camera subscribes to scanner/apparatus/cameras/resolution-x
+        self.device.add_subscription(
+            topic='scanner/apparatus/cameras/resolution-x',
+            handler=self.scanner_resolution_x,
+        )
+        
+        # To retrieve central resolution updates
+        # camera subscribes to scanner/apparatus/cameras/resolution-y
+        self.device.add_subscription(
+            topic='scanner/apparatus/cameras/resolution-y',
+            handler=self.scanner_resolution_y,
+        )
+
 
     def __str__(self):
         return str(self.__class__.__name__)
@@ -215,8 +240,27 @@ class Node_Camera(Node_Base):
         self.res_y_prop.value = y_res
         logger.info('New camera resolution (height): {}'.format(self.res_y_prop.value))
 
+    def def_resolution(self, action):
+        """Resets the resolution to the default from the local config file"""
+        if action == 'reset'
+            logger.info('Reset to default resolution')
+            self.def_resolution_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
+            self.resolution_x(x_res_default)
+            self.resolution_y(y_res_default)
+        else:
+            logger.info('Setting not supported: {}'.format(action))
+
     def scanner_shutter_button(self, topic, button_action):
         """Handler for message on scanner/apparatus/cameras/shutter-button"""
         logger.info('Scanner shutter button hit: {}'.format(button_action))
         self.shutter_button(button_action)
 
+    def scanner_resolution_x(self, topic, x_res):
+        """Handler for message on scanner/apparatus/cameras/resolution-x"""
+        logger.info('Scanner cameras resolution (x width): {}'.format(x_res))
+        self.resolution_x(x_res)
+        
+    def scanner_resolution_y(self, topic, y_res):
+        """Handler for message on scanner/apparatus/cameras/resolution-y"""
+        logger.info('Scanner cameras resolution (y height): {}'.format(y_res))
+        self.resolution_y(y_res)
