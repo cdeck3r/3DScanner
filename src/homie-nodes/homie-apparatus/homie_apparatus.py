@@ -33,6 +33,8 @@ homie_settings = {
 
 device_settings = {
     'total_cams': 48,
+    'camera_x_res': 1024,
+    'camera_y_res': 768,
     'img_dir': '/home/pi/www-images',
     'img_tmp_dir': '/home/pi',
 }
@@ -97,6 +99,8 @@ def configure_settings(cfgfile='homie_apparatus.yml'):
             device_settings['total_cams'] = int(cfg['device']['TOTAL_CAMS'])
             device_settings['img_dir'] = cfg['device']['IMG_DIR']
             device_settings['img_tmp_dir'] = cfg['device']['IMG_TMP_DIR']
+            device_settings['camera_x_res'] = int(cfg['device']['CAMERA_X_RES'])
+            device_settings['camera_y_res'] = int(cfg['device']['CAMERA_Y_RES'])
     except Exception:
         logging.warn(
             'Cannot load config file: {}. Will use default settings.'.format(cfgfile)
