@@ -100,7 +100,7 @@ Base topic: `scanner/`
 |           |               | online-percent   | percentage value of cameras online                                                |
 |           |               | resolution-x     | resolution width which image is captured                                          |
 |           |               | resolution-y     | resolution height which image is captured                                         |
-|           |               | resolution-reset | reset to default resolution from scanner's global config file                     |
+|           |               | default-resolution| reset to default resolution from scanner's global config file                     |
 |           | recent-images | save-all         | retrieve recent images from all cameras and make  them accessible to the end-user |
 |           |               | last-saved       | datetime "yyyy-mm-dd HH:mm:ss" of most recent images                              |
 |           |               | image-count      | number of images retrieved at last update                                         |
