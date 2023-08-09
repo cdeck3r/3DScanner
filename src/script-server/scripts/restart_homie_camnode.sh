@@ -30,6 +30,7 @@ NODELIST_LOG="/home/${PI_USER}/log/nodelist.log"
 FAILED_RESTART_YELLOW=5 # WARNING threshold for failed restart
 SET_SCALING_GOVERNOR_DISABLE=true
 CURR_SCALING_GOVERNOR="unknown"
+YIELD_TIME_SEC=2 # pause time 
 
 [ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
     echo "Could find required config file: common_vars.conf"
@@ -180,7 +181,7 @@ is $? 0 "Retrieve scanner's resolution height"
 ((SCANNER_RES_Y > 0)); ok $? "Scanner resolution height: ${SCANNER_RES_Y}"
 
 # give some time
-sleep(2)
+sleep ${YIELD_TIME_SEC}
 
 # Step 2 ###################
 TOPIC_RES_X='scanner/apparatus/cameras/resolution-x/set'
