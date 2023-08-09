@@ -10,9 +10,11 @@
 # Author: cdeck3r
 #
 
-# Params: x and y resolution in pixel
-RES_X=$1
-RES_Y=$2
+# Params: 
+#   X x Y resolution in pixel
+#   "reset" or empty to request a reset
+RES_XY=$1
+RES_RESET=$2
 
 # Exit codes
 # 0: at the script's end
@@ -56,9 +58,6 @@ source "${SCRIPT_DIR}/tap-functions.sh"
 }
 source "${SCRIPT_DIR}/funcs.sh"
 
-[ -z "${RES_X}" ] && BAIL_OUT "No camera resolution width provided. Abort."
-[ -z "${RES_Y}" ] && BAIL_OUT "No camera resolution height provided. Abort."
-
 #####################################################
 # Main program
 #####################################################
@@ -74,27 +73,51 @@ SKIP_CHECK=$(
 precheck "${SKIP_CHECK}"
 
 diag "${HR}"
-diag "Set resolution of all scanner cameras"
+diag "Parameter check"
 diag "${HR}"
 
-TOPIC_RES_X='scanner/apparatus/cameras/resolution-x/set'
-TOPIC_RES_Y='scanner/apparatus/cameras/resolution-y/set'
+[ -z "${RES_XY}" ] && BAIL_OUT "No camera resolution provided. Abort."
+[ -z "${RES_XY}" ] || pass "Camera resolution provided: ${RES_XY}"
+[ -z "${RES_RESET}" ] || pass "Reset requested. Will ignore camera resolution."
 
-MSG_RES_X="${RES_X}"
-MSG_RES_Y="${RES_Y}"
-RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_X} -m ${MSG_RES_X}"
-${RES_SET}
-is $? 0 "Resolution width set"
-RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_Y} -m ${MSG_RES_Y}"
-${RES_SET}
-is $? 0 "Resolution height set"
+if [ -z "${RES_RESET}" ]; then
+    # set resolution
+    diag "${HR}"
+    diag "Set resolution of all scanner cameras"
+    diag "${HR}"
+
+    RES_X=$(echo "${RES_XY}" | cut -d' ' -f1)
+    RES_Y=$(echo "${RES_XY}" | cut -d' ' -f3)
+
+    TOPIC_RES_X='scanner/apparatus/cameras/resolution-x/set'
+    TOPIC_RES_Y='scanner/apparatus/cameras/resolution-y/set'
+
+    MSG_RES_X="${RES_X}"
+    MSG_RES_Y="${RES_Y}"
+    RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_X} -m ${MSG_RES_X}"
+    ${RES_SET}
+    is $? 0 "Resolution width set"
+    RES_SET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_RES_Y} -m ${MSG_RES_Y}"
+    ${RES_SET}
+    is $? 0 "Resolution height set"
+
+elif [ "${RES_RESET}" == "reset" ]; then
+    # reset
+    diag "${HR}"
+    diag "Reset resolution of all scanner cameras"
+    diag "${HR}"
+
+    TOPIC_DEFAULT_RES='scanner/apparatus/cameras/default-resolution/set'
+
+    MSG="${RES_RESET}"
+    DEFAULT_RES_RESET="mosquitto_pub -h ${MQTT_BROKER} -t ${TOPIC_DEFAULT_RES} -m ${MSG}"
+    ${DEFAULT_RES_RESET}
+    is $? 0 "Scanner resolution reset"
+fi
 
 diag "Give some time before starting to verify scanner resolution on all camnodes"
 sleep ${YIELD_TIME_SEC}
 diag " "
-
-# 
-# start other script to check for camnode resolution
-#
+# Check Scanner resolution on all camnodes
 ${SCRIPT_DIR}/check_scanner_resolution.sh
-
+diag " "

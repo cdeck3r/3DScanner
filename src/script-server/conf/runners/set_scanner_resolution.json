@@ -1,0 +1,31 @@
+{
+  "name": "- 3. Set scanner camera resolution",
+  "script_path": "set_scanner_resolution.sh",
+  "working_directory": "scripts",
+  "description": "Set all scanner cameras to the same resolution.",
+  "parameters": [
+    {
+      "name": "Resolution",
+      "required": true,
+      "type": "list",
+      "values": [
+        "1024 x 786",
+        "1152 x 864",
+        "1280 x 960",
+        "1600 x 1200",
+        "1920 x 1080",
+        "2592 x 1944",
+        "3280 x 2464"
+      ],
+      "default": "1024 x 786",
+      "description": "List with camera resolutions in (width x height) pixels"
+    },
+    {
+      "name": "Reset resolution to default",
+      "param": "reset",
+      "no_value": true,
+      "default": false,
+      "description": "Resets all scanner cameras to global default resolution."
+    }
+  ]
+}
