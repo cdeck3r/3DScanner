@@ -2,7 +2,7 @@
 # shellcheck disable=SC1090
 
 #
-# Lists all online camnodes
+# List all recent-image datetime
 #
 # Author: cdeck3r
 #
@@ -23,8 +23,6 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # Vars
-PAST_UPDATE_SEC=300 # lastupdate is max. 5min in the past
-
 MQTT_BROKER="" # set empty
 
 [ -f "${SCRIPT_DIR}/common_vars.conf" ] || {
@@ -60,65 +58,63 @@ source "${SCRIPT_DIR}/funcs.sh"
 HR=$(hr) # horizontal line
 plan_no_plan
 
+# error counter
+((err_cnt = 0))
+
 SKIP_CHECK=$(
-    true
+    false
     echo $?
 )
 precheck "${SKIP_CHECK}"
 
 diag "${HR}"
-diag "List camera nodes online"
+diag "List all recent-image datetime"
 diag "${HR}"
+TOPIC='scanner/+/recent-image/datetime'
+RECENT_IMAGE_DATETIME="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
+RECENT_IMAGE_DATETIME_RES=$(${RECENT_IMAGE_DATETIME})
+is $? 0 "Retrieve recent image datetime from each camera node"
+#echo ${RECENT_IMAGE_DATETIME_RES} | sort
 
-# shellcheck disable=SC2016
-TOPIC='scanner/+/$stats/lastupdate'
-LAST_UPDATE="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
-LAST_UPDATE_RES=$(${LAST_UPDATE})
-is $? 0 "Retrieve camera nodes update status"
-echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f2,4- | sort
+# loop through each camnode and check its recent-image/datetime
+diag "Check each recent image datetime"
+mapfile -t RECENT_IMAGE_DATETIME_ARRAY < <(echo "${RECENT_IMAGE_DATETIME_RES}" | sort | tr " " "_")
 
-# summary evaluation of camnode lastupdate
-diag "${HR}"
+curr_sec=$(date -d'now' +"%s")
+for camnode in "${RECENT_IMAGE_DATETIME_ARRAY[@]}"; do
+    cn=$(echo "${camnode}" | cut -d_ -f1)
+    dt=$(echo "${camnode}" | cut -d_ -f2)
+    dt_sec=$(date -d"${dt}" +"%s")
 
-LAST_UPDATE_TS=$(echo "${LAST_UPDATE_RES}" | grep -a lastupdate | cut -d/ -f4- | cut -d' ' -f2- | sort | tr " " "_")
-mapfile -t LAST_UPDATE_TS_ARRAY < <(echo "${LAST_UPDATE_TS}")
+    # dt >= 1 hour
+    # 1 hour > dt >= 12 hours
+    # 12 hour > dt
 
-LATE_UPDATE_NODES=0
-curr_t_sec=$(date +"%s")
+    ((one_hour_old = curr_sec - 3600))
+    ((twelve_hours_old = curr_sec - 43200))
 
-((t_sec_threshold = curr_t_sec - PAST_UPDATE_SEC))
-for ts in "${LAST_UPDATE_TS_ARRAY[@]}"; do
-    t=$(echo "${ts}" | tr "_" " ")
-    # need to swap month and day, because
-    # 12/02/2021 17:38:27 is considered as "Dec 2, 2021 17:38:27", but it is
-    # Feb 12, 2021 ...
-    day=$(echo "${t}" | cut -d'/' -f1)
-    month=$(echo "${t}" | cut -d'/' -f2)
-    rest=$(echo "${t}" | cut -d'/' -f3-)
-    t_swap="${month}/${day}/${rest}"
-    # convert in seconds since epoch
-    t_sec=$(date -d "${t_swap}" +"%s")
-    ((t_sec <= t_sec_threshold)) && { ((LATE_UPDATE_NODES += 1)); }
+    if ((dt_sec >= one_hour_old)); then
+        pass "${cn} ${dt}"
+    elif ((dt_sec >= twelve_hours_old)); then
+        fail "Image not older than 12h - ${cn} ${dt}"
+        ((err_cnt += 1))
+    else
+        fail "Image older than 12h - ${cn} ${dt}"
+        ((err_cnt += 1))
+    fi
 done
-if ((LATE_UPDATE_NODES > 0)); then
-    diag "${RED}[FAIL]${NC} - Nodes with no update for at least $((PAST_UPDATE_SEC / 60)) min: ${LATE_UPDATE_NODES}."
+
+# summary eval for recent-image datetime
+diag "${HR}"
+if ((err_cnt == 0)); then
+    diag "${GREEN}[SUCCESS]${NC} - All camnodes provide recent images."
+elif ((err_cnt <= 5)); then
+    diag "${YELLOW}[WARNING]${NC} - A few nodes provide old images. Check output."
 else
-    diag "${GREEN}[SUCCESS]${NC} - All camera nodes update within $((PAST_UPDATE_SEC / 60)) min."
+    diag "${RED}[FAIL]${NC} - Severe problem. Several nodes provide old images. Check output."
+fi
+OLDEST_RECENT_IMAGE_DATETIME=$(echo "${RECENT_IMAGE_DATETIME_RES}" | sort | cut -d/ -f4 | cut -d' ' -f2 | head -1)
+if [[ -n "${OLDEST_RECENT_IMAGE_DATETIME}" ]]; then
+    diag "${CYAN}[INFO]${NC} - Oldest recent image: ${OLDEST_RECENT_IMAGE_DATETIME}"
 fi
 diag "${HR}"
-diag " "
-
-diag "${HR}"
-diag "List camera nodes' IP addresses"
-diag "${HR}"
-# shellcheck disable=SC2016
-TOPIC='scanner/+/+'
-STATUS_IP_CMD="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
-STATUS_IP_RES=$(${STATUS_IP_CMD} | tr -d '\0' | sort -u | grep -a camnode | grep -a -E '(\$state|\$localip)')
-is $? 0 "Retrieve camera nodes status and IP addresses"
-mapfile -t STATUS_IP_ARRAY < <(echo "${STATUS_IP_RES}" | sed -E 's/\s/_/gi' | sed -E '1~2s/(.)$/\1_/gi' | sed -E '2~2s/(.)$/\1#/'| tr -d '\n' | sed -E 's/#/\n/gi')
-for camnode in "${STATUS_IP_ARRAY[@]}"; do
-    is "$(echo "${camnode}" | cut -d_ -f4)" "ready" "$(echo "${camnode}" | cut -d'_' -f1,2 | tr '_' ' ')"
-done
-diag " "
-
