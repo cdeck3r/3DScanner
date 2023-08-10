@@ -164,7 +164,7 @@ class Node_Cameras(Node_Base):
         # bounce suppression:
         # accept next button push only after SUPPRESSION_TIMEOUT
         if self.button_push_time == 0:
-            self.button.value = 'push'  # sends updates to clients
+            #self.button.value = 'push'  # don't do this here, it will enqueue DUP msg to subscribers
             self.button_push_time = time.time()
             self.take_picture()
             self.button.value = 'release'
