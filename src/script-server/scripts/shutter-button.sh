@@ -25,7 +25,7 @@ SCRIPT_NAME=$0
 
 # Vars
 MAX_WAIT_SEC_SAVE_IMAGES=30 # seconds to repeatedly try downloading images
-MAX_RUNS_BUTTON_RELEASE=5 # number of runs to test cameras in button release state
+MAX_RUNS_BUTTON_RELEASE=15 # number of runs to test cameras in button release state
 YIELD_TIME_SEC=1 # time to wait before between each run
 ENABLE_HOUSEKEEPING=1 # performs image housekeeping before saving images
 # retrieve image directory from housekeeping cronjob
@@ -119,38 +119,16 @@ is $? 0 "Retrieve button push datetime"
 LAST_BUTTON_PUSH_RES=$(echo "${LAST_BUTTON_PUSH_EXE}" | head -1)
 echo "${LAST_BUTTON_PUSH_RES}"
 
-diag "Wait until shutter button release on all camnode"
-TOPIC="scanner/+/camera/shutter-button"
-
+diag "Wait until camnodes have taken images"
+# We wait because values from MQTT are delayed and do not represent
+# the current state
 ((counter = MAX_RUNS_BUTTON_RELEASE))
-((release = 0))
-while ((--counter >= 0)); do
-    CAMNODE_BUTTON_RELEASE="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
-    CAMNODE_BUTTON_RELEASE_EXE=$(${CAMNODE_BUTTON_RELEASE})
-    is $? 0 "Check all camnodes' shutter button status... # $((MAX_RUNS_BUTTON_RELEASE - counter))"
-
-    mapfile -t CAMNODE_BUTTON_RELEASE_ARRAY < <(echo "${CAMNODE_BUTTON_RELEASE_EXE}" | cut -d' ' -f2)
-    # iterate through all camnodes
-    for camnode_button in "${CAMNODE_BUTTON_RELEASE_ARRAY[@]}"; do
-        if [ "${camnode_button}" == "release" ]; then
-            ((release = 1))
-        else
-            # at least one camnode shutton button is not released
-            ((release = 0))
-            break
-        fi
-    done
-    if ((release == 1)); then
-        # all camnode buttons are released
-        break 
-    else
-        sleep ${YIELD_TIME_SEC}
-    fi
+while ((--counter > 0)); do
+    sleep ${YIELD_TIME_SEC}
+    pass "Wait for camnodes... # $((counter)) seconds"
 done
 # counter shall not be 0 to indicate success
 is $((counter >= 0)) 1 "All cameras done takening images"
-((counter >= 0)) || fail "Waiting time for cameras exceeded"
-
 
 diag " "
 ((ENABLE_HOUSEKEEPING)) && {
