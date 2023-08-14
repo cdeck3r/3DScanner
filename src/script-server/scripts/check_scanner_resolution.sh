@@ -89,8 +89,8 @@ RES_Y="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
 SCANNER_RES_Y=$(${RES_Y} | cut -d' ' -f2)
 is $? 0 "Retrieve scanner's resolution height"
 
-((SCANNER_RES_X > 0)); ok $? "Scanner resolution width: ${SCANNER_RES_X}"
-((SCANNER_RES_Y > 0)); ok $? "Scanner resolution height: ${SCANNER_RES_Y}"
+((SCANNER_RES_X > 0)) && ((SCANNER_RES_X <= 3280)); ok $? "Valid scanner resolution width: ${SCANNER_RES_X}"
+((SCANNER_RES_Y > 0)) && ((SCANNER_RES_Y <= 2464)); ok $? "Valid scanner resolution height: ${SCANNER_RES_Y}"
 
 diag "${HR}"
 diag "Retrieve resolution of all camnodes"

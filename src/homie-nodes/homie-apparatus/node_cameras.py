@@ -175,7 +175,7 @@ class Node_Cameras(Node_Base):
                 self.button_push_time = 0
                 self.button_push()  # suppression time over, so we can hit the button
             else:
-                logger.debug(
+                logger.info(
                     'Shutter button push rejected, because button still in bounce suppression.'
                 )
 
@@ -193,12 +193,12 @@ class Node_Cameras(Node_Base):
 
     def resolution_x(self, x_res):
         """Received new resolution at which image is captured (x dimension or width)"""
-        self.res_x_prop.value = int(x_res)
+        # self.res_x_prop.value = int(x_res) # not req., causes DUPs 
         logger.info('New scanner camera resolution (width): {}'.format(self.res_x_prop.value))
 
     def resolution_y(self, y_res):
         """Received new resolution at which image is captured (y dimension or height)"""
-        self.res_y_prop.value = int(y_res)
+        # self.res_y_prop.value = int(y_res) # not req., causes DUPs 
         logger.info('New scanner camera resolution (height): {}'.format(self.res_y_prop.value))
 
     def default_resolution(self, action):
