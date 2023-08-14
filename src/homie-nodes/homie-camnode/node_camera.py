@@ -204,18 +204,21 @@ class Node_Camera(Node_Base):
         # bounce suppression:
         # accept next button push only after SUPPRESSION_TIMEOUT
         if self.button_push_time == 0:
+            logger.info('Set button value: push')
             self.button.value = 'push'  # sends updates to clients
             self.button_push_time = time.time()
             self.take_picture()
+            logger.info('Set button value: release')
             self.button.value = 'release'
         else:
-            self.button.value = 'release'  # always enable button to be pressed
+            #logger.info('Set button value: release')
+            #self.button.value = 'release'  # always enable button to be pressed
             curr_time = time.time()
             if (curr_time - self.button_push_time) > Node_Camera.SUPPRESSION_TIMEOUT:
                 self.button_push_time = 0
                 self.button_push()  # suppression time over, so we can hit the button
             else:
-                logger.debug(
+                logger.info(
                     'Shutter button push rejected, because button still in bounce suppression.'
                 )
 
