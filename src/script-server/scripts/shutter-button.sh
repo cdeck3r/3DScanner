@@ -102,6 +102,12 @@ prev_last_saved_sec=$(date -d"${LAST_SAVED_DT}" +"%s")
 diag " "
 
 diag "${HR}"
+diag "============ STAND STILL ============"
+diag "${HR}"
+diag " "
+sleep 1
+
+diag "${HR}"
 diag "Push scanner's shutter button"
 diag "${HR}"
 
@@ -119,7 +125,14 @@ is $? 0 "Retrieve button push datetime"
 LAST_BUTTON_PUSH_RES=$(echo "${LAST_BUTTON_PUSH_EXE}" | head -1)
 echo "${LAST_BUTTON_PUSH_RES}"
 
-diag "Wait until camnodes have taken images"
+sleep 1
+diag " "
+diag "${HR}"
+diag "============ THANK YOU :-) ============"
+diag "${HR}"
+diag " "
+
+diag "Wait until camnodes have taken processed images"
 # We wait because values from MQTT are delayed and do not represent
 # the current state
 ((counter = MAX_RUNS_BUTTON_RELEASE))
