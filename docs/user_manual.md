@@ -30,6 +30,7 @@ The user interface depicted in the image below displays two groups of functions 
 
 * **Push to fire all scanner cameras:** click and execute this function to fire all scanner cameras and download the images from http://CENTRALNODE/ (same URL as the user interface, but without the `/ui` at the end)
 * **Scanner health status:** It checks the connection to the scanner and counts ready cameras nodes and other relevant status information. You may run this to check for your information before starting a series of taking images with the scanner.
+* **Set scanner camera resolution:** It provides a pull down menu with available resolutions when taking images. It sets then all scanner cameras to the selected resolution.
 
 Other functions in the group below the separator are primarily to monitor and maintain technical aspects of the scanner. Use with caution and only when asked to do so by the developer. Later software revisions may hide these functions.
 
@@ -75,6 +76,15 @@ Finally, the output displays the following success message about the number of i
 The health status check performs various tests of the scanner components. The screenshot below displays a successful health status check. Please note the lines in the output starting with word `[SUCCESS]`.  
 
 ![scanner health status](images/health_status_success.png)
+
+### Set Camera Resolution
+
+The end-user selects the available camera resolution from a pull-down menu. Hitting the `Execute` button configures all camera nodes using the selected resolution. The `Reset resolution to default` checkbox ignores the selected resolution and sets the resolution to the factory default.
+
+**Note:** The currently used camera resolution for each camera node is shown by the [scanner's health status](#scanner-health-status).
+
+![set camera resolution](images/set_camera_resolution.png)
+
 
 ### Compute Image Statistics
 
