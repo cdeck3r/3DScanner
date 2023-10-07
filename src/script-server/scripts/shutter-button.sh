@@ -24,11 +24,13 @@ cd "$SCRIPT_DIR" || exit
 SCRIPT_NAME=$0
 
 # Vars
-YIELD_TIME_SEC=4 #time to wait before starting to save images
-MAX_WAIT_SEC_SAVE_IMAGES=30
+MAX_WAIT_SEC_SAVE_IMAGES=30 # seconds to repeatedly try downloading images
+MAX_RUNS_BUTTON_RELEASE=15 # number of runs to test cameras in button release state
+YIELD_TIME_SEC=1 # time to wait before between each run
 ENABLE_HOUSEKEEPING=1 # performs image housekeeping before saving images
 # retrieve image directory from housekeeping cronjob
 WWW_IMG_DIR=$(crontab -l | grep housekeeping.sh | cut -d' ' -f 6- | cut -d'>' -f1 | cut -d' ' -f2 | grep -v tmp)
+IMG_SUFFIX="png"
 
 MQTT_BROKER="" # set empty
 
@@ -100,6 +102,12 @@ prev_last_saved_sec=$(date -d"${LAST_SAVED_DT}" +"%s")
 diag " "
 
 diag "${HR}"
+diag "============ STAND STILL ============"
+diag "${HR}"
+diag " "
+sleep 1
+
+diag "${HR}"
 diag "Push scanner's shutter button"
 diag "${HR}"
 
@@ -117,8 +125,23 @@ is $? 0 "Retrieve button push datetime"
 LAST_BUTTON_PUSH_RES=$(echo "${LAST_BUTTON_PUSH_EXE}" | head -1)
 echo "${LAST_BUTTON_PUSH_RES}"
 
-diag "Give some time before starting to save all images"
-sleep ${YIELD_TIME_SEC}
+sleep 1
+diag " "
+diag "${HR}"
+diag "============ THANK YOU :-) ============"
+diag "${HR}"
+diag " "
+
+diag "Wait until camnodes have taken processed images"
+# We wait because values from MQTT are delayed and do not represent
+# the current state
+((counter = MAX_RUNS_BUTTON_RELEASE))
+while ((--counter > 0)); do
+    sleep ${YIELD_TIME_SEC}
+    pass "Wait for camnodes... # $((counter)) seconds"
+done
+# counter shall not be 0 to indicate success
+is $((counter >= 0)) 1 "All cameras done takening images"
 
 diag " "
 ((ENABLE_HOUSEKEEPING)) && {
@@ -160,9 +183,23 @@ done
 is $((counter > 0)) 1 "Save all camera images"
 ((counter > 0)) || fail "Waiting time exceeded"
 
+diag "${HR}"
+diag "Zip all camera images"
+diag "${HR}"
+# zip all images
+CURR_LATEST_IMG_DIR=$(latest_img_dir)
+CURR_LATEST_IMG_DIRNAME=$(basename "${CURR_LATEST_IMG_DIR}")
+find "${CURR_LATEST_IMG_DIR}" -type f -name "*.${IMG_SUFFIX}" | zip -q -0 "${CURR_LATEST_IMG_DIR}/${CURR_LATEST_IMG_DIRNAME}.zip" -@
+ok $? "Zip all downloaded image files"
+
+diag "${HR}"
+diag "Post-hoc checks"
+diag "${HR}"
+
 ## Post-hoc checks
 # 1. Check for recent image from each camnode
 # 2. print number of downloaded images
+# 3. Check zip file integrity
 
 ## An image was taken recently, if it not older than 10min.
 ## Only recent images got downloaded by node_recentimages.py
@@ -177,10 +214,14 @@ is $((counter > 0)) 1 "Save all camera images"
         isnt "${PREV_LATEST_IMG_DIR}" "${CURR_LATEST_IMG_DIR}" "New image directory found: ${CURR_LATEST_IMG_DIR}"
     fi
     # count images
-    imgcnt=$(find "${CURR_LATEST_IMG_DIR}" -type f -printf '.' | wc -c)
+    imgcnt=$(find "${CURR_LATEST_IMG_DIR}" -type f -name "*.${IMG_SUFFIX}" -printf '.' | wc -c)
     ok $? "Count number of images in ${CURR_LATEST_IMG_DIR}"
     is $((imgcnt > 0)) 1 "Recent images available: ${imgcnt}"
 }
+
+# Check zip file integrity
+zip -q -T "${CURR_LATEST_IMG_DIR}/${CURR_LATEST_IMG_DIRNAME}.zip"
+ok $? "Check image zip file integrity"
 
 # Summary
 diag "${HR}"

@@ -7,9 +7,11 @@ homie:
     UPDATE_INTERVAL: 60
     IMPLEMENTATION: 'Full body DIY Raspberry Pi based 3D scanner'
     FW_NAME: '3DScanner'
-    FW_VERSION: '0.1'
+    FW_VERSION: '1.0'
 
 device:
     TOTAL_CAMS: 48
+    CAMERA_X_RES: 1024
+    CAMERA_Y_RES: 768
     IMG_DIR: '~/www-images'
     IMG_TMP_DIR: '~/tmp'

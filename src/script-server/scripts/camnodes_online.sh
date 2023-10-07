@@ -105,5 +105,20 @@ if ((LATE_UPDATE_NODES > 0)); then
 else
     diag "${GREEN}[SUCCESS]${NC} - All camera nodes update within $((PAST_UPDATE_SEC / 60)) min."
 fi
+diag "${HR}"
+diag " "
 
 diag "${HR}"
+diag "List camera nodes' IP addresses"
+diag "${HR}"
+# shellcheck disable=SC2016
+TOPIC='scanner/+/+'
+STATUS_IP_CMD="mosquitto_sub -v -h ${MQTT_BROKER} -t ${TOPIC} -W 2"
+STATUS_IP_RES=$(${STATUS_IP_CMD} | tr -d '\0' | sort -u | grep -a camnode | grep -a -E '(\$state|\$localip)')
+is $? 0 "Retrieve camera nodes status and IP addresses"
+mapfile -t STATUS_IP_ARRAY < <(echo "${STATUS_IP_RES}" | sed -E 's/\s/_/gi' | sed -E '1~2s/(.)$/\1_/gi' | sed -E '2~2s/(.)$/\1#/'| tr -d '\n' | sed -E 's/#/\n/gi')
+for camnode in "${STATUS_IP_ARRAY[@]}"; do
+    is "$(echo "${camnode}" | cut -d_ -f4)" "ready" "$(echo "${camnode}" | cut -d'_' -f1,2 | tr '_' ' ')"
+done
+diag " "
+

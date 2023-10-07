@@ -7,6 +7,7 @@ from homie.node.node_base import Node_Base
 from homie.node.property.property_datetime import Property_DateTime
 from homie.node.property.property_enum import Property_Enum
 from homie.node.property.property_integer import Property_Integer
+from homie.node.property.property_string import Property_String
 
 logger = logging.getLogger(__name__)
 
@@ -19,6 +20,9 @@ class Node_Cameras(Node_Base):
     scanner/apparatus/cameras/last-button-push
     scanner/apparatus/cameras/online
     scanner/apparatus/cameras/online-percent
+    scanner/apparatus/cameras/resolution-x
+    scanner/apparatus/cameras/resolution-y
+    scanner/apparatus/cameras/default-resolution
     """
 
     # states allowed for the camera's shutter button
@@ -46,6 +50,9 @@ class Node_Cameras(Node_Base):
 
         self.device = device
         self.total_cams = int(self.device.device_settings['total_cams'])
+        # camera resolution settings
+        self.x_res_default = self.device.device_settings['camera_x_res']
+        self.y_res_default = self.device.device_settings['camera_y_res']
 
         self.button_push_time = 0
         # button's default value is 'release'
@@ -99,6 +106,41 @@ class Node_Cameras(Node_Base):
         )
         self.add_property(self.timer)
 
+        # Camera resolution 
+        self.res_x_prop = Property_Integer(
+            node=self,
+            id='resolution-x',
+            name='Resolution width',
+            unit='px',
+            data_format='0:3280',
+            set_value=self.resolution_x,
+            value=self.x_res_default, # local default value from config file
+        )
+        self.add_property(self.res_x_prop)
+
+        self.res_y_prop = Property_Integer(
+            node=self,
+            id='resolution-y',
+            name='Resolution height',
+            unit='px',
+            data_format='0:2464',
+            set_value=self.resolution_y,
+            value=self.y_res_default, # local default value from config file
+        )
+        self.add_property(self.res_y_prop)
+
+        # default resolution from local config file
+        # one can only reset _to_ the default resolution
+        self.default_resolution_prop = Property_String(
+            node=self,
+            id="default-resolution",
+            name="Default resolution reset",
+            settable=True,
+            set_value=self.default_resolution,
+            value='('+str(self.x_res_default)+', '+str(self.y_res_default)+')',
+        )
+        self.add_property(self.default_resolution_prop)        
+
     def __str__(self):
         return str(self.__class__.__name__)
 
@@ -122,7 +164,7 @@ class Node_Cameras(Node_Base):
         # bounce suppression:
         # accept next button push only after SUPPRESSION_TIMEOUT
         if self.button_push_time == 0:
-            self.button.value = 'push'  # sends updates to clients
+            #self.button.value = 'push'  # don't do this here, it will enqueue DUP msg to subscribers
             self.button_push_time = time.time()
             self.take_picture()
             self.button.value = 'release'
@@ -133,7 +175,7 @@ class Node_Cameras(Node_Base):
                 self.button_push_time = 0
                 self.button_push()  # suppression time over, so we can hit the button
             else:
-                logger.debug(
+                logger.info(
                     'Shutter button push rejected, because button still in bounce suppression.'
                 )
 
@@ -148,3 +190,24 @@ class Node_Cameras(Node_Base):
         time.sleep(self.timer.value / 1000)  # unit is ms
         self.take_picture()
         self.button.value = 'release'
+
+    def resolution_x(self, x_res):
+        """Received new resolution at which image is captured (x dimension or width)"""
+        # self.res_x_prop.value = int(x_res) # not req., causes DUPs 
+        logger.info('New scanner camera resolution (width): {}'.format(self.res_x_prop.value))
+
+    def resolution_y(self, y_res):
+        """Received new resolution at which image is captured (y dimension or height)"""
+        # self.res_y_prop.value = int(y_res) # not req., causes DUPs 
+        logger.info('New scanner camera resolution (height): {}'.format(self.res_y_prop.value))
+
+    def default_resolution(self, action):
+        """Resets the resolution to the default from the local config file"""
+        if action == 'reset':
+            logger.info('Reset to default resolution')
+            self.default_resolution_prop.value = '('+str(self.x_res_default)+', '+str(self.y_res_default)+')'
+            self.resolution_x(self.x_res_default)
+            self.resolution_y(self.y_res_default)
+        else:
+            logger.info('Setting not supported: {}'.format(action))
+            

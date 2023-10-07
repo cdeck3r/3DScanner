@@ -265,19 +265,18 @@ class TestAutosetupCentralnode:
     def test_autosetup_reboot(self, host, nodetype):
         script_name = 'reboot' + '_' + nodetype + '.sh'
         assert host.file('/home/pi/reboot').is_directory
-        assert host.file('/home/pi/reboot/'+script_name).exists
-        assert host.file('/home/pi/reboot/'+script_name).mode == 0o700
-
+        assert host.file('/home/pi/reboot/' + script_name).exists
+        assert host.file('/home/pi/reboot/' + script_name).mode == 0o700
 
     @pytest.mark.parametrize('nodetype', ['centralnode', 'camnodes'])
     def test_autosetup_reboot_cronjob(self, host, nodetype):
         script_name = 'reboot' + '_' + nodetype + '.sh'
-        
+
         if nodetype == 'centralnode':
             cronjob_start = '@reboot sleep 300 &&'
-        elif nodetype == 'camnodes':        
+        elif nodetype == 'camnodes':
             cronjob_start = '30 2 * * SUN'
-        
+
         assert (
             host.run('crontab -l | grep ' + script_name)
             .stdout.rstrip()
@@ -289,7 +288,7 @@ class TestAutosetupCentralnode:
         assert host.run(
             'grep "/home/pi/log/reboot.log" /home/pi/reboot/logrotate.conf'
         ).succeeded
-        
+
         assert (
             host.run('crontab -l | grep logrotate_reboot')
             .stdout.rstrip()

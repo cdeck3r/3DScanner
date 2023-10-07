@@ -50,3 +50,67 @@ class TestHomieApparatusCameras:
         time.sleep(waiting_time)
         msg = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/last-button-push')
         assert datetime.fromisoformat(msg).timestamp() > last_button_push
+
+    @pytest.mark.parametrize('waiting_time', [2])
+    def test_homie_apparatus_resolution_negative(self, pytestconfig, waiting_time):
+        x_res = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/resolution-x')
+        y_res = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/resolution-y')
+        
+        # do not allow to set neg. resolutions
+        for p in ['resolution-x', 'resolution-y']:
+            self.mqtt_pub(
+                pytestconfig,
+                'scanner/apparatus/cameras/' + p[0] + '/set',
+                str(-1),
+            )
+        # add update waiting time
+        time.sleep(waiting_time)            
+
+        for p in [('resolution-x', x_res), ('resolution-y', y_res)]:
+            msg = self.mqtt_sub(
+                pytestconfig, 'scanner/apparatus/cameras/' + p[0],
+            )
+            assert msg == p[1]
+
+
+    @pytest.mark.parametrize('waiting_time', [2])
+    def test_homie_apparatus_resolution(self, pytestconfig, waiting_time):
+        x_res = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/resolution-x')
+        y_res = self.mqtt_sub(pytestconfig, 'scanner/apparatus/cameras/resolution-y')
+
+        # set new valid resolution (x,y)
+        x_res_new = min(int(x_res) + 100, 3280)
+        y_res_new = min(int(y_res) + 100, 2464)
+        
+        # set new resolution (x,y)
+        for p in [('resolution-x', x_res_new), ('resolution-y', y_res_new)]:
+            self.mqtt_pub(
+                pytestconfig,
+                'scanner/apparatus/cameras/' + p[0] + '/set',
+                str(p[1]),
+            )        
+        # add update waiting time
+        time.sleep(waiting_time)
+
+        # test for new resolution
+        for p in [('resolution-x', x_res_new), ('resolution-y', y_res_new)]:
+            msg = self.mqtt_sub(
+                pytestconfig, 'scanner/apparatus/cameras/' + p[0],
+            )
+            assert msg == str(p[1])
+
+        # reset to default values
+        self.mqtt_pub(
+            pytestconfig,
+            'scanner/apparatus/cameras/default-resolution/set',
+            'reset',
+        )
+        # add update waiting time
+        time.sleep(waiting_time)
+        
+        # test for new resolution
+        for p in [('resolution-x', x_res), ('resolution-y', y_res)]:
+            msg = self.mqtt_sub(
+                pytestconfig, 'scanner/apparatus/cameras/' + p[0],
+            )
+            assert msg == str(p[1])
